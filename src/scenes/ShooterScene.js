@@ -108,7 +108,7 @@ export class ShooterScene extends Phaser.Scene {
 
         // 적 텔레포트 및 무작위 탄막 발사
         this.time.addEvent({
-            delay: 550, // 텔레포트 주기
+            delay: 750, // 텔레포트 주기
             callback: this.teleportEnemy,
             callbackScope: this,
             loop: true,
@@ -284,3 +284,4 @@ export class ShooterScene extends Phaser.Scene {
     }
 
 }
+
