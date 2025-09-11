@@ -1,0 +1,30 @@
+/* 전체 화면 스타일 */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center;    /* 세로 중앙 정렬 */
+    height: 100vh;          /* 화면 전체 높이 */
+    background: linear-gradient(to bottom, black, gray); /* 배경 색상 설정 */
+    overflow: hidden;       /* 스크롤 제거 */
+    font-family: Arial, sans-serif;
+    color:white;
+    align-items: center;
+}
+
+#app {
+    text-align: center;
+}
+
+/* 타이틀 화면 스타일 */
+h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+canvas {
+    display: block; /* 캔버스가 블록 요소로 렌더링 */
+    margin: auto;   /* 중앙 정렬 */
+}
