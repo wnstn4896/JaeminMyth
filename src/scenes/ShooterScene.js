@@ -194,7 +194,7 @@ export class ShooterScene extends Phaser.Scene {
                     const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'junsusuki_bullet');
                     const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
                     bullet.setVelocity(velocity.x, velocity.y);
-                    bullet.setScale(0.2);
+                    bullet.setScale(0.13);
                     bullet.setBounce(1); // 충돌 시 반전
                 }
             }
@@ -282,4 +282,5 @@ export class ShooterScene extends Phaser.Scene {
             if (enemy.y <= 0 || enemy.y >= 690) enemy.setVelocityY(-enemy.body.velocity.y);
         });
     }
+
 }
