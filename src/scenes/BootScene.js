@@ -15,9 +15,12 @@ export class BootScene extends Phaser.Scene {
         this.load.image('junsusuki_bullet', `${basePath}/assets/images/junsusuki_bullet.png`);
 
         this.load.image('gameover', `${basePath}/assets/images/gameover.jpg`);
+
+        this.load.audio('Jaemin_laugh', [`${basePath}/assets/sounds/Jaemin_laugh.m4a`]);
     }
 
     create() {
         this.scene.start('TitleScene');
     }
 }
+
