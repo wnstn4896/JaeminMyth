@@ -16,7 +16,7 @@ export class ShooterScene extends Phaser.Scene {
         this.player.setScale(0.15);
 
         // 피탄 판정 히트박스 생성
-        this.playerHitbox = this.add.circle(this.player.x, this.player.y, 4, 0xffffff); 
+        this.playerHitbox = this.add.circle(this.player.x, this.player.y, 5, 0xffffff); 
         this.physics.add.existing(this.playerHitbox, false);
 
         // 히트박스 테두리 생성
@@ -28,7 +28,7 @@ export class ShooterScene extends Phaser.Scene {
         this.physics.world.on('worldstep', () => {
             this.playerHitboxBorder.clear();
             this.playerHitboxBorder.lineStyle(1, 0xff0000);
-            this.playerHitboxBorder.strokeCircle(this.playerHitbox.x, this.playerHitbox.y, 4);
+            this.playerHitboxBorder.strokeCircle(this.playerHitbox.x, this.playerHitbox.y, 5);
         });
 
         // 입력 키 설정
