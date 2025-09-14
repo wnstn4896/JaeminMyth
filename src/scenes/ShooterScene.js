@@ -264,7 +264,7 @@ export class ShooterScene extends Phaser.Scene {
     
         setTimeout(() => {
             window.location.reload();
-        }, 2000);
+        }, 2800);
     } 
 
     update() {
@@ -286,5 +286,6 @@ export class ShooterScene extends Phaser.Scene {
     }
 
 }
+
 
 
