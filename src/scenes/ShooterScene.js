@@ -85,7 +85,7 @@ export class ShooterScene extends Phaser.Scene {
 
         // 탄막 연사 이벤트
         this.time.addEvent({
-            delay: 90,
+            delay: 100,
             callback: this.shootPlayerBullet,
             callbackScope: this,
             loop: true,
