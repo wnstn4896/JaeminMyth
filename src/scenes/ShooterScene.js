@@ -1,7 +1,7 @@
 export class ShooterScene extends Phaser.Scene {
     constructor() {
         super('ShooterScene');
-        this.playerHP = 100; // 플레이어 체력
+        this.playerHP = 150; // 플레이어 체력
         this.enemyHP = 800;  // 적 체력
     }
 
@@ -117,6 +117,13 @@ export class ShooterScene extends Phaser.Scene {
         // 충돌 처리
         this.physics.add.overlap(this.playerBullets, this.enemies, this.handleBulletHit, null, this);
         this.physics.add.overlap(this.enemyBullets, this.playerHitbox, this.handlePlayerHit, null, this);
+
+        // 월드맵을 벗어난 탄막 제거
+        this.physics.world.on('worldbounds', (body) => {
+            if (body.gameObject && this.enemyBullets.contains(body.gameObject)) {
+                body.gameObject.destroy();
+            }
+        });
     }
 
     startJoystick(pointer) {
@@ -195,7 +202,8 @@ export class ShooterScene extends Phaser.Scene {
                     const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
                     bullet.setVelocity(velocity.x, velocity.y);
                     bullet.setScale(0.13);
-                    bullet.setBounce(1); // 충돌 시 반전
+                    bullet.setCollideWorldBounds(true);
+                    bullet.body.onWorldBounds = true; // 꼭 필요!
                 }
             }
         });
@@ -203,10 +211,20 @@ export class ShooterScene extends Phaser.Scene {
 
     shootPlayerBullet() {
         if (this.spaceKeyDown) {
-            // 직선 탄막
             const straightBullet = this.playerBullets.create(this.player.x, this.player.y + 20, 'bullet');
             straightBullet.setVelocityY(-1000);
             straightBullet.setScale(0.2);
+
+            // 레벨업 시 탄막 추가(예정)
+            /*
+            const leftBullet = this.playerBullets.create(this.player.x, this.player.y + 20, 'bullet');
+            leftBullet.setVelocity(-200, -1500);
+            leftBullet.setScale(0.1);
+
+            const rightBullet = this.playerBullets.create(this.player.x, this.player.y + 20, 'bullet');
+            rightBullet.setVelocity(200, -1500);
+            rightBullet.setScale(0.1);
+            */
         }
     }
 
