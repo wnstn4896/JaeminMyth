@@ -16,19 +16,19 @@ export class ShooterScene extends Phaser.Scene {
         this.player.setScale(0.15);
 
         // 피탄 판정 히트박스 생성
-        this.playerHitbox = this.add.circle(this.player.x, this.player.y, 5, 0xffffff); // 반경 5px
-        this.physics.add.existing(this.playerHitbox, false); // 물리 엔진에 추가 (false = 정적)
+        this.playerHitbox = this.add.circle(this.player.x, this.player.y, 4, 0xffffff); 
+        this.physics.add.existing(this.playerHitbox, false);
 
         // 히트박스 테두리 생성
         this.playerHitboxBorder = this.add.graphics();
-        this.playerHitboxBorder.lineStyle(2, 0xffffff); // 테두리 두께 2, 흰색
-        this.playerHitboxBorder.strokeCircle(this.player.x, this.player.y, 5); // 반경 5px
+        this.playerHitboxBorder.lineStyle(1, 0xffffff);
+        this.playerHitboxBorder.strokeCircle(this.player.x, this.player.y, 5);
 
         // 히트박스와 테두리 동기화
         this.physics.world.on('worldstep', () => {
             this.playerHitboxBorder.clear();
-            this.playerHitboxBorder.lineStyle(2, 0xff0000);
-            this.playerHitboxBorder.strokeCircle(this.playerHitbox.x, this.playerHitbox.y, 5);
+            this.playerHitboxBorder.lineStyle(1, 0xff0000);
+            this.playerHitboxBorder.strokeCircle(this.playerHitbox.x, this.playerHitbox.y, 4);
         });
 
         // 입력 키 설정
@@ -39,7 +39,7 @@ export class ShooterScene extends Phaser.Scene {
 
         if (isMobile) {
             // **가상 조이스틱 생성**
-            this.joystickBase = this.add.circle(100, 600, 50, 0x808080, 0.5);
+            this.joystickBase = this.add.circle(100, 600, 70, 0x808080, 0.5);
             this.joystickHandle = this.add.circle(100, 600, 30, 0xffffff, 0.8);
             this.input.on('pointerdown', this.startJoystick, this);
             this.input.on('pointermove', this.moveJoystick, this);
