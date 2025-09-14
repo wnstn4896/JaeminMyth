@@ -253,6 +253,8 @@ export class ShooterScene extends Phaser.Scene {
     
         // **배경 변경: 게임 오버 화면으로 설정**
         this.background.setTexture('gameover');
+
+        this.sound.add('Jaemin_laugh').play();
     
         // **배경 위치 초기화
         this.background.tilePositionX = 0;
@@ -284,4 +286,5 @@ export class ShooterScene extends Phaser.Scene {
     }
 
 }
+
 
