@@ -1,7 +1,6 @@
 export class TitleScene extends Phaser.Scene {
     constructor() {
         super({ key: 'TitleScene' });
-        this.DefeatLog = sessionStorage.getItem("DefeatLog") === "true";
     }
 
     create() {

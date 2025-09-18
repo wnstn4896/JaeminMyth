@@ -6,7 +6,7 @@ body {
     justify-content: center; /* 가로 중앙 정렬 */
     align-items: center;    /* 세로 중앙 정렬 */
     height: 100vh;          /* 화면 전체 높이 */
-    background: linear-gradient(to bottom, black, gray); /* 배경 색상 설정 */
+    background-color: black; /* 배경 색상 설정 */
     overflow: hidden;       /* 스크롤 제거 */
     font-family: Arial, sans-serif;
     color:white;
