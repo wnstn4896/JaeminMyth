@@ -19,7 +19,7 @@ export class TitleScene extends Phaser.Scene {
             repeat: 0
         });
 
-        this.time.delayedCall(1000, () => {
+        this.time.delayedCall(700, () => {
             this.cameras.main.flash(3000, 0, 0, 0);
             this.title.anims.play('title', true);
         });

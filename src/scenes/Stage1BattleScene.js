@@ -10,12 +10,13 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.backgroundUI = this.add.tileSprite(640, 360, 1280, 720, 'background'); // 배경 UI
 
         // 인게임 배경
-        this.background = this.add.video(400, 200, 'toongsil');
-        this.background.setScale(3.0);
+        // this.background = this.add.video(400, 200, 'toongsil');
+        this.background = this.add.video(400, 200, 'Jaemin_Appear');
+        this.background.setScale(1.0);
         this.background.setLoop(true);
         this.background.play(true);
 
-        // 👉 클리핑 영역을 위한 그래픽스 객체 생성
+        // 클리핑 영역을 위한 그래픽스 객체 생성
         const maskShape = this.make.graphics({}, false);
         maskShape.fillStyle(0xffffff);
         maskShape.fillRect(0, 0, 808, 720); // 월드 경계와 동일한 크기
