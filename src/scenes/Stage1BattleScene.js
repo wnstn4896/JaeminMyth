@@ -7,7 +7,22 @@ export class Stage1BattleScene extends Phaser.Scene {
 
     create() {
         // 배경 설정
-        this.background = this.add.tileSprite(640, 360, 1280, 720, 'background'); // 월드 크기와 동일하게 설정
+        this.backgroundUI = this.add.tileSprite(640, 360, 1280, 720, 'background'); // 배경 UI
+
+        // 인게임 배경
+        this.background = this.add.video(400, 200, 'toongsil');
+        this.background.setScale(3.0);
+        this.background.setLoop(true);
+        this.background.play(true);
+
+        // 👉 클리핑 영역을 위한 그래픽스 객체 생성
+        const maskShape = this.make.graphics({}, false);
+        maskShape.fillStyle(0xffffff);
+        maskShape.fillRect(0, 0, 808, 720); // 월드 경계와 동일한 크기
+        
+        const mask = maskShape.createGeometryMask();
+        this.background.setMask(mask);
+        
         this.physics.world.setBounds(0, 0, 790, 720); // 월드 경계 설정
 
          // 플레이어 생성
@@ -197,10 +212,10 @@ export class Stage1BattleScene extends Phaser.Scene {
 
             if (enemy.active) {
                 for (let angle = -30; angle <= 30; angle += 15) {
-                    const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'junsusuki_bullet');
+                    const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'stone_bullet');
                     const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
                     bullet.setVelocity(velocity.x, velocity.y);
-                    bullet.setScale(0.13);
+                    bullet.setScale(0.2);
                     bullet.setCollideWorldBounds(true);
                     bullet.body.onWorldBounds = true; // 꼭 필요!
                 }
@@ -209,7 +224,7 @@ export class Stage1BattleScene extends Phaser.Scene {
     }
 
     shootPlayerBullet() {
-        if (this.spaceKeyDown) {
+        if (this.spaceKeyDown && !this.gameOver) {
             const straightBullet = this.playerBullets.create(this.player.x, this.player.y + 20, 'bullet');
             straightBullet.setVelocityY(-1000);
             straightBullet.setScale(0.2);
@@ -260,24 +275,22 @@ export class Stage1BattleScene extends Phaser.Scene {
     }
     
     gameOverSequence() {
+        this.gameOver = true;
+
         // **모든 게임 요소 제거 및 충돌 처리 중지**
         this.physics.pause();  // 물리 엔진 정지
         this.player.setVisible(false);  // 플레이어 숨기기
         this.playerHitbox.setVisible(false); // 플레이어 피탄 판정 숨기기
+        this.playerHitboxBorder.setVisible(false);
         this.enemies.clear(true, true); // 적 제거
         this.playerBullets.clear(true, true); // 플레이어 탄막 제거
         this.enemyBullets.clear(true, true); // 적 탄막 제거
     
-        // **배경 변경: 게임 오버 화면으로 설정**
-        this.background.setTexture('gameover');
+        // 배경 변경: 게임 오버 화면으로 설정
+        this.background.setVisible(false);
+        this.backgroundUI.setTexture('gameover');
 
         this.sound.add('Jaemin_laugh').setVolume(0.3).play();
-    
-        // **배경 위치 초기화
-        this.background.tilePositionX = 0;
-
-        // **배경 스크롤 정지**
-        this.gameOver = true; 
     
         setTimeout(() => {
             window.location.reload();

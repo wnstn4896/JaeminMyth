@@ -5,7 +5,24 @@ export class TitleScene extends Phaser.Scene {
 
     create() {
         // 로드된 이미지를 배경으로 추가
-        this.title = this.add.tileSprite(640, 360, 1280, 720, 'title');
+        this.title = this.physics.add.sprite(640, 350, 'title1');
+
+        // 애니메이션 프레임 처리
+        const titleFrames = [];
+        for (let i=1; i <= 8; i++)
+            titleFrames.push({ key: 'title' + i });
+
+        this.anims.create({
+            key: 'title',
+            frames: titleFrames,
+            frameRate: 7,
+            repeat: 0
+        });
+
+        this.time.delayedCall(1000, () => {
+            this.cameras.main.flash(3000, 0, 0, 0);
+            this.title.anims.play('title', true);
+        });
 
         // "게임 시작" 버튼 텍스트
         const startText = this.add.text(650, 500, '게임 시작', {
@@ -17,7 +34,7 @@ export class TitleScene extends Phaser.Scene {
         // 클릭 이벤트
         startText.removeAllListeners('pointerdown'); // 기존 리스너 제거
         startText.on('pointerdown', () => {
-            this.scene.start('ShooterScene'); // 다음 Scene으로 전환
+            this.scene.start('Stage1BattleScene'); // 다음 Scene으로 전환
         });
     }
 }

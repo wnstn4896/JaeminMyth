@@ -1,6 +1,6 @@
 import { BootScene } from './scenes/BootScene.js';
 import { TitleScene } from './scenes/TitleScene.js';
-import { ShooterScene } from './scenes/ShooterScene.js';
+import { Stage1BattleScene } from './scenes/Stage1BattleScene.js';
 
 document.oncontextmenu = function(e) { return false; }
 
@@ -9,7 +9,7 @@ const config = {
     width: 1280,
     height: 720,
     transparent: true, // 캔버스 배경을 투명하게 설정
-    scene: [BootScene, TitleScene, ShooterScene], // 모든 Scene 등록
+    scene: [BootScene, TitleScene, Stage1BattleScene], // 모든 Scene 등록
     scale: {
         mode: Phaser.Scale.FIT, // 디바이스 화면에 맞게 비율 조정
         autoCenter: Phaser.Scale.CENTER_BOTH, // 화면 중앙 정렬
