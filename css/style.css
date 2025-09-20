@@ -13,15 +13,16 @@ body {
     align-items: center;
 }
 
-#app {
-    text-align: center;
+/* '빛의 계승자' 폰트 */
+@font-face {
+  font-family: "HeirofLightBold";
+  src: url("../assets/fonts/HeirofLightBold.ttf") format("truetype");
+  font-weight: normal;
 }
-
-/* 타이틀 화면 스타일 */
-h1 {
-    font-size: 48px;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+@font-face {
+  font-family: "HeirofLightRegular";
+  src: url("../assets/fonts/HeirofLightRegular.ttf") format("truetype");
+  font-weight: normal;
 }
 
 canvas {
