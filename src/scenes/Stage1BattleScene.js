@@ -283,6 +283,7 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.playerHitbox.setVisible(false); // 플레이어 피탄 판정 숨기기
         this.playerHitboxBorder.setVisible(false);
         this.enemies.clear(true, true); // 적 제거
+        this.enemyHPBar.setVisible(false);
         this.playerBullets.clear(true, true); // 플레이어 탄막 제거
         this.enemyBullets.clear(true, true); // 적 탄막 제거
     
