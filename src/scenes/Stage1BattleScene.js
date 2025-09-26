@@ -54,14 +54,14 @@ export class Stage1BattleScene extends Phaser.Scene {
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
         if (isMobile) {
-            // **가상 조이스틱 생성**
+            // 가상 조이스틱 생성
             this.joystickBase = this.add.circle(100, 600, 70, 0x808080, 0.5);
             this.joystickHandle = this.add.circle(100, 600, 30, 0xffffff, 0.8);
             this.input.on('pointerdown', this.startJoystick, this);
             this.input.on('pointermove', this.moveJoystick, this);
             this.input.on('pointerup', this.stopJoystick, this);
 
-            // **발사 버튼 생성**
+            // 발사 버튼 생성
             this.fireButton = this.add.circle(1180, 600, 80, 0xff0000, 0.8).setInteractive(); // 터치 영역 확대
             this.fireButtonText = this.add.text(1180, 600, '발사', {
                 font: '20px Arial',
@@ -130,6 +130,28 @@ export class Stage1BattleScene extends Phaser.Scene {
             loop: true,
         });
 
+        // 텍스트 UI
+        this.controlsText = this.add.text(200, 660, '↑↓←→: 이동 | 스페이스바: 탄막 발사', {
+            fontSize: '16px',
+            fill: '#ffffff',
+            fontFamily: 'HeirofLightBold',
+            padding: { top: 2, bottom: 2 }, // 상단과 하단에 2px 여백 추가
+        });
+
+        this.lifeText = this.add.text(850, 100, '잔기 : ', {
+            fontSize: '36px',
+            fill: '#ffffff',
+            fontFamily: 'HeirofLightBold',
+            padding: { top: 2, bottom: 2 }, // 상단과 하단에 2px 여백 추가
+        });
+
+        this.skillText = this.add.text(850, 150, '스킬 : ', {
+            fontSize: '36px',
+            fill: '#ffffff',
+            fontFamily: 'HeirofLightBold',
+            padding: { top: 2, bottom: 2 }, // 상단과 하단에 2px 여백 추가
+        });
+
         // 충돌 처리
         this.physics.add.overlap(this.playerBullets, this.enemies, this.handleBulletHit, null, this);
         this.physics.add.overlap(this.enemyBullets, this.playerHitbox, this.handlePlayerHit, null, this);
@@ -188,27 +210,6 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.playerHPBar.clear();
         this.playerHPBar.fillStyle(0x00ff00, 1); // 초록색
         this.playerHPBar.fillRect(20, 660, (this.playerHP / 100) * 100, 20); // 플레이어 체력 바 위치
-        // 조작키 설명 텍스트
-        this.controlsText = this.add.text(200, 660, '↑↓←→: 이동 | 스페이스바: 탄막 발사', {
-            fontSize: '16px',
-            fill: '#ffffff',
-            fontFamily: 'HeirofLightBold',
-            padding: { top: 2, bottom: 2 }, // 상단과 하단에 2px 여백 추가
-        });
-
-        this.lifeText = this.add.text(850, 100, '잔기 : ', {
-            fontSize: '36px',
-            fill: '#ffffff',
-            fontFamily: 'HeirofLightBold',
-            padding: { top: 2, bottom: 2 }, // 상단과 하단에 2px 여백 추가
-        });
-
-        this.skillText = this.add.text(850, 150, '스킬 : ', {
-            fontSize: '36px',
-            fill: '#ffffff',
-            fontFamily: 'HeirofLightBold',
-            padding: { top: 2, bottom: 2 }, // 상단과 하단에 2px 여백 추가
-        });
     }
     
     updateEnemyHPBar() {
@@ -277,7 +278,7 @@ export class Stage1BattleScene extends Phaser.Scene {
     handlePlayerHit(player, bullet) {
         bullet.destroy();
     
-        // **1초 동안 화면이 빨갛게 번쩍임 (플레이어 피격 연출)**
+        // 1초 동안 화면이 빨갛게 번쩍임 (플레이어 피격 연출)
         this.cameras.main.flash(1000, 255, 0, 0);
     
         // 플레이어 체력 감소
@@ -285,7 +286,7 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.updatePlayerHPBar();
     
         if (this.playerHP <= 0) {
-            // **게임 오버 연출 시작**
+            // 게임 오버 연출 시작
             this.gameOverSequence();
         }
     }
@@ -293,7 +294,7 @@ export class Stage1BattleScene extends Phaser.Scene {
     gameOverSequence() {
         this.gameOver = true;
 
-        // **모든 게임 요소 제거 및 충돌 처리 중지**
+        // 모든 게임 요소 제거 및 충돌 처리 중지
         this.physics.pause();  // 물리 엔진 정지
         this.player.setVisible(false);  // 플레이어 숨기기
         this.playerHitbox.setVisible(false); // 플레이어 피탄 판정 숨기기
@@ -301,8 +302,11 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.enemies.clear(true, true); // 적 제거
         this.enemyHPBar.setVisible(false);
         this.playerBullets.clear(true, true); // 플레이어 탄막 제거
-        this.enemyBullets.clear(true, true); // 적 탄막 제거
-    
+        this.enemyBullets.clear(true, true); // 적 탄막 제
+        this.controlsText.destroy();
+        this.lifeText.destroy();
+        this.skillText.destroy();
+
         // 배경 변경: 게임 오버 화면으로 설정
         this.background.setVisible(false);
         this.backgroundUI.setTexture('gameover');
