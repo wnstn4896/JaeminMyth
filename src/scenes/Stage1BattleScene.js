@@ -192,6 +192,21 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.controlsText = this.add.text(200, 660, '↑↓←→: 이동 | 스페이스바: 탄막 발사', {
             fontSize: '16px',
             fill: '#ffffff',
+            fontFamily: 'HeirofLightBold',
+            padding: { top: 2, bottom: 2 }, // 상단과 하단에 2px 여백 추가
+        });
+
+        this.lifeText = this.add.text(850, 100, '잔기 : ', {
+            fontSize: '36px',
+            fill: '#ffffff',
+            fontFamily: 'HeirofLightBold',
+            padding: { top: 2, bottom: 2 }, // 상단과 하단에 2px 여백 추가
+        });
+
+        this.skillText = this.add.text(850, 150, '스킬 : ', {
+            fontSize: '36px',
+            fill: '#ffffff',
+            fontFamily: 'HeirofLightBold',
             padding: { top: 2, bottom: 2 }, // 상단과 하단에 2px 여백 추가
         });
     }
