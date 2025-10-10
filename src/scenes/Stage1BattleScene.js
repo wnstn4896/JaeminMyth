@@ -1,8 +1,9 @@
 export class Stage1BattleScene extends Phaser.Scene {
     constructor() {
         super('Stage1BattleScene');
-        this.playerHP = 150; // 플레이어 체력
-        this.enemyHP = 800;  // 적 체력
+        this.playerHP = 3; // 플레이어 체력
+        this.enemyHP = 500;  // 적 체력
+        this.shiftKey;
     }
 
     create() {
@@ -11,9 +12,9 @@ export class Stage1BattleScene extends Phaser.Scene {
 
         // 인게임 배경
         // this.background = this.add.video(400, 200, 'toongsil');
-        this.background = this.add.video(400, 200, 'Jaemin_Appear');
-        this.background.setScale(1.0);
-        this.background.setLoop(true);
+        this.background = this.add.video(400, 400, 'Jaeminsuki_buriburi');
+        this.background.setScale(1.3);
+        // this.background.setLoop(true);
         this.background.play(true);
 
         // 클리핑 영역을 위한 그래픽스 객체 생성
@@ -131,7 +132,7 @@ export class Stage1BattleScene extends Phaser.Scene {
         });
 
         // 텍스트 UI
-        this.controlsText = this.add.text(200, 660, '↑↓←→: 이동 | 스페이스바: 탄막 발사', {
+        this.controlsText = this.add.text(910, 260, '↑↓←→: 이동 | 스페이스바: 탄막 발사', {
             fontSize: '16px',
             fill: '#ffffff',
             fontFamily: 'HeirofLightBold',
@@ -162,6 +163,9 @@ export class Stage1BattleScene extends Phaser.Scene {
                 body.gameObject.destroy();
             }
         });
+
+        // 키 입력 처리
+        this.shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
     }
 
     startJoystick(pointer) {
@@ -209,7 +213,7 @@ export class Stage1BattleScene extends Phaser.Scene {
     updatePlayerHPBar() {
         this.playerHPBar.clear();
         this.playerHPBar.fillStyle(0x00ff00, 1); // 초록색
-        this.playerHPBar.fillRect(20, 660, (this.playerHP / 100) * 100, 20); // 플레이어 체력 바 위치
+        this.playerHPBar.fillRect(950, 110, (this.playerHP / 2) * 100, 20); // 플레이어 체력 바 위치
     }
     
     updateEnemyHPBar() {
@@ -282,7 +286,7 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.cameras.main.flash(1000, 255, 0, 0);
     
         // 플레이어 체력 감소
-        this.playerHP -= 10;
+        this.playerHP -= 1;
         this.updatePlayerHPBar();
     
         if (this.playerHP <= 0) {
@@ -334,6 +338,13 @@ export class Stage1BattleScene extends Phaser.Scene {
             if (enemy.x <= 0 || enemy.x >= 1260) enemy.setVelocityX(-enemy.body.velocity.x);
             if (enemy.y <= 0 || enemy.y >= 690) enemy.setVelocityY(-enemy.body.velocity.y);
         });
+
+        // 스킬(Bomb) 처리
+        if (this.shiftKey.isDown){
+            this.cameras.main.flash(3000, 0, 0, 0);
+            this.background.loadURL('../../assets/images/Jaemin_buriburi.mp4');
+            this.background.play(true);
+        }
     }
 
 }

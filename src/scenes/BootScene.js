@@ -24,6 +24,8 @@ export class BootScene extends Phaser.Scene {
 
         this.load.audio('Jaemin_laugh', [`${basePath}/assets/sounds/Jaemin_laugh.m4a`]);
 
+        this.load.video('Jaemin_buriburi', `${basePath}/assets/images/Jaemin_buriburi.mp4`, 'loadeddata', false, true);
+        this.load.video('Jaeminsuki_buriburi', `${basePath}/assets/images/Jaeminsuki_buriburi.mp4`, 'loadeddata', false, true);
         this.load.video('Jaemin_Appear', `${basePath}/assets/images/Jaemin_Appear.mp4`, 'loadeddata', false, true);
         this.load.video('toongsil', `${basePath}/assets/images/toongsil.mp4`, 'loadeddata', false, true);
     }
