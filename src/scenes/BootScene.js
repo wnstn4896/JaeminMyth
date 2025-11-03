@@ -5,29 +5,35 @@ export class BootScene extends Phaser.Scene {
 
     preload() {
         const basePath = window.location.pathname.replace(/\/[^\/]*$/, '');
+        const images = `${basePath}/assets/images`;
+        const sounds = `${basePath}/assets/sounds`;
 
         for (let i = 1; i <= 8; i++)
-            this.load.image('title' + i, `${basePath}/assets/images/title` + i + '.png');
+            this.load.image('title' + i, `${images}/title` + i + '.png');
 
-        this.load.image('background', `${basePath}/assets/images/background.png`);
+        this.load.image('background', `${images}/background.png`);
 
-        this.load.image('jaemin', `${basePath}/assets/images/jaemin.png`);
-        this.load.image('junsusuki', `${basePath}/assets/images/junsusuki.png`);
+        this.load.image('jaemin', `${images}/jaemin.png`);
+        this.load.image('junsusuki', `${images}/junsusuki.png`);
 
-        this.load.image('stone', `${basePath}/assets/images/stone.png`);
-        this.load.image('stone_bullet', `${basePath}/assets/images/stone_bullet.png`);
+        this.load.image('stone', `${images}/stone.png`);
+        this.load.image('stone_bullet', `${images}/stone_bullet.png`);
 
-        this.load.image('bullet', `${basePath}/assets/images/bullet.png`);
-        this.load.image('junsusuki_bullet', `${basePath}/assets/images/junsusuki_bullet.png`);
+        this.load.image('bullet', `${images}/bullet.png`);
+        this.load.image('junsusuki_bullet', `${images}/junsusuki_bullet.png`);
 
-        this.load.image('gameover', `${basePath}/assets/images/gameover.png`);
+        for (let i=1; i<=7; i++)
+            this.load.image('Jaemin_MTE' + i, `${images}/Jaemin_MTE` + i + '.png');
 
-        this.load.audio('Jaemin_laugh', [`${basePath}/assets/sounds/Jaemin_laugh.m4a`]);
+        this.load.image('gameover', `${images}/gameover.png`);
 
-        this.load.video('Jaemin_buriburi', `${basePath}/assets/images/Jaemin_buriburi.mp4`, 'loadeddata', false, true);
-        this.load.video('Jaeminsuki_buriburi', `${basePath}/assets/images/Jaeminsuki_buriburi.mp4`, 'loadeddata', false, true);
-        this.load.video('Jaemin_Appear', `${basePath}/assets/images/Jaemin_Appear.mp4`, 'loadeddata', false, true);
-        this.load.video('toongsil', `${basePath}/assets/images/toongsil.mp4`, 'loadeddata', false, true);
+        this.load.audio('Jaemin_laugh', [`${sounds}/Jaemin_laugh.m4a`]);
+        this.load.audio('MTEWorld', [`${sounds}/MTEWorld.mp3`]);
+
+        this.load.video('Jaemin_buriburi', `${images}/Jaemin_buriburi.mp4`, 'loadeddata', false, true);
+        this.load.video('Jaeminsuki_buriburi', `${images}/Jaeminsuki_buriburi.mp4`, 'loadeddata', false, true);
+        this.load.video('Jaemin_Appear', `${images}/Jaemin_Appear.mp4`, 'loadeddata', false, true);
+        this.load.video('toongsil', `${images}/toongsil.mp4`, 'loadeddata', false, true);
     }
 
     create() {
