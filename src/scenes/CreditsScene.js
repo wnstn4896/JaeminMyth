@@ -29,7 +29,7 @@ export class CreditsScene extends Phaser.Scene {
         this.dancerRight.anims.play('MTE');
 
         this.bgm = this.sound.add('MTEWorld', { loop: true });
-        this.bgm.play();
+        this.bgm.setVolume(0.3).play();
 
         // STAFF 목록
         this.staffList = [
@@ -51,7 +51,7 @@ export class CreditsScene extends Phaser.Scene {
      showNextStaff() {
         if (this.currentIndex >= this.staffList.length) {
             // 모든 STAFF 표시 후: 장면 전환 or 크레딧 종료
-            this.time.delayedCall(10000, () => {
+            this.time.delayedCall(1000000, () => {
                 window.location.reload();
             });
             return;
