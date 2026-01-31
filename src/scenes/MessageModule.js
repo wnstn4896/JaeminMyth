@@ -1,3 +1,13 @@
+const CHARACTER_CONFIG = {
+    '재민(가명)': {
+        texture: 'Jaemin_front',
+        x: 100,
+        y: 720,
+        scale: 0.4,
+        flipX: false,
+    }
+};
+
 export class MessageModule {
     constructor(scene) {
         this.scene = scene;
@@ -10,10 +20,16 @@ export class MessageModule {
         // 배경
         this.uiElements.background = scene.add.image(scene.cameras.main.width / 2, scene.cameras.main.height / 2, '').setOrigin(0.5).setScale(scene.cameras.main.width / 1280, scene.cameras.main.height / 720);
 
+        // 캐릭터 스프라이트 (기본 비활성)
+        this.uiElements.characterSprite = scene.add
+            .image(0, 0, '')
+            .setOrigin(0.5, 1)
+            .setVisible(false)
+
         // 대화 상자
         this.uiElements.dialogBox = scene.add.graphics();
         this.uiElements.dialogBox.fillStyle(0x000000, 0.8);
-        this.uiElements.dialogBox.fillRoundedRect(140, 500, 1000, 150, 20);
+        this.uiElements.dialogBox.fillRoundedRect(140, 500, 700, 150, 20);
         this.uiElements.dialogBox.lineStyle(5, 0xffffff, 0.8);
         this.uiElements.dialogBox.strokeRoundedRect(140, 500, 1000, 150, 20); // 테두리 그리기
 
@@ -65,12 +81,27 @@ export class MessageModule {
         this.onNext();
     }
 
+    // 기본 대화창 스타일
+    defaultBox(){
+        this.uiElements.dialogBox.fillStyle(0x000000, 0.8);
+        this.uiElements.dialogBox.fillRoundedRect(140, 500, 1000, 150, 20);
+        this.uiElements.dialogBox.lineStyle(5, 0xffffff, 0.8);
+        this.uiElements.dialogBox.strokeRoundedRect(140, 500, 1000, 150, 20);
+        this.uiElements.nameBox.fillStyle(0x000000, 0.8);
+        this.uiElements.nameBox.fillRoundedRect(140, 460, 230, 40, 10);
+        this.uiElements.nameBox.lineStyle(3, 0xffffff, 0.8);
+        this.uiElements.nameBox.strokeRoundedRect(140, 460, 230, 40, 10);
+        this.uiElements.dialogueText.setStyle({ color: '#ffffff'});
+        this.uiElements.controlsText.setStyle({ color: '#ffffff'});
+        this.uiElements.nameText.setStyle({color: '#ffffff'});
+    }
+
     updateDialogue(dialogue, onNext) {
         // 대사 배열을 담은 객체
         this.currentDialogue = dialogue;
         this.onNext = onNext;
 
-        const { background, dialogBox, nameBox, nameText, dialogueText, controlsText } = this.uiElements;
+        const { background, dialogBox, nameBox, nameText, dialogueText, controlsText, characterSprite } = this.uiElements;
 
         // 배경 업데이트
         if (dialogue.background) {
@@ -78,6 +109,7 @@ export class MessageModule {
             this.scene.cameras.main.setBackgroundColor('rgba(0,0,0,0)');
         } else {
             background.setVisible(false);
+            // this.scene.cameras.main.setBackgroundColor('#000000');
         }
 
         // 대화 상자 및 텍스트 업데이트
@@ -89,23 +121,28 @@ export class MessageModule {
             nameBox.setVisible(true);
             nameText.setText(dialogue.name).setVisible(true);
         } else {
-            this.uiElements.dialogBox.fillStyle(0x000000, 0.8);
-            this.uiElements.dialogBox.fillRoundedRect(140, 500, 1000, 150, 20);
-            this.uiElements.dialogBox.lineStyle(5, 0xffffff, 0.8);
-            this.uiElements.dialogBox.strokeRoundedRect(140, 500, 1000, 150, 20);
-            this.uiElements.nameBox.fillStyle(0x000000, 0.8);
-            this.uiElements.nameBox.fillRoundedRect(140, 460, 230, 40, 10);
-            this.uiElements.nameBox.lineStyle(3, 0xffffff, 0.8);
-            this.uiElements.nameBox.strokeRoundedRect(140, 460, 230, 40, 10);
-            this.uiElements.dialogueText.setStyle({ color: '#ffffff'});
-            this.uiElements.controlsText.setStyle({ color: '#ffffff'});
-            this.uiElements.nameText.setStyle({color: '#ffffff'});
+            this.defaultBox();
             nameBox.setVisible(false);
             nameText.setVisible(false);
         }
 
         this.uiElements.dialogBox.clear();
         this.uiElements.nameBox.clear();
+
+        this.defaultBox();
+        
+        // 캐릭터 스프라이트 처리
+        const characterConfig = CHARACTER_CONFIG[dialogue.name];
+        if (characterConfig) {
+            characterSprite
+                .setTexture(characterConfig.texture)
+                .setPosition(characterConfig.x, characterConfig.y)
+                .setScale(characterConfig.scale)
+                .setFlipX(characterConfig.flipX ?? false)
+                .setVisible(true);
+        } else {
+            characterSprite.setVisible(false);
+        }
 
         // 이전 키 리스너 제거 (중복 방지)
         if (this.spaceKeyListener) {

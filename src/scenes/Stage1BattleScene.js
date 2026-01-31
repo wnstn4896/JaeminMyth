@@ -4,6 +4,11 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.playerHP = 3; // 플레이어 체력
         this.enemyHP = 500;  // 적 체력
         this.shiftKey;
+
+        this.maxHP = 5; // 최대 HP
+        this.currentHP = 5; // 현재 HP
+        this.damageCooldown = 0;
+        this.damagedownTime = 2000; // 데미지 입은 직후 무적 시간
     }
 
     create() {
@@ -47,6 +52,16 @@ export class Stage1BattleScene extends Phaser.Scene {
             this.playerHitboxBorder.lineStyle(1, 0xff0000);
             this.playerHitboxBorder.strokeCircle(this.playerHitbox.x, this.playerHitbox.y, 5);
         });
+
+        // 플레이어 HP 아이콘 정의
+        this.heartIcons = [];
+
+        for (let i = 0; i < this.maxHP; i++) {
+            const heart = this.add.image(60 + i * 25, 90, 'heart_empty');
+            heart.setScale(0.7);
+            this.heartIcons.push(heart);
+        }
+        this.updatePlayerHPBar();
 
         // 입력 키 설정
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -211,9 +226,13 @@ export class Stage1BattleScene extends Phaser.Scene {
     }
 
     updatePlayerHPBar() {
-        this.playerHPBar.clear();
-        this.playerHPBar.fillStyle(0x00ff00, 1); // 초록색
-        this.playerHPBar.fillRect(950, 110, (this.playerHP / 2) * 100, 20); // 플레이어 체력 바 위치
+        for (let i = 0; i < this.maxHP; i++) {
+            if (i < this.currentHP) {
+                this.heartIcons[i].setTexture('heart');         // 채워진 하트
+            } else {
+                this.heartIcons[i].setTexture('heart_empty');   // 빈 하트
+            }
+        }
     }
     
     updateEnemyHPBar() {
