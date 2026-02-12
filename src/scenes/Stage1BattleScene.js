@@ -57,8 +57,8 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.heartIcons = [];
 
         for (let i = 0; i < this.maxHP; i++) {
-            const heart = this.add.image(60 + i * 25, 90, 'heart_empty');
-            heart.setScale(0.7);
+            const heart = this.add.image(970 + i * 25, 120, 'heart_empty');
+            heart.setScale(0.8);
             this.heartIcons.push(heart);
         }
         this.updatePlayerHPBar();
