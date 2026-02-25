@@ -13,6 +13,13 @@ const CHARACTER_CONFIG = {
         scale: 1.5,
         flipX: false,
     },
+    '쪽바리스키': {
+        texture: 'jjokbarisuki',
+        x: 680,
+        y: 720,
+        scale: 1.5,
+        flipX: false,
+    },
     '나카무라 폰 아인츠베른 재민스키': {
         texture: 'Jaeminsuki',
         x: 680,
