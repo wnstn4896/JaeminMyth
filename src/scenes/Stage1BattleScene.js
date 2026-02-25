@@ -290,7 +290,7 @@ export class Stage1BattleScene extends Phaser.Scene {
 
     teleportEnemy() {
         this.enemies.children.iterate((enemy) => {
-            if (this.enemyHP <= 400){
+            if (this.enemyHP <= 450){
                 enemy.setVelocityY(50); // 초기 속도 설정
                 enemy.setVelocityX(-50);
                 // 화면 내 무작위 위치로 텔레포트
@@ -421,7 +421,7 @@ export class Stage1BattleScene extends Phaser.Scene {
     update() {
         if (this.isDialogueActive) return;
 
-        if (this.enemyHP <= 400 && !this.dialogueTriggered) {
+        if (this.enemyHP <= 450 && !this.dialogueTriggered) {
             this.dialogueTriggered = true;
 
             this.cameras.main.flash(2000, 255, 255, 255);
