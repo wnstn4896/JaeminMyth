@@ -85,7 +85,15 @@ export class TitleScene extends Phaser.Scene {
             startText.setStyle({
                 color: '#B8860B', // 어두운 금색
             });
-            this.scene.start('PrologueScene');
+            startText.setVisible(false);
+            this.title.setTexture('title_sponsor');
+            this.sfx = this.sound.add('sponsor');
+            this.sfx.play();
+
+            this.time.delayedCall(5000, () => {
+                this.cameras.main.flash(3000, 255, 255, 255);
+                this.scene.start('PrologueScene');
+            });
         });
 
         // 클릭 후 텍스트 색상 원래대로 되돌리기

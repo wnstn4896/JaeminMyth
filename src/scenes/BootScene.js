@@ -11,6 +11,7 @@ export class BootScene extends Phaser.Scene {
 
         for (let i = 1; i <= 8; i++)
             this.load.image('title' + i, `${images}/title` + i + '.png');
+        this.load.image('title_sponsor', `${images}/title_sponsor.png`);
 
         this.load.image('background', `${images}/background.png`);
         this.load.image('adc_lectureroom', `${images}/adc_lectureroom.png`);
@@ -37,6 +38,7 @@ export class BootScene extends Phaser.Scene {
         this.load.image('gameover', `${images}/gameover.png`);
 
         this.load.audio('Jaemin_laugh', [`${sounds}/Jaemin_laugh.m4a`]);
+        this.load.audio('sponsor', [`${sounds}/sponsor.m4a`]);
         this.load.audio('MTEWorld', [`${sounds}/MTEWorld.mp3`]);
 
         this.load.video('Jaemin_buriburi', `${images}/Jaemin_buriburi.mp4`, 'loadeddata', false, true);
