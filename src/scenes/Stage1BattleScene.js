@@ -120,7 +120,7 @@ export class Stage1BattleScene extends Phaser.Scene {
 
         // 탄막 연사 이벤트
         this.time.addEvent({
-            delay: 100,
+            delay: 120,
             callback: this.shootPlayerBullet,
             callbackScope: this,
             loop: true,

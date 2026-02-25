@@ -6,19 +6,35 @@
     },
     {
         "name": "재민(가명)",
-        "text": "대사 출력 테스트1",
-        "background": "adc_lectureroom"
-    },
-    {
-        "name": "나카무라 폰 아인츠베른 재민스키",
-        "text": "대사 출력 테스트2",
+        "text": "오늘은 수요일. 매주 수요일마다 급식 메뉴로 비빔밥이 나오는 건 국룰이지.",
         "background": "adc_lectureroom",
         "flash": "black"
     },
     {
-        "name": "돌멩이",
-        "text": "대사 출력 테스트3",
+        "name": "재민(가명)",
+        "text": "난 비빔밥이 아주 좋아!",
+        "background": "adc_lectureroom"
+    },
+    {
+        "name": "???",
+        "text": "그렇게 비비고 섞는게 좋나?",
         "background": "adc_lectureroom",
+        "flash": "black"
+    },
+    {
+        "name": "재민(가명)",
+        "text": "...! 뭐야?!",
+        "background": "adc_lectureroom"
+    },
+    {
+        "name": "???",
+        "text": "그렇다면, 여러 국가의 전통 문화를 요리조리 섞은 글로벌한 세계로 보내주마.",
+        "background": "adc_lectureroom"
+    },
+    {
+        "name": "재민(가명)",
+        "text": "크아악",
+        "background": "adc_lectureroom_broken",
         "flash": "black"
     }
 ]
