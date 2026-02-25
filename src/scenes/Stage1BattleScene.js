@@ -1,3 +1,5 @@
+import { MessageModule } from './MessageModule.js';
+
 export class Stage1BattleScene extends Phaser.Scene {
     constructor() {
         super('Stage1BattleScene');
@@ -6,9 +8,9 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.shiftKey;
 
         this.maxHP = 5; // 최대 HP
-        this.currentHP = 5; // 현재 HP
-        this.damageCooldown = 0;
-        this.damagedownTime = 2000; // 데미지 입은 직후 무적 시간
+        this.playerHP = 5; // 현재 HP
+        this.isInvincible = false;
+        this.invincibleDuration = 2000; // 피격 시 무적 시간
     }
 
     create() {
@@ -17,8 +19,9 @@ export class Stage1BattleScene extends Phaser.Scene {
 
         // 인게임 배경
         // this.background = this.add.video(400, 200, 'toongsil');
-        this.background = this.add.video(400, 400, 'Jaeminsuki_buriburi');
-        this.background.setScale(1.3);
+        // this.background = this.add.video(400, 400, 'Jaeminsuki_buriburi');
+        this.background = this.add.video(400, 400, 'chosun');
+        this.background.setScale(2.5);
         // this.background.setLoop(true);
         this.background.play(true);
 
@@ -125,17 +128,15 @@ export class Stage1BattleScene extends Phaser.Scene {
 
         // 적 생성
         this.enemies = this.physics.add.group({
-            key: 'stone',
+            key: 'stone_temp',
             repeat: 0, // 적 1개만 생성
-            setXY: { x: 300, y: 100 },
+            setXY: { x: 400, y: 100 },
         });
 
         this.enemies.children.iterate((enemy) => {
             enemy.setScale(0.27);
             enemy.setCollideWorldBounds(true); // 월드 경계 밖으로 못 나가게 설정
             enemy.setBounce(1); // 충돌 시 반전
-            enemy.setVelocityY(50); // 초기 속도 설정
-            enemy.setVelocityX(-50);
         });
 
         // 적 텔레포트 및 무작위 탄막 발사
@@ -168,6 +169,11 @@ export class Stage1BattleScene extends Phaser.Scene {
             padding: { top: 2, bottom: 2 }, // 상단과 하단에 2px 여백 추가
         });
 
+        // 대사 출력 관련
+        this.messageModule = new MessageModule(this);
+        this.messageModule.createUI();
+        this.messageModule.hideUI(); // 처음엔 숨김
+
         // 충돌 처리
         this.physics.add.overlap(this.playerBullets, this.enemies, this.handleBulletHit, null, this);
         this.physics.add.overlap(this.enemyBullets, this.playerHitbox, this.handlePlayerHit, null, this);
@@ -182,6 +188,46 @@ export class Stage1BattleScene extends Phaser.Scene {
         // 키 입력 처리
         this.shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
     }
+
+    // 대사 출력을 위한 게임 정지
+    pauseForDialogue(dialogues) {
+        // 화면에 있는 탄막 제거
+        this.playerBullets.clear(true, true);
+        this.enemyBullets.clear(true, true);
+        
+        this.physics.pause();     // 물리 엔진 정지
+        this.time.paused = true;  // 타이머 정지
+        this.isDialogueActive = true;
+
+        this.currentDialogueIndex = 0;
+        this.currentDialogues = dialogues;
+
+        this.showNextDialogue();
+    }
+
+    // 대사 진행
+    showNextDialogue() {
+        if (this.currentDialogueIndex < this.currentDialogues.length) {
+            const dialogue = this.currentDialogues[this.currentDialogueIndex];
+
+            this.messageModule.restoreUI();
+            this.messageModule.updateDialogue(dialogue, () => {
+                this.currentDialogueIndex++;
+                this.showNextDialogue();
+            });
+        } else {
+            this.resumeAfterDialogue();
+        }
+    }
+
+    // 대사 출력 이후 게임 재개
+    resumeAfterDialogue() {
+        this.messageModule.hideUI();
+        this.physics.resume();
+        this.time.paused = false;
+        this.isDialogueActive = false;
+    }
+
 
     startJoystick(pointer) {
         if (Phaser.Math.Distance.Between(pointer.x, pointer.y, this.joystickBase.x, this.joystickBase.y) < 50) {
@@ -227,10 +273,10 @@ export class Stage1BattleScene extends Phaser.Scene {
 
     updatePlayerHPBar() {
         for (let i = 0; i < this.maxHP; i++) {
-            if (i < this.currentHP) {
-                this.heartIcons[i].setTexture('heart');         // 채워진 하트
+            if (i < this.playerHP) {
+                this.heartIcons[i].setTexture('heart');
             } else {
-                this.heartIcons[i].setTexture('heart_empty');   // 빈 하트
+                this.heartIcons[i].setVisible(i < this.playerHP);
             }
         }
     }
@@ -244,20 +290,24 @@ export class Stage1BattleScene extends Phaser.Scene {
 
     teleportEnemy() {
         this.enemies.children.iterate((enemy) => {
-            // 화면 내 무작위 위치로 텔레포트
-            enemy.setPosition(
-                Phaser.Math.Between(100, 580), // 무작위 X
-                Phaser.Math.Between(100, 100)   // 무작위 Y
-            );
+            if (this.enemyHP <= 400){
+                enemy.setVelocityY(50); // 초기 속도 설정
+                enemy.setVelocityX(-50);
+                // 화면 내 무작위 위치로 텔레포트
+                enemy.setPosition(
+                    Phaser.Math.Between(100, 580), // 무작위 X
+                    Phaser.Math.Between(100, 100)   // 무작위 Y
+                );
 
-            if (enemy.active) {
-                for (let angle = -30; angle <= 30; angle += 15) {
-                    const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'stone_bullet');
-                    const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
-                    bullet.setVelocity(velocity.x, velocity.y);
-                    bullet.setScale(0.2);
-                    bullet.setCollideWorldBounds(true);
-                    bullet.body.onWorldBounds = true; // 꼭 필요!
+                if (enemy.active) {
+                    for (let angle = -30; angle <= 30; angle += 15) {
+                        const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'stone_bullet');
+                        const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
+                        bullet.setVelocity(velocity.x, velocity.y);
+                        bullet.setScale(0.2);
+                        bullet.setCollideWorldBounds(true);
+                        bullet.body.onWorldBounds = true; // 꼭 필요!
+                    }
                 }
             }
         });
@@ -290,23 +340,47 @@ export class Stage1BattleScene extends Phaser.Scene {
         if (this.enemyHP <= 0) {
             if (this.playerHP === 10)
                 this.playerHP = 120; // 게임 오버 연출 중복 실행 방지
+            bullet.destroy();
             enemy.destroy();
-            this.cameras.main.flash(1000, 0, 0, 0);
+            this.cameras.main.flash(2000, 255, 255, 255);
             setTimeout(() => {
-                this.scene.start('MidPartScene');
-            }, 500);
+                alert('미완성');
+                this.scene.start('Stage2BattleScene');
+            }, 2000);
         }
     }
 
     handlePlayerHit(player, bullet) {
+        if (this.isInvincible) {
+            bullet.destroy();
+            return;
+        }
+
         bullet.destroy();
+
+        // 무적 시작
+        this.isInvincible = true;
     
         // 1초 동안 화면이 빨갛게 번쩍임 (플레이어 피격 연출)
         this.cameras.main.flash(1000, 255, 0, 0);
+
+        // 무적 연출
+        this.tweens.add({
+            targets: this.player,
+            alpha: 0.3,
+            duration: 100,
+            yoyo: true,
+            repeat: 10
+        });
     
         // 플레이어 체력 감소
         this.playerHP -= 1;
         this.updatePlayerHPBar();
+
+        // 무적 타이머
+        this.time.delayedCall(this.invincibleDuration, () => {
+            this.isInvincible = false;
+        });
     
         if (this.playerHP <= 0) {
             // 게임 오버 연출 시작
@@ -329,6 +403,9 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.controlsText.destroy();
         this.lifeText.destroy();
         this.skillText.destroy();
+        for (let i = 0; i < this.maxHP; i++) {
+            this.heartIcons[i].setVisible(false);
+        }
 
         // 배경 변경: 게임 오버 화면으로 설정
         this.background.setVisible(false);
@@ -342,6 +419,25 @@ export class Stage1BattleScene extends Phaser.Scene {
     } 
 
     update() {
+        if (this.isDialogueActive) return;
+
+        if (this.enemyHP <= 400 && !this.dialogueTriggered) {
+            this.dialogueTriggered = true;
+
+            this.cameras.main.flash(2000, 255, 255, 255);
+
+            // 적 텍스처 변경
+            this.enemies.children.iterate((enemy) => {
+                enemy.setTexture('stone'); // 바꿀 텍스처 이름
+            });
+
+            this.pauseForDialogue([
+                { name: '돌멩이', text: '아야, 아프잖아.' },
+                { name: '재민(가명)', text: '뭐야? 그냥 돌인줄 알았는데?!' },
+                { name: '돌멩이', text: '됐고, 길바닥의 돌멩이를 함부로 밟다니, 용서 못 해.' },
+            ]);
+        }
+
         // 플레이어 이동 제한 및 속도 개선
         if (this.cursors.left.isDown) this.player.x = Math.max(this.player.x - 5, 0); // 왼쪽 경계 제한
         else if (this.cursors.right.isDown) this.player.x = Math.min(this.player.x + 5, 1260); // 오른쪽 경계 제한

@@ -15,20 +15,20 @@ export class BootScene extends Phaser.Scene {
         this.load.image('background', `${images}/background.png`);
         this.load.image('adc_lectureroom', `${images}/adc_lectureroom.png`);
 
-
         this.load.image('Jaemin_front', `${images}/Jaemin_front.png`);
+        this.load.image('Jaeminsuki', `${images}/Jaeminsuki.png`);
 
         this.load.image('jaemin', `${images}/jaemin.png`);
         this.load.image('junsusuki', `${images}/junsusuki.png`);
 
         this.load.image('stone', `${images}/stone.png`);
+        this.load.image('stone_temp', `${images}/stone_temp.png`);
         this.load.image('stone_bullet', `${images}/stone_bullet.png`);
 
         this.load.image('bullet', `${images}/bullet.png`);
         this.load.image('junsusuki_bullet', `${images}/junsusuki_bullet.png`);
 
         this.load.image('heart', `${images}/heart.png`);
-        this.load.image('heart_empty', `${images}/heart_empty.png`);
 
         for (let i=1; i<=7; i++)
             this.load.image('Jaemin_MTE' + i, `${images}/Jaemin_MTE` + i + '.png');
@@ -42,6 +42,7 @@ export class BootScene extends Phaser.Scene {
         this.load.video('Jaeminsuki_buriburi', `${images}/Jaeminsuki_buriburi.mp4`, 'loadeddata', false, true);
         this.load.video('Jaemin_Appear', `${images}/Jaemin_Appear.mp4`, 'loadeddata', false, true);
         this.load.video('toongsil', `${images}/toongsil.mp4`, 'loadeddata', false, true);
+        this.load.video('chosun', `${images}/chosun.mp4`, 'loadeddata', false, true);
 
         this.load.json('PrologueDialogues', `${msg}/Prologue.json`);
     }

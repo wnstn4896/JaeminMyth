@@ -1,12 +1,18 @@
 [
     {
         "text": "이곳은 경기도 안산시의 모 고등학교. 기묘한 운명을 부여받게 되는 한 학생이 있었는데...",
-        "background": "adc_lectureroom",
+        "background": "background",
         "flash": "black"
     },
     {
         "name": "재민(가명)",
         "text": "야 기분 좋다",
         "background": "adc_lectureroom"
+    },
+    {
+        "name": "나카무라 폰 아인츠베른 재민스키",
+        "text": "진짜 이름이 뒤지게 길어서 얘 때문에 이름 넣는 칸을 비정상적으로 늘렸구나. 진짜 어떻게 사람 이름이 나카무라 폰 아인츠베른 재민스키노? 진짜 국적을 알 수 없는 개족보산 이름을 보아 2027년에 중국이 대만을 침공하여 대 차이나 제국을 중심으로 아시아가 통합되는 밝은 미래를 암시하는 것 같구나.",
+        "background": "background",
+        "flash": "black"
     }
 ]

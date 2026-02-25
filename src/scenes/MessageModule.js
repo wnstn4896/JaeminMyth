@@ -5,6 +5,20 @@ const CHARACTER_CONFIG = {
         y: 720,
         scale: 0.4,
         flipX: false,
+    },
+    '돌멩이': {
+        texture: 'stone',
+        x: 680,
+        y: 720,
+        scale: 1.5,
+        flipX: false,
+    },
+    '나카무라 폰 아인츠베른 재민스키': {
+        texture: 'Jaeminsuki',
+        x: 680,
+        y: 720,
+        scale: 0.4,
+        flipX: true,
     }
 };
 
@@ -31,10 +45,10 @@ export class MessageModule {
         this.uiElements.dialogBox.fillStyle(0x000000, 0.8);
         this.uiElements.dialogBox.fillRoundedRect(140, 500, 700, 150, 20);
         this.uiElements.dialogBox.lineStyle(5, 0xffffff, 0.8);
-        this.uiElements.dialogBox.strokeRoundedRect(140, 500, 1000, 150, 20); // 테두리 그리기
+        this.uiElements.dialogBox.strokeRoundedRect(140, 500, 700, 150, 20); // 테두리 그리기
 
         // 대화 상자에 클릭 이벤트 추가 (Interactive 설정)
-        this.uiElements.dialogBox.setInteractive(new Phaser.Geom.Rectangle(140, 500, 1000, 150), Phaser.Geom.Rectangle.Contains);
+        this.uiElements.dialogBox.setInteractive(new Phaser.Geom.Rectangle(140, 500, 620, 150), Phaser.Geom.Rectangle.Contains);
 
         // 대화 상자 클릭 시 호출될 이벤트
         this.uiElements.dialogBox.on('pointerdown', this.onClick.bind(this));
@@ -47,7 +61,7 @@ export class MessageModule {
         this.uiElements.nameBox.strokeRoundedRect(140, 460, 230, 40, 10); // 테두리 그리기
 
         // 캐릭터 이름 텍스트
-        this.uiElements.nameText = scene.add.text(150, 467, '', {
+        this.uiElements.nameText = scene.add.text(55, 467, '', {
             fontFamily: 'HeirofLightBold',
             fontSize: '20px',
             color: '#ffffff',
@@ -55,25 +69,22 @@ export class MessageModule {
         });
 
         // 대화 텍스트
-        this.uiElements.dialogueText = scene.add.text(200, 540, '', {
+        this.uiElements.dialogueText = scene.add.text(70, 520, '', {
             fontSize: '18px',
             fontFamily: 'HeirofLightRegular',
             color: '#ffffff',
-            wordWrap: { width: 800 },
-            padding: { top: 5, bottom: 2 },
+            wordWrap: { width: 680 },
+            padding: { top: 3, bottom: 2 },
         });
         this.uiElements.dialogueText.setLineSpacing(6); // 줄 간격 설정
 
         // 대화창 조작 안내 텍스트
-        this.uiElements.controlsText = scene.add.text(910, 620, '(Press [SPACE] OR Click)', {
+        this.uiElements.controlsText = scene.add.text(550, 620, '(클릭 및 터치로 넘어가기)', {
             fontSize: '16px',
             fontFamily: 'HeirofLightRegular',
             color: '#ffffff',
             padding: { top: 2, bottom: 2 },
         });
-
-        // 키 이벤트
-        this.spaceKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
     // 대화창 클릭 시 호출되는 함수
@@ -84,13 +95,13 @@ export class MessageModule {
     // 기본 대화창 스타일
     defaultBox(){
         this.uiElements.dialogBox.fillStyle(0x000000, 0.8);
-        this.uiElements.dialogBox.fillRoundedRect(140, 500, 1000, 150, 20);
+        this.uiElements.dialogBox.fillRoundedRect(50, 500, 700, 150, 20);
         this.uiElements.dialogBox.lineStyle(5, 0xffffff, 0.8);
-        this.uiElements.dialogBox.strokeRoundedRect(140, 500, 1000, 150, 20);
+        this.uiElements.dialogBox.strokeRoundedRect(50, 500, 700, 150, 20);
         this.uiElements.nameBox.fillStyle(0x000000, 0.8);
-        this.uiElements.nameBox.fillRoundedRect(140, 460, 230, 40, 10);
+        this.uiElements.nameBox.fillRoundedRect(50, 460, 300, 40, 10);
         this.uiElements.nameBox.lineStyle(3, 0xffffff, 0.8);
-        this.uiElements.nameBox.strokeRoundedRect(140, 460, 230, 40, 10);
+        this.uiElements.nameBox.strokeRoundedRect(50, 460, 300, 40, 10);
         this.uiElements.dialogueText.setStyle({ color: '#ffffff'});
         this.uiElements.controlsText.setStyle({ color: '#ffffff'});
         this.uiElements.nameText.setStyle({color: '#ffffff'});
@@ -143,26 +154,10 @@ export class MessageModule {
         } else {
             characterSprite.setVisible(false);
         }
-
-        // 이전 키 리스너 제거 (중복 방지)
-        if (this.spaceKeyListener) {
-            this.spaceKey.off('down', this.spaceKeyListener);
-        }
-        // 새로운 키 리스너 등록
-        this.spaceKeyListener = () => {
-            this.onNext();
-        };
-        this.spaceKey.on('down', this.spaceKeyListener);
     }
 
     hideUI() {
         Object.values(this.uiElements).forEach((el) => el.setVisible(false));
-
-        // SPACE 키 리스너 제거
-        if (this.spaceKeyListener) {
-            this.spaceKey.off('down', this.spaceKeyListener);
-            this.spaceKeyListener = null;
-        }
 
         // 클릭 이벤트 리스너 제거
         this.uiElements.dialogBox.off('pointerdown', this.onClick);
