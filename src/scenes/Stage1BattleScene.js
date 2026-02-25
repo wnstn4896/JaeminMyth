@@ -10,7 +10,7 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.maxHP = 5; // 최대 HP
         this.playerHP = 5; // 현재 HP
         this.isInvincible = false;
-        this.invincibleDuration = 2000; // 피격 시 무적 시간
+        this.invincibleDuration = 1000; // 피격 시 무적 시간
     }
 
     create() {
@@ -185,8 +185,14 @@ export class Stage1BattleScene extends Phaser.Scene {
             }
         });
 
+        // 
+        this.damageSFX = this.sound.add('sfx_damage');
+
         // 키 입력 처리
         this.shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
+
+        this.bgm = this.sound.add('ROKA', { loop: true });
+        this.bgm.setVolume(0.4).play();
     }
 
     // 대사 출력을 위한 게임 정지
@@ -345,6 +351,7 @@ export class Stage1BattleScene extends Phaser.Scene {
             this.cameras.main.flash(2000, 255, 255, 255);
             setTimeout(() => {
                 alert('미완성');
+                this.bgm.stop();
                 this.scene.start('CreditsScene');
             }, 2000);
         }
@@ -356,6 +363,7 @@ export class Stage1BattleScene extends Phaser.Scene {
             return;
         }
 
+        this.damageSFX.play();
         bullet.destroy();
 
         // 무적 시작
@@ -410,6 +418,7 @@ export class Stage1BattleScene extends Phaser.Scene {
         // 배경 변경: 게임 오버 화면으로 설정
         this.background.setVisible(false);
         this.backgroundUI.setTexture('gameover');
+        this.bgm.stop();
 
         this.sound.add('Jaemin_laugh').setVolume(0.3).play();
     

@@ -13,8 +13,8 @@ export class PrologueScene extends Phaser.Scene {
         this.MessageModule.createUI();
         this.onNextDialogue();
 
-        // this.bgm = this.sound.add('prologueBGM', { loop: true });
-        // this.bgm.setVolume(0.4).play();
+        this.bgm = this.sound.add('PrologueBGM', { loop: true });
+        this.bgm.setVolume(0.4).play();
     }
 
     onNextDialogue() {
@@ -34,6 +34,7 @@ export class PrologueScene extends Phaser.Scene {
     }
     
     endScene() {
+        this.bgm.stop();
         this.scene.start('Stage1BattleScene');
     }
     

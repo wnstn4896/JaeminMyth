@@ -39,6 +39,9 @@ export class BootScene extends Phaser.Scene {
 
         this.load.audio('Jaemin_laugh', [`${sounds}/Jaemin_laugh.m4a`]);
         this.load.audio('sponsor', [`${sounds}/sponsor.m4a`]);
+        this.load.audio('sfx_damage', [`${sounds}/sfx_damage.m4a`]);
+        this.load.audio('PrologueBGM', [`${sounds}/PrologueBGM.mp3`]);
+        this.load.audio('ROKA', [`${sounds}/ROKA.mp3`]);
         this.load.audio('MTEWorld', [`${sounds}/MTEWorld.mp3`]);
 
         this.load.video('Jaemin_buriburi', `${images}/Jaemin_buriburi.mp4`, 'loadeddata', false, true);
