@@ -345,7 +345,7 @@ export class Stage1BattleScene extends Phaser.Scene {
             this.cameras.main.flash(2000, 255, 255, 255);
             setTimeout(() => {
                 alert('미완성');
-                this.scene.start('Stage2BattleScene');
+                this.scene.start('CreditsScene');
             }, 2000);
         }
     }
