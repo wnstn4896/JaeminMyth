@@ -433,7 +433,7 @@ export class Stage1BattleScene extends Phaser.Scene {
 
             this.pauseForDialogue([
                 { name: '돌멩이', text: '아야, 아프잖아.' },
-                { name: '재민(가명)', text: '뭐야? 그냥 돌인줄 알았는데?!' },
+                { name: '재민(가명)', text: '뭐야? 그냥 돌인줄 알았는데?! 그나저나 여긴 어디지...?' },
                 { name: '돌멩이', text: '됐고, 길바닥의 돌멩이를 함부로 밟다니, 용서 못 해.' },
             ]);
         }
