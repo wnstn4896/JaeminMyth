@@ -36,7 +36,7 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, 790, 720); // 월드 경계 설정
 
          // 플레이어 생성
-        this.player = this.physics.add.sprite(200, 300, 'jaemin');
+        this.player = this.physics.add.sprite(380, 600, 'jaemin');
         this.player.setCollideWorldBounds(true);
         this.player.setScale(0.15);
 
@@ -185,7 +185,6 @@ export class Stage1BattleScene extends Phaser.Scene {
             }
         });
 
-        // 
         this.damageSFX = this.sound.add('sfx_damage');
 
         // 키 입력 처리
