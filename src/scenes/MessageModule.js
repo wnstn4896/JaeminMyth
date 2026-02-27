@@ -92,10 +92,14 @@ export class MessageModule {
             color: '#ffffff',
             padding: { top: 2, bottom: 2 },
         });
+
+        // 효과음
+        this.clickSFX = scene.sound.add('sfx_ZA', { volume: 0.4 });
     }
 
     // 대화창 클릭 시 호출되는 함수
     onClick() {
+        this.clickSFX.play();
         this.onNext();
     }
 
