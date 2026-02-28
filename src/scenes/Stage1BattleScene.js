@@ -81,8 +81,10 @@ export class Stage1BattleScene extends Phaser.Scene {
             const bomb = this.add.circle(970 + i * 25, 170, 8, 0x009900);
             this.bombIcons.push(bomb);
         }
-
         this.updateBombUI();
+
+        // 스킬(Bomb) 효과음 정의
+        this.bombSFX = this.sound.add('sfx_Bomb', { volume: 0.4 });
 
         // 입력 키 설정
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -373,6 +375,8 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.updateBombUI();
 
         this.canUseBomb = false;
+
+        this.bombSFX.play();
 
         this.enemyBullets.clear(true, true);
 
