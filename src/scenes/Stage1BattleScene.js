@@ -11,6 +11,16 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.playerHP = 5; // 현재 HP
         this.isInvincible = false;
         this.invincibleDuration = 1000; // 피격 시 무적 시간
+
+        this.skillWave = null;
+        this.isSkillActive = false;
+        this.maxBombs = 3;
+        this.currentBombs = 3;
+
+        this.bombDelay = 800;
+        this.canUseBomb = true;
+
+        this.bombIcons = [];
     }
 
     create() {
@@ -65,6 +75,14 @@ export class Stage1BattleScene extends Phaser.Scene {
             this.heartIcons.push(heart);
         }
         this.updatePlayerHPBar();
+
+        // 스킬(Bomb) 아이콘 생성
+        for (let i = 0; i < this.maxBombs; i++) {
+            const bomb = this.add.circle(970 + i * 25, 170, 8, 0x009900);
+            this.bombIcons.push(bomb);
+        }
+
+        this.updateBombUI();
 
         // 입력 키 설정
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -233,7 +251,6 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.isDialogueActive = false;
     }
 
-
     startJoystick(pointer) {
         if (Phaser.Math.Distance.Between(pointer.x, pointer.y, this.joystickBase.x, this.joystickBase.y) < 50) {
             this.joystickActive = true;
@@ -292,6 +309,15 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.enemyHPBar.fillRect(20, 20, (this.enemyHP / 800) * 700, 20); // 적 체력 바 위치
     }
     
+    updateBombUI() {
+        for (let i = 0; i < this.maxBombs; i++) {
+            if (i < this.currentBombs) {
+                this.bombIcons[i].setVisible(true);
+            } else {
+                this.bombIcons[i].setVisible(false);
+            }
+        }
+    }
 
     teleportEnemy() {
         this.enemies.children.iterate((enemy) => {
@@ -336,6 +362,66 @@ export class Stage1BattleScene extends Phaser.Scene {
             */
         }
     }
+
+    // 스킬 관련
+    activateSkill() {
+        if (!this.canUseBomb) return;
+        if (this.currentBombs <= 0) return;
+
+        // Bomb 1개 차감
+        this.currentBombs--;
+        this.updateBombUI();
+
+        this.canUseBomb = false;
+
+        this.enemyBullets.clear(true, true);
+
+        this.isSkillActive = true;
+        this.isInvincible = true;
+
+        this.skillWave = this.add.rectangle(
+            400,
+            720,
+            800,
+            150,
+            0x009900
+        );
+
+        this.cameras.main.shake(800, 0.01);
+
+        this.physics.add.existing(this.skillWave);
+
+        this.skillWave.body.setVelocityY(-1200);
+        this.skillWave.body.setAllowGravity(false);
+        this.skillWave.body.setImmovable(true);
+
+        // 적 탄막 제거
+        this.physics.add.overlap(this.skillWave, this.enemyBullets, (wave, bullet) => {
+            bullet.destroy();
+        });
+
+        // 1초 뒤 자동 삭제
+        this.time.delayedCall(1000, () => {
+            this.endSkill();
+        });
+
+        // 연속 사용 방지 딜레이
+        this.time.delayedCall(this.bombDelay, () => {
+            this.canUseBomb = true;
+        });
+    }
+
+    endSkill() {
+    if (!this.isSkillActive) return;
+
+    this.isInvincible = false;
+    this.isSkillActive = false;
+
+    if (this.skillWave) {
+        this.skillWave.destroy();
+        this.skillWave = null;
+    }
+}
 
     handleBulletHit(bullet, enemy) {
         // 적 체력 감소
@@ -463,14 +549,8 @@ export class Stage1BattleScene extends Phaser.Scene {
         });
 
         // 스킬(Bomb) 처리
-        if (this.shiftKey.isDown){
-            this.cameras.main.flash(3000, 0, 0, 0);
-            this.background.loadURL('../../assets/images/Jaemin_buriburi.mp4');
-            this.background.play(true);
+        if (Phaser.Input.Keyboard.JustDown(this.shiftKey)) {
+            this.activateSkill();
         }
     }
-
 }
-
-
-

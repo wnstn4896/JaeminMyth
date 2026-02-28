@@ -27,6 +27,7 @@ export class BootScene extends Phaser.Scene {
         this.load.image('stone', `${images}/stone.png`);
         this.load.image('stone_temp', `${images}/stone_temp.png`);
         this.load.image('stone_bullet', `${images}/stone_bullet.png`);
+        this.load.image('Laser', `${images}/Laser.png`);
 
         this.load.image('bullet', `${images}/bullet.png`);
         this.load.image('junsusuki_bullet', `${images}/junsusuki_bullet.png`);
