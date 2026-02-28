@@ -21,6 +21,8 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.canUseBomb = true;
 
         this.bombIcons = [];
+
+        this.isClear = false;
     }
 
     create() {
@@ -265,6 +267,10 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.physics.resume();
         this.time.paused = false;
         this.isDialogueActive = false;
+
+        if (this.isClear){
+            this.scene.start('CreditsScene');
+        }
     }
 
     startJoystick(pointer) {
@@ -353,7 +359,7 @@ export class Stage1BattleScene extends Phaser.Scene {
                         bullet.setVelocity(velocity.x, velocity.y);
                         bullet.setScale(0.2);
                         bullet.setCollideWorldBounds(true);
-                        bullet.body.onWorldBounds = true; // 꼭 필요!
+                        bullet.body.onWorldBounds = true;
                     }
                 }
             }
@@ -453,9 +459,7 @@ export class Stage1BattleScene extends Phaser.Scene {
             enemy.destroy();
             this.cameras.main.flash(2000, 255, 255, 255);
             setTimeout(() => {
-                alert('미완성');
-                this.bgm.stop();
-                this.scene.start('CreditsScene');
+                this.isClear = true;
             }, 2000);
         }
     }
@@ -517,6 +521,9 @@ export class Stage1BattleScene extends Phaser.Scene {
         for (let i = 0; i < this.maxHP; i++) {
             this.heartIcons[i].setVisible(false);
         }
+        for (let i = 0; i < this.maxBombs; i++) {
+            this.bombIcons[i].setVisible(false);
+        }
 
         // 배경 변경: 게임 오버 화면으로 설정
         this.background.setVisible(false);
@@ -547,6 +554,14 @@ export class Stage1BattleScene extends Phaser.Scene {
                 { name: '돌멩이', text: '아야, 아프잖아.' },
                 { name: '재민(가명)', text: '뭐야? 그냥 돌인줄 알았는데?! 그나저나 여긴 어디지...?' },
                 { name: '돌멩이', text: '됐고, 길바닥의 돌멩이를 함부로 밟다니, 용서 못 해.' },
+            ]);
+        }
+
+        if (this.isClear) {
+            this.dialogueTriggered = true;
+
+            this.pauseForDialogue([
+                { name: '재민(가명)', text: '야 기분좋다' }
             ]);
         }
 

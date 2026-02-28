@@ -36,6 +36,8 @@ export class BootScene extends Phaser.Scene {
 
         for (let i=1; i<=7; i++)
             this.load.image('Jaemin_MTE' + i, `${images}/Jaemin_MTE` + i + '.png');
+        for (let i=1; i<=3; i++)
+            this.load.image('Jaemin_Run' + i, `${images}/Jaemin_Run` + i + '.png');
 
         this.load.image('gameover', `${images}/gameover.png`);
 
