@@ -115,6 +115,20 @@ export class Stage1BattleScene extends Phaser.Scene {
             this.fireButton.on('pointerup', () => {
                 this.spaceKeyDown = false;
             });
+
+            // Bomb 버튼 생성
+            this.bombButton = this.add.circle(950, 600, 70, 0x00ffff, 0.9)
+                .setInteractive();
+
+            this.bombButtonText = this.add.text(950, 600, 'Bomb', {
+                font: '18px Arial',
+                fill: '#000000'
+            }).setOrigin(0.5);
+
+            // Bomb 버튼 이벤트 처리
+            this.bombButton.on('pointerdown', () => {
+                this.activateSkill();
+            });
         }
 
         // 플레이어 체력 바
