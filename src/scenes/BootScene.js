@@ -56,6 +56,7 @@ export class BootScene extends Phaser.Scene {
         this.load.video('Jaemin_Appear', `${images}/Jaemin_Appear.mp4`, 'loadeddata', false, true);
         this.load.video('toongsil', `${images}/toongsil.mp4`, 'loadeddata', false, true);
         this.load.video('chosun', `${images}/chosun.mp4`, 'loadeddata', false, true);
+        this.load.video('japan', `${images}/japan.mp4`, 'loadeddata', false, true);
         this.load.video('Kazachok', `${images}/Kazachok.mp4`, 'loadeddata', false, true);
 
         this.load.json('PrologueDialogues', `${msg}/Prologue.json`);
