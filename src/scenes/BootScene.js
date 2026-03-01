@@ -14,6 +14,7 @@ export class BootScene extends Phaser.Scene {
         this.load.image('title_sponsor', `${images}/title_sponsor.png`);
 
         this.load.image('background', `${images}/background.png`);
+        this.load.image('loading', `${images}/loading.png`);
         this.load.image('adc_lectureroom', `${images}/adc_lectureroom.png`);
         this.load.image('adc_lectureroom_broken', `${images}/adc_lectureroom_broken.png`);
 
