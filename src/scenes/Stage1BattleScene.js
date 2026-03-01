@@ -268,7 +268,9 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.time.paused = false;
         this.isDialogueActive = false;
 
+        // 클리어 시 다음 씬 이동
         if (this.isClear){
+            this.bgm.stop();
             this.scene.start('CreditsScene');
         }
     }
