@@ -184,7 +184,7 @@ export class Stage1BattleScene extends Phaser.Scene {
         });
 
         // 텍스트 UI
-        this.controlsText = this.add.text(910, 260, '↑↓←→: 이동 | 스페이스바: 탄막 발사 | 쉬프트: 스킬', {
+        this.controlsText = this.add.text(870, 260, '↑↓←→: 이동 | 스페이스바: 탄막 발사 | 쉬프트: 스킬', {
             fontSize: '16px',
             fill: '#ffffff',
             fontFamily: 'HeirofLightBold',
