@@ -22,6 +22,14 @@ export class Stage2BattleScene extends Phaser.Scene {
 
         this.bombIcons = [];
 
+
+        this.firstDialogueDone = false;
+        this.secondDialogueDone = false;
+        this.roadrollerSpawned = false;
+        this.roadroller = null;
+        this.roadrollerSide = null;
+        this.roadrollerTimer = null;
+
         this.isClear = false;
     }
 
@@ -87,6 +95,8 @@ export class Stage2BattleScene extends Phaser.Scene {
 
         // 스킬(Bomb) 효과음 정의
         this.bombSFX = this.sound.add('sfx_Bomb', { volume: 0.4 });
+
+        this.roadrollerSFX = this.sound.add('sfx_muda');
 
         // 입력 키 설정
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -235,6 +245,9 @@ export class Stage2BattleScene extends Phaser.Scene {
         // 화면에 있는 탄막 제거
         this.playerBullets.clear(true, true);
         this.enemyBullets.clear(true, true);
+        if (this.roadroller) {
+            this.roadroller.destroy();
+        }
         
         this.physics.pause();     // 물리 엔진 정지
         this.time.paused = true;  // 타이머 정지
@@ -268,11 +281,79 @@ export class Stage2BattleScene extends Phaser.Scene {
         this.time.paused = false;
         this.isDialogueActive = false;
 
+        // 로드롤러 생성
+        if (this.enemyHP <= 250 && !this.roadrollerSpawned) {
+            this.roadrollerSpawned = true;
+            this.spawnRoadroller();
+        }
+
         // 클리어 시 다음 씬 이동
         if (this.isClear){
             this.bgm.stop();
             this.scene.start('LoadingScene', { goToStage: 3 });
         }
+    }
+
+    spawnRoadroller(forceSide = null) {
+        const worldWidth = 790;
+        const worldHeight = 720;
+        const halfWidth = worldWidth / 2;
+
+        // 방향 결정
+        if (forceSide) {
+            this.roadrollerSide = forceSide;
+        } else {
+            this.roadrollerSide = Phaser.Math.Between(0,1) === 0 ? 'left' : 'right';
+        }
+
+        const isLeft = this.roadrollerSide === 'left';
+        const x = isLeft ? halfWidth / 2 : halfWidth + halfWidth / 2;
+
+        // 혹시 기존 게 남아있으면 제거
+        if (this.roadroller) {
+            this.roadroller.destroy();
+        }
+
+        this.roadrollerSFX.play();
+
+        this.roadroller = this.physics.add.sprite(x, -400, 'roadroller');
+        this.roadroller.setDisplaySize(halfWidth, worldHeight);
+        this.roadroller.body.setImmovable(true);
+        this.roadroller.body.setAllowGravity(false);
+
+        this.physics.add.collider(this.player, this.roadroller);
+
+        // 낙하 연출
+        this.tweens.add({
+            targets: this.roadroller,
+            y: worldHeight / 2,
+            duration: 800,
+            ease: 'Bounce.easeOut',
+            onComplete: () => {
+
+                this.cameras.main.shake(400, 0.02);
+
+                // 착지 후 3초 유지
+                this.roadrollerTimer = this.time.delayedCall(3000, () => {
+                    this.removeRoadroller();
+                });
+            }
+        });
+    }
+
+    removeRoadroller() {
+        if (!this.roadroller) return;
+
+        this.roadroller.destroy();
+        this.roadroller = null;
+
+        // 반대쪽 결정
+        const nextSide = this.roadrollerSide === 'left' ? 'right' : 'left';
+
+        // 0.5초 텀 주면 더 멋있음
+        this.time.delayedCall(500, () => {
+            this.spawnRoadroller(nextSide);
+        });
     }
 
     startJoystick(pointer) {
@@ -358,7 +439,16 @@ export class Stage2BattleScene extends Phaser.Scene {
                     const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'jjokbarisuki_bullet');
                     const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
                     bullet.setVelocity(velocity.x, velocity.y);
-                    bullet.setScale(0.2);
+                    bullet.setScale(0.3);
+                    bullet.setCollideWorldBounds(true);
+                    bullet.body.onWorldBounds = true;
+                }
+
+                for (let angle = 0; angle <= 360; angle += 45) {
+                    const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'jjokbarisuki_bullet');
+                    const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
+                    bullet.setVelocity(velocity.x, velocity.y);
+                    bullet.setScale(0.3);
                     bullet.setCollideWorldBounds(true);
                     bullet.body.onWorldBounds = true;
                 }
@@ -518,6 +608,11 @@ export class Stage2BattleScene extends Phaser.Scene {
         this.controlsText.destroy();
         this.lifeText.destroy();
         this.skillText.destroy();
+        if (this.roadroller)
+            this.roadroller.destroy();
+        if (this.roadrollerTimer)
+            this.roadrollerTimer.remove(false);
+        
         for (let i = 0; i < this.maxHP; i++) {
             this.heartIcons[i].setVisible(false);
         }
@@ -540,8 +635,8 @@ export class Stage2BattleScene extends Phaser.Scene {
     update() {
         if (this.isDialogueActive) return;
 
-        if (this.enemyHP <= 500 && !this.dialogueTriggered) {
-            this.dialogueTriggered = true;
+        if (this.enemyHP <= 500 && !this.firstDialogueDone) {
+            this.firstDialogueDone = true;
 
             this.pauseForDialogue([
                 { name: '쪽바리스키', text: '...여기까지 온 건가.' },
@@ -558,6 +653,16 @@ export class Stage2BattleScene extends Phaser.Scene {
             ]);
         }
 
+        if (this.enemyHP <= 250 && !this.secondDialogueDone) {
+            this.secondDialogueDone = true;
+
+            this.pauseForDialogue([
+                { name: '쪽바리스키', text: '제법인데...' },
+                { name: '쪽바리스키', text: '그렇다면 내 전력을 보여줄 수밖에 없구나.' },
+                { name: '쪽바리스키', text: '로 드 롤 러 다 !!!' },
+            ]);
+        }
+
         if (this.isClear) {
             this.dialogueTriggered = true;
 
@@ -567,11 +672,21 @@ export class Stage2BattleScene extends Phaser.Scene {
         }
 
         // 플레이어 이동 제한 및 속도 개선
-        if (this.cursors.left.isDown) this.player.x = Math.max(this.player.x - 5, 0); // 왼쪽 경계 제한
-        else if (this.cursors.right.isDown) this.player.x = Math.min(this.player.x + 5, 1260); // 오른쪽 경계 제한
-    
-        if (this.cursors.up.isDown) this.player.y = Math.max(this.player.y - 5, 0); // 상단 경계 제한
-        else if (this.cursors.down.isDown) this.player.y = Math.min(this.player.y + 5, 690); // 하단 경계 제한
+        this.player.setVelocity(0);
+
+        if (this.cursors.left.isDown) {
+            this.player.setVelocityX(-450);
+        }
+        else if (this.cursors.right.isDown) {
+            this.player.setVelocityX(450);
+        }
+
+        if (this.cursors.up.isDown) {
+            this.player.setVelocityY(-450);
+        }
+        else if (this.cursors.down.isDown) {
+            this.player.setVelocityY(450);
+        }
 
         // 히트박스 위치 동기화
         this.playerHitbox.setPosition(this.player.x, this.player.y);

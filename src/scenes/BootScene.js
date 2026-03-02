@@ -30,6 +30,7 @@ export class BootScene extends Phaser.Scene {
         this.load.image('stone_bullet', `${images}/stone_bullet.png`);
 
         this.load.image('jjokbarisuki_bullet', `${images}/jjokbarisuki_bullet.png`);
+        this.load.image('roadroller', `${images}/roadroller.png`);
 
         this.load.image('bullet', `${images}/bullet.png`);
         this.load.image('junsusuki_bullet', `${images}/junsusuki_bullet.png`);
@@ -48,6 +49,7 @@ export class BootScene extends Phaser.Scene {
         this.load.audio('sfx_damage', [`${sounds}/sfx_damage.m4a`]);
         this.load.audio('sfx_ZA', [`${sounds}/sfx_ZA.m4a`]);
         this.load.audio('sfx_Bomb', [`${sounds}/sfx_Bomb.wav`]);
+        this.load.audio('sfx_muda', [`${sounds}/sfx_muda.m4a`]);
         this.load.audio('PrologueBGM', [`${sounds}/PrologueBGM.mp3`]);
         this.load.audio('ROKA', [`${sounds}/ROKA.mp3`]);
         this.load.audio('esaka', [`${sounds}/esaka.mp3`]);
@@ -65,7 +67,7 @@ export class BootScene extends Phaser.Scene {
     }
 
     create() {
-        this.scene.start('TitleScene');
+        this.scene.start('Stage2BattleScene');
     }
 }
 
