@@ -5,6 +5,7 @@ import { LoadingScene } from './scenes/LoadingScene.js';
 import { StageSelectScene } from './scenes/StageSelectScene.js';
 import { Stage1BattleScene } from './scenes/Stage1BattleScene.js';
 import { Stage2BattleScene } from './scenes/Stage2BattleScene.js';
+import { Stage3BattleScene } from './scenes/Stage3BattleScene.js';
 
 import { CreditsScene } from './scenes/CreditsScene.js';
 
@@ -15,7 +16,7 @@ const config = {
     width: 1280,
     height: 720,
     transparent: true, // 캔버스 배경을 투명하게 설정
-    scene: [BootScene, TitleScene, PrologueScene, LoadingScene, Stage1BattleScene, Stage2BattleScene, StageSelectScene, CreditsScene], // 모든 Scene 등록
+    scene: [BootScene, TitleScene, PrologueScene, LoadingScene, Stage1BattleScene, Stage2BattleScene, Stage3BattleScene, StageSelectScene, CreditsScene], // 모든 Scene 등록
     scale: {
         mode: Phaser.Scale.FIT, // 디바이스 화면에 맞게 비율 조정
         autoCenter: Phaser.Scale.CENTER_BOTH, // 화면 중앙 정렬

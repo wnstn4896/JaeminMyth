@@ -24,6 +24,7 @@ export class BootScene extends Phaser.Scene {
         this.load.image('jaemin', `${images}/jaemin.png`);
         this.load.image('jaemin', `${images}/jjokbarisuki.png`);
         this.load.image('jjokbarisuki', `${images}/jjokbarisuki.png`);
+        this.load.image('junsusuki', `${images}/junsusuki.png`);
 
         this.load.image('stone', `${images}/stone.png`);
         this.load.image('stone_temp', `${images}/stone_temp.png`);
@@ -67,7 +68,7 @@ export class BootScene extends Phaser.Scene {
     }
 
     create() {
-        this.scene.start('Stage2BattleScene');
+        this.scene.start('TitleScene');
     }
 }
 
