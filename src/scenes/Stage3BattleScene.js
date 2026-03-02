@@ -32,8 +32,8 @@ export class Stage3BattleScene extends Phaser.Scene {
         // 인게임 배경
         // this.background = this.add.video(400, 200, 'toongsil');
         // this.background = this.add.video(400, 400, 'Jaeminsuki_buriburi');
-        this.background = this.add.video(400, 400, 'chosun');
-        this.background.setScale(2.5);
+        this.background = this.add.video(400, 500, 'Kazachok');
+        this.background.setScale(1.8);
         // this.background.setLoop(true);
         this.background.play(true);
 
@@ -226,7 +226,7 @@ export class Stage3BattleScene extends Phaser.Scene {
         // 키 입력 처리
         this.shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 
-        this.bgm = this.sound.add('ROKA', { loop: true });
+        this.bgm = this.sound.add('CheekiBreeki', { loop: true });
         this.bgm.setVolume(0.4).play();
     }
 
