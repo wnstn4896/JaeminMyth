@@ -177,7 +177,7 @@ export class Stage2BattleScene extends Phaser.Scene {
 
         // 적 텔레포트 및 무작위 탄막 발사
         this.time.addEvent({
-            delay: 750, // 텔레포트 주기
+            delay: 550, // 텔레포트 주기
             callback: this.teleportEnemy,
             callbackScope: this,
             loop: true,
@@ -355,7 +355,7 @@ export class Stage2BattleScene extends Phaser.Scene {
 
             if (enemy.active) {
                 for (let angle = -30; angle <= 30; angle += 15) {
-                    const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'stone_bullet');
+                    const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'jjokbarisuki_bullet');
                     const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
                     bullet.setVelocity(velocity.x, velocity.y);
                     bullet.setScale(0.2);
