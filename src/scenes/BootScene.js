@@ -69,7 +69,7 @@ export class BootScene extends Phaser.Scene {
     }
 
     create() {
-        this.scene.start('Stage3BattleScene');
+        this.scene.start('TitleScene');
     }
 }
 
