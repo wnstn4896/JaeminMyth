@@ -181,6 +181,7 @@ export class StageSelectScene extends Phaser.Scene {
 
         // 목적지 도착 후 선택 키 입력 시 해당 씬으로 전환
         if ((this.isBtnPressed || this.spaceKey.isDown)){
+            this.bgm.stop();
             this.scene.start('LoadingScene', { goToStage: this.stage });
         }
     }
