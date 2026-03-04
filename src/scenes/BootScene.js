@@ -38,6 +38,13 @@ export class BootScene extends Phaser.Scene {
 
         this.load.image('heart', `${images}/heart.png`);
 
+        this.load.image('stone_head', `${images}/stone_head.png`);
+        this.load.image('jjokbarisuki_head', `${images}/jjokbarisuki_head.png`);
+        this.load.image('junsusuki_head', `${images}/junsusuki_head.png`);
+        this.load.image('jaeminsuki_head', `${images}/jaeminsuki_head.png`);
+        this.load.image('jaeminsuki_head_black', `${images}/jaeminsuki_head_black.png`);
+        this.load.image('select_btn', `${images}/select_btn.png`);
+
         for (let i=1; i<=7; i++)
             this.load.image('Jaemin_MTE' + i, `${images}/Jaemin_MTE` + i + '.png');
         for (let i=1; i<=3; i++)
@@ -57,6 +64,7 @@ export class BootScene extends Phaser.Scene {
         this.load.audio('esaka', [`${sounds}/esaka.mp3`]);
         this.load.audio('CheekiBreeki', [`${sounds}/CheekiBreeki.mp3`]);
         this.load.audio('MTEWorld', [`${sounds}/MTEWorld.mp3`]);
+        this.load.audio('TaekwonV', [`${sounds}/TaekwonV.mp3`]);
 
         this.load.video('Jaemin_buriburi', `${images}/Jaemin_buriburi.mp4`, 'loadeddata', false, true);
         this.load.video('Jaeminsuki_buriburi', `${images}/Jaeminsuki_buriburi.mp4`, 'loadeddata', false, true);

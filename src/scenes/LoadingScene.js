@@ -78,6 +78,9 @@ export class LoadingScene extends Phaser.Scene {
 
         if (this.player.x >= 999){
             switch(this.goToStage){
+                case 1:
+                    this.scene.start('Stage1BattleScene');
+                    break;
                 case 2:
                     this.scene.start('Stage2BattleScene');
                     break;

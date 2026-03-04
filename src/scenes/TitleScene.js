@@ -1,6 +1,8 @@
 export class TitleScene extends Phaser.Scene {
     constructor() {
         super({ key: 'TitleScene' });
+
+        this.stageClear = Number(sessionStorage.getItem("stageClear")) || 0;
     }
 
     create() {
@@ -92,8 +94,12 @@ export class TitleScene extends Phaser.Scene {
 
             this.time.delayedCall(5000, () => {
                 this.cameras.main.flash(3000, 255, 255, 255);
-                this.scene.start('PrologueScene');
-            });
+                if (this.stageClear && confirm("플레이 기록이 확인되었습니다. 컨티뉴 화면으로 넘어가시겠습니까?")){
+                    this.scene.start('StageSelectScene');
+                }
+                else
+                    this.scene.start('PrologueScene');
+                });
         });
 
         // 클릭 후 텍스트 색상 원래대로 되돌리기

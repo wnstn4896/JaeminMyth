@@ -271,7 +271,8 @@ export class Stage3BattleScene extends Phaser.Scene {
         // 클리어 시 다음 씬 이동
         if (this.isClear){
             this.bgm.stop();
-            this.scene.start('LoadingScene', { goToStage: 2 });
+            sessionStorage.setItem("stageClear", 3);
+            this.scene.start('LoadingScene', { goToStage: 4 });
         }
     }
 
