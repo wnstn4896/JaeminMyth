@@ -528,9 +528,6 @@ export class Stage1BattleScene extends Phaser.Scene {
         for (let i = 0; i < this.maxBombs; i++) {
             this.bombIcons[i].setVisible(false);
         }
-        for (let i = 0; i < this.maxBombs; i++) {
-            this.bombIcons[i].setVisible(false);
-        }
 
         // 배경 변경: 게임 오버 화면으로 설정
         this.background.setVisible(false);
