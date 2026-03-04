@@ -262,6 +262,8 @@ export class Stage2BattleScene extends Phaser.Scene {
     // 대사 진행
     showNextDialogue() {
         if (this.currentDialogueIndex < this.currentDialogues.length) {
+            this.endSkill();
+
             const dialogue = this.currentDialogues[this.currentDialogueIndex];
 
             this.messageModule.restoreUI();
