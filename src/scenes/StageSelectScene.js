@@ -21,6 +21,11 @@ export class StageSelectScene extends Phaser.Scene {
         this.background = this.add.tileSprite(640, 360, 1280, 720, 'background');
         this.physics.world.setBounds(-70, 0, 1430, 600); // 월드 경계 설정
 
+        this.background = this.add.video(360, 370, 'TaekwonV_Jaemin');
+        this.background.setScale(2.1);
+        this.background.setLoop(true);
+        this.background.play(true);
+
         // 스테이지 선택 텍스트
         const noticeText = this.add.text(640, 80, 'CHOOSE A STAGE', {
             fontSize: '48px',
