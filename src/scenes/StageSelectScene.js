@@ -27,14 +27,14 @@ export class StageSelectScene extends Phaser.Scene {
         this.background.play(true);
 
         // 스테이지 선택 텍스트
-        const noticeText = this.add.text(640, 80, 'CHOOSE A STAGE', {
+        const noticeText = this.add.text(440, 80, 'CHOOSE A STAGE', {
             fontSize: '48px',
             color: '#FFD700', // 금색
             fontFamily: 'HeirofLightBold',
             stroke: '#000000', // 검정색 외곽선
             strokeThickness: 5, // 외곽선 두께
         }).setOrigin(0.5, 0.5).setInteractive();
-        this.stageText = this.add.text(640, 140, '', {
+        this.stageText = this.add.text(440, 140, '', {
             fontSize: '36px',
             color: '#C0C0C0',  // 은색
             fontFamily: 'HeirofLightBold',
@@ -43,7 +43,7 @@ export class StageSelectScene extends Phaser.Scene {
         }).setOrigin(0.5, 0.5).setInteractive();
 
         // 선택 버튼
-        this.Button = this.add.tileSprite(740, this.stageText.y + this.stageText.height / 2 + 60, 280, 120, 'select_btn').setOrigin(1.0, 0.5).setInteractive();
+        this.Button = this.add.tileSprite(540, this.stageText.y + this.stageText.height / 2 + 60, 280, 120, 'select_btn').setOrigin(1.0, 0.5).setInteractive();
         this.Button.setScale(0.7);
         this.Button.on('pointerdown', () => this.isBtnPressed = true);
         this.Button.on('pointerup', () => this.isBtnPressed = false);
