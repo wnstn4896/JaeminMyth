@@ -103,6 +103,8 @@ export class StageSelectScene extends Phaser.Scene {
 
         this.bgm = this.sound.add('TaekwonV', { loop: true });
         this.bgm.setVolume(0.4).play();
+
+        this.selectSFX = this.sound.add('sfx_choonjat');
     }
 
     startAutoMove(x, y) {
@@ -182,6 +184,7 @@ export class StageSelectScene extends Phaser.Scene {
         // 목적지 도착 후 선택 키 입력 시 해당 씬으로 전환
         if ((this.isBtnPressed || this.spaceKey.isDown)){
             this.bgm.stop();
+            this.selectSFX.play();
             this.scene.start('LoadingScene', { goToStage: this.stage });
         }
     }
