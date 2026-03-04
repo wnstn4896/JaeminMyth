@@ -51,6 +51,7 @@ export class BootScene extends Phaser.Scene {
         this.load.audio('sfx_ZA', [`${sounds}/sfx_ZA.m4a`]);
         this.load.audio('sfx_Bomb', [`${sounds}/sfx_Bomb.wav`]);
         this.load.audio('sfx_muda', [`${sounds}/sfx_muda.m4a`]);
+        this.load.audio('sfx_CykaBlyat', [`${sounds}/sfx_CykaBlyat.mp3`]);
         this.load.audio('PrologueBGM', [`${sounds}/PrologueBGM.mp3`]);
         this.load.audio('ROKA', [`${sounds}/ROKA.mp3`]);
         this.load.audio('esaka', [`${sounds}/esaka.mp3`]);

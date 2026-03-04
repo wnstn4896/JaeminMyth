@@ -20,6 +20,13 @@ const CHARACTER_CONFIG = {
         scale: 1.5,
         flipX: false,
     },
+    '?????': {
+        texture: 'jjokbarisuki',
+        x: 680,
+        y: 720,
+        scale: 1.5,
+        flipX: false,
+    },
     '블라디미르 준수스키': {
         texture: 'junsusuki',
         x: 680,

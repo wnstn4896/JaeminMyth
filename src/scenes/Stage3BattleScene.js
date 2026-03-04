@@ -350,7 +350,7 @@ export class Stage3BattleScene extends Phaser.Scene {
             // 화면 내 무작위 위치로 텔레포트
             enemy.setPosition(
                 Phaser.Math.Between(100, 580), // 무작위 X
-                Phaser.Math.Between(100, 100)   // 무작위 Y
+                Phaser.Math.Between(100, 250)   // 무작위 Y
             );
 
             if (enemy.active) {

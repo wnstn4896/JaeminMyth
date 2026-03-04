@@ -639,13 +639,13 @@ export class Stage2BattleScene extends Phaser.Scene {
             this.firstDialogueDone = true;
 
             this.pauseForDialogue([
-                { name: '쪽바리스키', text: '...여기까지 온 건가.' },
+                { name: '?????', text: '...여기까지 온 건가.' },
                 { name: '재민(가명)', text: '여긴 어디냐니까... 너는 또 누구야?' },
-                { name: '쪽바리스키', text: '내가 누군지 궁금해?' },
+                { name: '?????', text: '내가 누군지 궁금해?' },
                 { name: '재민(가명)', text: '생긴 것 치고는 목소리가 굵은데...' },
                 { name: '재민(가명)', text: '그러고보니, 여기 끌려오기 전에 어떤 녀석이 여긴 여러 국가의 전통 문화를 요리조리 섞은 글로벌한 세계라고 했지...' },
                 { name: '재민(가명)', text: '아까 그 돌쇠 놈은 조선... 네 녀석은... 성별로 장난치는 걸 보니 딱봐도 일본 놈이구나?! 이 *바리 *끼!' },
-                { name: '쪽바리스키', text: '호오, 내 이름을 어떻게 알았지?' },
+                { name: '?????', text: '호오, 내 이름을 어떻게 알았지?' },
                 { name: '재민(가명)', text: '뭐? 네 이름이 뭔데?' },
                 { name: '쪽바리스키', text: '내 이름은 쪽바리스키다.' },
                 { name: '재민(가명)', text: '아니, 어떻게 사람 이름이...' },
@@ -667,7 +667,7 @@ export class Stage2BattleScene extends Phaser.Scene {
             this.dialogueTriggered = true;
 
             this.pauseForDialogue([
-                { name: '재민(가명)', text: '야 기분좋다' }
+                { name: '재민(가명)', text: '뭐 저런 녀석이 다 있어...' }
             ]);
         }
 
