@@ -569,11 +569,21 @@ export class Stage3BattleScene extends Phaser.Scene {
         }
 
         // 플레이어 이동 제한 및 속도 개선
-        if (this.cursors.left.isDown) this.player.x = Math.max(this.player.x - 5, 0); // 왼쪽 경계 제한
-        else if (this.cursors.right.isDown) this.player.x = Math.min(this.player.x + 5, 1260); // 오른쪽 경계 제한
-    
-        if (this.cursors.up.isDown) this.player.y = Math.max(this.player.y - 5, 0); // 상단 경계 제한
-        else if (this.cursors.down.isDown) this.player.y = Math.min(this.player.y + 5, 690); // 하단 경계 제한
+        this.player.setVelocity(0);
+
+        if (this.cursors.left.isDown) {
+            this.player.setVelocityX(-450);
+        }
+        else if (this.cursors.right.isDown) {
+            this.player.setVelocityX(450);
+        }
+
+        if (this.cursors.up.isDown) {
+            this.player.setVelocityY(-450);
+        }
+        else if (this.cursors.down.isDown) {
+            this.player.setVelocityY(450);
+        }
 
         // 히트박스 위치 동기화
         this.playerHitbox.setPosition(this.player.x, this.player.y);
