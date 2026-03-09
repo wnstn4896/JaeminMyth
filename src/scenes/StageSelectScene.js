@@ -14,6 +14,7 @@ export class StageSelectScene extends Phaser.Scene {
         this.select = 0;
         this.stage;
         this.stageClear = Number(sessionStorage.getItem("stageClear")) || 0;
+        this.FakeBoss = sessionStorage.getItem("FakeBoss");
         this.isBtnPressed;
     }
 
@@ -89,12 +90,16 @@ export class StageSelectScene extends Phaser.Scene {
         }
 
         if (this.stageClear >= 3){
-            this.stage3Icon = this.add.sprite(700, 400, 'jaeminsuki_head_black').setInteractive();
-            this.stage3Icon.on('pointerdown', () => {
-                this.startAutoMove(this.stage3Icon.x, this.stage3Icon.y);
-                this.select = 3;
-            });
-            this.stage3Icon.setScale(0.5);
+            if (this.FakeBoss)
+                this.stage3Icon = this.add.sprite(700, 400, 'jaeminsuki_head').setInteractive();
+            else
+                this.stage3Icon = this.add.sprite(700, 400, 'jaeminsuki_head_black').setInteractive();
+
+                this.stage3Icon.on('pointerdown', () => {
+                    this.startAutoMove(this.stage3Icon.x, this.stage3Icon.y);
+                    this.select = 3;
+                });
+                this.stage3Icon.setScale(0.5);
         }
 
         // 기본 스프라이트 설정
@@ -159,7 +164,10 @@ export class StageSelectScene extends Phaser.Scene {
                         break;
                     case 3:
                         this.stageText.setText("Final Stage");
-                        this.stage = 4;
+                        if (!this.FakeBoss)
+                            this.stage = 'FakeBossScene';
+                        else
+                            this.stage = 4;
                         break;
                 }
 

@@ -19,6 +19,7 @@ export class BootScene extends Phaser.Scene {
         this.load.image('adc_lectureroom_broken', `${images}/adc_lectureroom_broken.png`);
 
         this.load.image('Jaemin_front', `${images}/Jaemin_front.png`);
+        this.load.image('Jaemin_clone', `${images}/Jaemin_clone.png`);
         this.load.image('Jaeminsuki', `${images}/Jaeminsuki.png`);
 
         this.load.image('jaemin', `${images}/jaemin.png`);
@@ -67,8 +68,11 @@ export class BootScene extends Phaser.Scene {
         this.load.audio('ROKA', [`${sounds}/ROKA.mp3`]);
         this.load.audio('esaka', [`${sounds}/esaka.mp3`]);
         this.load.audio('CheekiBreeki', [`${sounds}/CheekiBreeki.mp3`]);
+        this.load.audio('Jaeminsuki_theme', [`${sounds}/Jaeminsuki_theme.mp3`]);
         this.load.audio('MTEWorld', [`${sounds}/MTEWorld.mp3`]);
         this.load.audio('TaekwonV', [`${sounds}/TaekwonV.mp3`]);
+        this.load.audio('dark', [`${sounds}/dark.mp3`]);
+        this.load.audio('Jaemin_voice1', [`${sounds}/Jaemin_voice1.mp3`]);
 
         this.load.video('Jaemin_buriburi', `${images}/Jaemin_buriburi.mp4`, 'loadeddata', false, true);
         this.load.video('Jaeminsuki_buriburi', `${images}/Jaeminsuki_buriburi.mp4`, 'loadeddata', false, true);
@@ -77,7 +81,9 @@ export class BootScene extends Phaser.Scene {
         this.load.video('chosun', `${images}/chosun.mp4`, 'loadeddata', false, true);
         this.load.video('japan', `${images}/japan.mp4`, 'loadeddata', false, true);
         this.load.video('Kazachok', `${images}/Kazachok.mp4`, 'loadeddata', false, true);
+        this.load.video('hell', `${images}/hell.mp4`, 'loadeddata', false, true);
         this.load.video('Nigerundayo', `${images}/Nigerundayo.mp4`, 'loadeddata', false, true);
+        this.load.video('Diavolo', `${images}/Diavolo.mp4`, 'loadeddata', false, true);
         this.load.video('TaekwonV_Jaemin', `${images}/TaekwonV_Jaemin.mp4`, 'loadeddata', false, true);
 
         this.load.json('PrologueDialogues', `${msg}/Prologue.json`);

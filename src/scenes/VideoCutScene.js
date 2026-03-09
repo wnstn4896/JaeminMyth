@@ -13,17 +13,19 @@ export class VideoCutScene extends Phaser.Scene {
     create() {
         const video = this.add.video(640, 360, this.videoSrc);
 
-        switch (this.videoSrc){
-            case 'Nigerundayo':
-                this.stage = 4;
-                break;
-        }
-
         video.setMute(false);
         video.play();
 
         video.on('complete', () => {
-            this.scene.start('LoadingScene', { goToStage: this.stage });
+            switch (this.videoSrc){
+                case 'Nigerundayo':
+                    this.scene.start('LoadingScene', { goToStage: 'FakeBossScene' });
+                    break;
+                case 'Diavolo':
+                    this.scene.start('Stage4BattleScene');
+                    break;
+            }
         });
+
     }
 }

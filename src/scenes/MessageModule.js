@@ -6,6 +6,13 @@ const CHARACTER_CONFIG = {
         scale: 0.4,
         flipX: false,
     },
+    '재민?': {
+        texture: 'Jaemin_clone',
+        x: 680,
+        y: 720,
+        scale: 0.4,
+        flipX: true,
+    },
     '돌멩이': {
         texture: 'stone',
         x: 680,
