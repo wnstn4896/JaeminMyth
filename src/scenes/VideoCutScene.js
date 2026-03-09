@@ -15,7 +15,7 @@ export class VideoCutScene extends Phaser.Scene {
 
         switch (this.videoSrc){
             case 'Nigerundayo':
-                this.stage = 2;
+                this.stage = 4;
                 break;
         }
 
