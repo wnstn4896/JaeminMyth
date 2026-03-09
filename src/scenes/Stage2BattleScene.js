@@ -3,7 +3,6 @@ import { MessageModule } from './MessageModule.js';
 export class Stage2BattleScene extends Phaser.Scene {
     constructor() {
         super('Stage2BattleScene');
-        this.playerHP = 3; // 플레이어 체력
         this.enemyHP = 500;  // 적 체력
         this.shiftKey;
 
@@ -414,7 +413,7 @@ export class Stage2BattleScene extends Phaser.Scene {
     updateEnemyHPBar() {
         this.enemyHPBar.clear();
         this.enemyHPBar.fillStyle(0xff0000, 1); // 빨간색
-        this.enemyHPBar.fillRect(20, 20, (this.enemyHP / 800) * 700, 20); // 적 체력 바 위치
+        this.enemyHPBar.fillRect(20, 20, (this.enemyHP / 500) * 700, 20); // 적 체력 바 위치
     }
     
     updateBombUI() {
@@ -471,6 +470,9 @@ export class Stage2BattleScene extends Phaser.Scene {
             leftBullet.setVelocity(-200, -1500);
             leftBullet.setScale(0.1);
 
+
+            // 레벨업 시 탄막 추가(예정)
+            /*
             const rightBullet = this.playerBullets.create(this.player.x, this.player.y + 20, 'bullet');
             rightBullet.setVelocity(200, -1500);
             rightBullet.setScale(0.1);
@@ -611,6 +613,16 @@ export class Stage2BattleScene extends Phaser.Scene {
         this.controlsText.destroy();
         this.lifeText.destroy();
         this.skillText.destroy();
+
+        if (this.joystickBase) {
+            this.joystickBase.setVisible(false);
+            this.joystickHandle.setVisible(false);
+            this.fireButton.setVisible(false);
+            this.fireButtonText.setVisible(false);
+            this.bombButton.setVisible(false);
+            this.bombButtonText.setVisible(false);
+        }
+
         if (this.roadroller)
             this.roadroller.destroy();
         if (this.roadrollerTimer)

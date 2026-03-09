@@ -3,7 +3,6 @@ import { MessageModule } from './MessageModule.js';
 export class Stage3BattleScene extends Phaser.Scene {
     constructor() {
         super('Stage3BattleScene');
-        this.playerHP = 3; // 플레이어 체력
         this.enemyHP = 500;  // 적 체력
         this.shiftKey;
 
@@ -21,6 +20,11 @@ export class Stage3BattleScene extends Phaser.Scene {
         this.canUseBomb = true;
 
         this.bombIcons = [];
+
+        this.firstDialogueDone = false;
+        this.secondDialogueDone = false;
+        this.sovietSpawned = false;
+        this.sovietTimer = null;
 
         this.isClear = false;
     }
@@ -88,6 +92,8 @@ export class Stage3BattleScene extends Phaser.Scene {
         // 스킬(Bomb) 효과음 정의
         this.bombSFX = this.sound.add('sfx_Bomb', { volume: 0.4 });
 
+        this.sovietSFX = this.sound.add('sfx_CykaBlyat', { volume: 0.3 });
+
         // 입력 키 설정
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -143,7 +149,9 @@ export class Stage3BattleScene extends Phaser.Scene {
 
         // 탄막 그룹 설정
         this.playerBullets = this.physics.add.group();
-        this.enemyBullets = this.physics.add.group();
+        this.enemyBullets = this.physics.add.group({
+            allowGravity:false
+        });
 
         // 스페이스바 눌림 상태 이벤트 설정
         this.input.keyboard.on('keydown-SPACE', () => {
@@ -183,6 +191,24 @@ export class Stage3BattleScene extends Phaser.Scene {
             loop: true,
         });
 
+        this.time.addEvent({
+            delay: 200,
+            callback: () => {
+
+                const patterns = ['I','O','L','T', 'J', 'S', 'Z'];
+                const pattern = Phaser.Utils.Array.GetRandom(patterns);
+
+                const colors = ['red_block','blue_block'];
+                const color = Phaser.Utils.Array.GetRandom(colors);
+
+                const x = Phaser.Math.Between(100, 600);
+
+                this.spawnTetrisBlock(x, 0, pattern, color);
+
+            },
+            loop: true
+        });
+
         // 텍스트 UI
         this.controlsText = this.add.text(870, 260, '↑↓←→: 이동 | 스페이스바: 탄막 발사 | 쉬프트: 스킬', {
             fontSize: '16px',
@@ -216,8 +242,12 @@ export class Stage3BattleScene extends Phaser.Scene {
 
         // 월드맵을 벗어난 탄막 제거
         this.physics.world.on('worldbounds', (body) => {
-            if (body.gameObject && this.enemyBullets.contains(body.gameObject)) {
-                body.gameObject.destroy();
+            const obj = body.gameObject;
+            if (!obj) return;
+            if (this.enemyBullets.contains(obj)) {
+                // soviet 탄막은 파괴하지 않음
+                if (obj.isSoviet) return;
+                obj.destroy();
             }
         });
 
@@ -270,11 +300,25 @@ export class Stage3BattleScene extends Phaser.Scene {
         this.time.paused = false;
         this.isDialogueActive = false;
 
+        // 소비에트 필살기 생성
+        if (this.enemyHP <= 300 && !this.sovietSpawned) {
+            this.sovietSpawned = true;
+
+            this.spawnSovietBullet();
+
+            this.sovietTimer = this.time.addEvent({
+                delay: 2000,
+                callback: this.spawnSovietBullet,
+                callbackScope: this,
+                loop: true
+            });
+        }
+
         // 클리어 시 다음 씬 이동
         if (this.isClear){
             this.bgm.stop();
             sessionStorage.setItem("stageClear", 3);
-            this.scene.start('LoadingScene', { goToStage: 4 });
+            this.scene.start('NigerundayoScene');
         }
     }
 
@@ -333,7 +377,7 @@ export class Stage3BattleScene extends Phaser.Scene {
     updateEnemyHPBar() {
         this.enemyHPBar.clear();
         this.enemyHPBar.fillStyle(0xff0000, 1); // 빨간색
-        this.enemyHPBar.fillRect(20, 20, (this.enemyHP / 800) * 700, 20); // 적 체력 바 위치
+        this.enemyHPBar.fillRect(20, 20, (this.enemyHP / 500) * 700, 20); // 적 체력 바 위치
     }
     
     updateBombUI() {
@@ -357,15 +401,6 @@ export class Stage3BattleScene extends Phaser.Scene {
             );
 
             if (enemy.active) {
-                for (let angle = -30; angle <= 30; angle += 15) {
-                    const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'junsusuki_bullet');
-                    const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
-                    bullet.setVelocity(velocity.x, velocity.y);
-                    bullet.setScale(0.3);
-                    bullet.setCollideWorldBounds(true);
-                    bullet.body.onWorldBounds = true;
-                }
-
                 for (let angle = 0; angle <= 360; angle += 45) {
                     const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'junsusuki_bullet');
                     const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
@@ -378,18 +413,113 @@ export class Stage3BattleScene extends Phaser.Scene {
         });
     }
 
+    rotatePattern(pattern, rotation) {
+        let rotated = pattern;
+
+        for (let i = 0; i < rotation; i++) {
+            rotated = rotated.map(([x, y]) => [-y, x]);
+        }
+
+        return rotated;
+    }
+
+    spawnTetrisBlock(x, y, patternName, color='red_block') {
+        const TETRIS_PATTERNS = {
+            I: [
+            [0,0],[1,0],[2,0],[3,0]
+            ],
+            O: [
+            [0,0],[1,0],
+            [0,1],[1,1]
+            ],
+            T: [
+            [0,0],[1,0],[2,0],
+                  [1,1]
+            ],
+            L: [
+            [0,0],
+            [0,1],
+            [0,2],
+            [1,2]
+            ],
+            J: [
+                [1,2],
+                [1,1],
+            [0,2],[1,2]
+            ],
+            S: [
+            [1,0],[2,0],
+            [0,1],[1,1]
+            ],
+            Z: [
+            [0,0],[1,0],
+            [1,1],[2,1]
+            ]
+        };
+        
+        let pattern = TETRIS_PATTERNS[patternName];
+        // 랜덤 회전
+        const rotation = Phaser.Math.Between(0,3);
+        pattern = this.rotatePattern(pattern, rotation);
+
+        const blockSize = 48;
+
+        console.log(patternName);
+
+        pattern.forEach(([px, py]) => {
+            const block = this.enemyBullets.create(
+                x + px * blockSize,
+                y + py * blockSize,
+                color
+            );
+
+            block.setVelocityY(600);
+            block.setScale(0.3);
+            block.setCollideWorldBounds(true);
+            block.body.onWorldBounds = true;
+        });
+    }
+
+    // 소비에트 국기 탄막
+    spawnSovietBullet() {
+        const enemy = this.enemies.getChildren()[0];
+        if (!enemy) return;
+
+        this.sovietSFX.play();
+        this.cameras.main.shake(300, 0.03);
+
+        const bullet = this.enemyBullets.create(enemy.x, enemy.y, 'soviet');
+
+        bullet.setScale(0.6);
+        const vx = Phaser.Math.Between(-200, 200);
+        bullet.setVelocity(vx, 600);
+
+        bullet.setCollideWorldBounds(true);
+
+        bullet.setBounce(1,1); // 완전 반사
+
+        bullet.body.onWorldBounds = true;
+
+        bullet.isSoviet = true;
+
+        // 8초 뒤 자동 삭제
+        this.time.delayedCall(7000, () => {
+            if (bullet && bullet.active) bullet.destroy();
+        });
+    }
+
     shootPlayerBullet() {
         if (this.spaceKeyDown && !this.gameOver) {
             const straightBullet = this.playerBullets.create(this.player.x, this.player.y + 20, 'bullet');
             straightBullet.setVelocityY(-1000);
             straightBullet.setScale(0.2);
 
-            // 레벨업 시 탄막 추가(예정)
-            /*
             const leftBullet = this.playerBullets.create(this.player.x, this.player.y + 20, 'bullet');
             leftBullet.setVelocity(-200, -1500);
             leftBullet.setScale(0.1);
 
+            // 레벨업 시 탄막 추가(예정)
+            /*
             const rightBullet = this.playerBullets.create(this.player.x, this.player.y + 20, 'bullet');
             rightBullet.setVelocity(200, -1500);
             rightBullet.setScale(0.1);
@@ -468,7 +598,6 @@ export class Stage3BattleScene extends Phaser.Scene {
             if (this.playerHP === 10)
                 this.playerHP = 120; // 게임 오버 연출 중복 실행 방지
             bullet.destroy();
-            enemy.destroy();
             this.cameras.main.flash(2000, 255, 255, 255);
             setTimeout(() => {
                 this.isClear = true;
@@ -518,6 +647,9 @@ export class Stage3BattleScene extends Phaser.Scene {
     gameOverSequence() {
         this.gameOver = true;
 
+        // 타이머 정지
+        this.time.removeAllEvents();
+
         // 모든 게임 요소 제거 및 충돌 처리 중지
         this.physics.pause();  // 물리 엔진 정지
         this.player.setVisible(false);  // 플레이어 숨기기
@@ -530,6 +662,16 @@ export class Stage3BattleScene extends Phaser.Scene {
         this.controlsText.destroy();
         this.lifeText.destroy();
         this.skillText.destroy();
+
+        if (this.joystickBase) {
+            this.joystickBase.setVisible(false);
+            this.joystickHandle.setVisible(false);
+            this.fireButton.setVisible(false);
+            this.fireButtonText.setVisible(false);
+            this.bombButton.setVisible(false);
+            this.bombButtonText.setVisible(false);
+        }
+
         for (let i = 0; i < this.maxHP; i++) {
             this.heartIcons[i].setVisible(false);
         }
@@ -552,8 +694,8 @@ export class Stage3BattleScene extends Phaser.Scene {
     update() {
         if (this.isDialogueActive) return;
 
-        if (this.enemyHP <= 500 && !this.dialogueTriggered) {
-            this.dialogueTriggered = true;
+        if (this.enemyHP <= 500 && !this.firstDialogueDone) {
+            this.firstDialogueDone = true;
 
             this.pauseForDialogue([
                 { name: '블라디미르 준수스키', text: '거기 당신, 어디로 가시는 겁니까?' },
@@ -570,11 +712,23 @@ export class Stage3BattleScene extends Phaser.Scene {
             ]);
         }
 
+        if (this.enemyHP <= 300 && !this.secondDialogueDone) {
+            this.secondDialogueDone = true;
+
+            this.pauseForDialogue([
+                { name: '블라디미르 준수스키', text: '역시 보통이 아니군요.' },
+                { name: '블라디미르 준수스키', text: '탄막의 상태를 보니 방금 전의 녀석을 쓰러뜨리고 레벨업을 했나 봅니다.' },
+                { name: '블라디미르 준수스키', text: '하지만, 우리 소비에트 연방의 저력은 고작 이 정도가 아닙니다. 잘 보시죠.' },
+            ]);
+        }
+
         if (this.isClear) {
             this.dialogueTriggered = true;
 
             this.pauseForDialogue([
-                { name: '재민(가명)', text: '야 기분좋다' }
+                { name: '블라디미르 준수스키', text: '...이럴수가' },
+                { name: '재민(가명)', text: '뭐야? 이 놈 어떻게 살아있어?' },
+                { name: '블라디미르 준수스키', text: '저도 보통 인물이 아닙니다. 아무튼, 이렇게 된 이상...!' },
             ]);
         }
 

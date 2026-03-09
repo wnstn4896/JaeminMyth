@@ -35,6 +35,9 @@ export class BootScene extends Phaser.Scene {
 
         this.load.image('bullet', `${images}/bullet.png`);
         this.load.image('junsusuki_bullet', `${images}/junsusuki_bullet.png`);
+        this.load.image('red_block', `${images}/red_block.png`);
+        this.load.image('blue_block', `${images}/blue_block.png`);
+        this.load.image('soviet', `${images}/soviet.png`);
 
         this.load.image('heart', `${images}/heart.png`);
 
@@ -74,6 +77,7 @@ export class BootScene extends Phaser.Scene {
         this.load.video('chosun', `${images}/chosun.mp4`, 'loadeddata', false, true);
         this.load.video('japan', `${images}/japan.mp4`, 'loadeddata', false, true);
         this.load.video('Kazachok', `${images}/Kazachok.mp4`, 'loadeddata', false, true);
+        this.load.video('Nigerundayo', `${images}/Nigerundayo.mp4`, 'loadeddata', false, true);
         this.load.video('TaekwonV_Jaemin', `${images}/TaekwonV_Jaemin.mp4`, 'loadeddata', false, true);
 
         this.load.json('PrologueDialogues', `${msg}/Prologue.json`);

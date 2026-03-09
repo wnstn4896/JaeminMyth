@@ -3,7 +3,6 @@ import { MessageModule } from './MessageModule.js';
 export class Stage1BattleScene extends Phaser.Scene {
     constructor() {
         super('Stage1BattleScene');
-        this.playerHP = 3; // 플레이어 체력
         this.enemyHP = 500;  // 적 체력
         this.shiftKey;
 
@@ -332,7 +331,7 @@ export class Stage1BattleScene extends Phaser.Scene {
     updateEnemyHPBar() {
         this.enemyHPBar.clear();
         this.enemyHPBar.fillStyle(0xff0000, 1); // 빨간색
-        this.enemyHPBar.fillRect(20, 20, (this.enemyHP / 800) * 700, 20); // 적 체력 바 위치
+        this.enemyHPBar.fillRect(20, 20, (this.enemyHP / 500) * 700, 20); // 적 체력 바 위치
     }
     
     updateBombUI() {
@@ -522,6 +521,16 @@ export class Stage1BattleScene extends Phaser.Scene {
         this.controlsText.destroy();
         this.lifeText.destroy();
         this.skillText.destroy();
+
+        if (this.joystickBase) {
+            this.joystickBase.setVisible(false);
+            this.joystickHandle.setVisible(false);
+            this.fireButton.setVisible(false);
+            this.fireButtonText.setVisible(false);
+            this.bombButton.setVisible(false);
+            this.bombButtonText.setVisible(false);
+        }
+
         for (let i = 0; i < this.maxHP; i++) {
             this.heartIcons[i].setVisible(false);
         }
@@ -542,6 +551,7 @@ export class Stage1BattleScene extends Phaser.Scene {
     } 
 
     update() {
+        if (this.gameOver) return;
         if (this.isDialogueActive) return;
 
         if (this.enemyHP <= 450 && !this.dialogueTriggered) {
