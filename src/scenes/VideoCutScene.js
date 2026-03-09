@@ -1,11 +1,16 @@
-export class NigerundayoScene extends Phaser.Scene {
+export class VideoCutScene extends Phaser.Scene {
     constructor() {
-        super({ key: 'NigerundayoScene' });
+        super({ key: 'VideoCutScene' });
 
     }
 
+    init(data) {
+        this.videoSrc = data.videoSrc;
+    }
+
+
     create() {
-        const video = this.add.video(640, 360, 'Nigerundayo');
+        const video = this.add.video(640, 360, this.videoSrc);
 
         video.setMute(false);
         video.play();

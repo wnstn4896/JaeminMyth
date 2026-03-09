@@ -318,7 +318,7 @@ export class Stage3BattleScene extends Phaser.Scene {
         if (this.isClear){
             this.bgm.stop();
             sessionStorage.setItem("stageClear", 3);
-            this.scene.start('NigerundayoScene');
+            this.scene.start('VideoCutScene', { videoSrc: 'Nigerundayo' });
         }
     }
 
