@@ -291,7 +291,7 @@ export class Stage4BattleScene extends Phaser.Scene {
         // 클리어 시 다음 씬 이동
         if (this.isClear){
             this.bgm.stop();
-            sessionStorage.setItem("stageClear", 2);
+            sessionStorage.setItem("stageClear", 4);
             this.scene.start('CreditsScene');
         }
     }
@@ -464,19 +464,13 @@ export class Stage4BattleScene extends Phaser.Scene {
             straightBullet.setVelocityY(-1000);
             straightBullet.setScale(0.2);
 
-            // 레벨업 시 탄막 추가(예정)
-            /*
             const leftBullet = this.playerBullets.create(this.player.x, this.player.y + 20, 'bullet');
             leftBullet.setVelocity(-200, -1500);
             leftBullet.setScale(0.1);
 
-
-            // 레벨업 시 탄막 추가(예정)
-            /*
             const rightBullet = this.playerBullets.create(this.player.x, this.player.y + 20, 'bullet');
             rightBullet.setVelocity(200, -1500);
             rightBullet.setScale(0.1);
-            */
         }
     }
 
