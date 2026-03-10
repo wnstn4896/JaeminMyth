@@ -292,7 +292,7 @@ export class Stage4BattleScene extends Phaser.Scene {
         if (this.isClear){
             this.bgm.stop();
             sessionStorage.setItem("stageClear", 2);
-            this.scene.start('LoadingScene', { goToStage: 3 });
+            this.scene.start('CreditsScene');
         }
     }
 
