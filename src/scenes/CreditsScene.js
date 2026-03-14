@@ -34,7 +34,7 @@ export class CreditsScene extends Phaser.Scene {
         // STAFF 목록
         this.staffList = [
             { role: 'PROGRAMMING', name: 'JUNSU SHIN' },
-            { role: 'ART & STORY Director', name: 'GWANU JO' }
+            { role: 'ART & STORY Director', name: 'GWANWOO Jo' }
         ];
 
         this.currentIndex = 0;
