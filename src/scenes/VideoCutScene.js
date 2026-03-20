@@ -24,6 +24,9 @@ export class VideoCutScene extends Phaser.Scene {
                 case 'Diavolo':
                     this.scene.start('Stage4BattleScene');
                     break;
+                case 'Jaemin-jaeminsuki_gayjoygo':
+                    this.scene.start('LoadingScene', { goToStage: 'CreditsScene' });
+                    break;
             }
         });
 

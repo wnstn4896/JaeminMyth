@@ -93,6 +93,9 @@ export class LoadingScene extends Phaser.Scene {
                 case 'FakeBossScene':
                     this.scene.start('FakeBossScene');
                     break;
+                case 'CreditsScene':
+                    this.scene.start('CreditsScene');
+                    break;
                 default:
                     alert('오류.');
                     return;

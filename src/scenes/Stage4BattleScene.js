@@ -292,7 +292,7 @@ export class Stage4BattleScene extends Phaser.Scene {
         if (this.isClear){
             this.bgm.stop();
             sessionStorage.setItem("stageClear", 4);
-            this.scene.start('CreditsScene');
+            this.scene.start('VideoCutScene', { videoSrc: 'Jaemin-jaeminsuki_gayjoygo' });
         }
     }
 
@@ -651,6 +651,17 @@ export class Stage4BattleScene extends Phaser.Scene {
 
             this.pauseForDialogue([
                 { name: '나카무라 폰 아인츠베른 재민스키', text: '드디어 왔나?' },
+                { name: '재민(가명)', text: '?! 나랑 똑같은 목소리... 네놈은 누구냐?!' },
+                { name: '나카무라 폰 아인츠베른 재민스키', text: '나의 이름은 나카무라 폰 아인츠베른 재민스키. 너를 이곳으로 불러온 자다.' },
+                { name: '재민(가명)', text: '아니 어떻게 사람 이름이ㅋㅋㅋㅋㅋㅋㅋㅋㅋ나카무라ㅋㅋㅋㅋㅋ포니ㅋㅋㅋ아이젠스키ㅋㅋㅋㅋㅋㅋ' },
+                { name: '나카무라 폰 아인츠베른 재민스키', text: '...나를 화나게 하는 거라면 성공이다.' },
+                { name: '나카무라 폰 아인츠베른 재민스키', text: '나는 목소리 때문에 괴롭힘 받았었지...' },
+                { name: '나카무라 폰 아인츠베른 재민스키', text: '반면에, 네녀석은 행복한 삶을 살았더군.' },
+                { name: '나카무라 폰 아인츠베른 재민스키', text: '나는 평행세계의 너다. 네가 방금까지 만난 다른 녀석들도 네가 있던 세계 인물들의 평행세계 버전이지.' },
+                { name: '재민(가명)', text: '평행세계...?' },
+                { name: '나카무라 폰 아인츠베른 재민스키', text: '평행세계의 내가 꿀빠는 모습을 도저히 볼 수가 없어.' },
+                { name: '나카무라 폰 아인츠베른 재민스키', text: '그래서 너와 인격을 통합하고 싶다. 그렇기에 너를 데려온 거다.' },
+                { name: '나카무라 폰 아인츠베른 재민스키', text: '따라서 너는 나와 결합♂ 해줘야겠다. 순순히 받아들여라!' },
             ]);
         }
 
@@ -658,7 +669,7 @@ export class Stage4BattleScene extends Phaser.Scene {
             this.secondDialogueDone = true;
 
             this.pauseForDialogue([
-                { name: '나카무라 폰 아인츠베른 재민스키', text: '대사 써야됨.' },
+                { name: '나카무라 폰 아인츠베른 재민스키', text: '어이 네녀석, 네녀석은 날 두 번이나 화나게 했다!' },
             ]);
         }
 
