@@ -424,6 +424,9 @@ export class Stage3BattleScene extends Phaser.Scene {
     }
 
     spawnTetrisBlock(x, y, patternName, color='red_block') {
+        if (this.gameOver)
+            return;
+
         const TETRIS_PATTERNS = {
             I: [
             [0,0],[1,0],[2,0],[3,0]

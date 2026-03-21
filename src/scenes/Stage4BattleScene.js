@@ -95,7 +95,10 @@ export class Stage4BattleScene extends Phaser.Scene {
         // 스킬(Bomb) 효과음 정의
         this.bombSFX = this.sound.add('sfx_Bomb', { volume: 0.4 });
 
+        this.roadrollerSFX = this.sound.add('sfx_muda');
+
         this.voiceSFX1 = this.sound.add('Jaemin_voice1');
+        this.voiceSFX2 = this.sound.add('Jaemin_voice2');
 
         // 입력 키 설정
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -186,10 +189,28 @@ export class Stage4BattleScene extends Phaser.Scene {
 
         // 적 텔레포트 및 무작위 탄막 발사
         this.time.addEvent({
-            delay: 550, // 텔레포트 주기
+            delay: 450, // 텔레포트 주기
             callback: this.teleportEnemy,
             callbackScope: this,
             loop: true,
+        });
+
+        this.time.addEvent({
+            delay: 500,
+            callback: () => {
+
+                const patterns = ['I','O','L','T', 'J', 'S', 'Z'];
+                const pattern = Phaser.Utils.Array.GetRandom(patterns);
+
+                const colors = ['red_block','blue_block'];
+                const color = Phaser.Utils.Array.GetRandom(colors);
+
+                const x = Phaser.Math.Between(100, 600);
+
+                this.spawnTetrisBlock(x, 0, pattern, color);
+
+            },
+            loop: true
         });
 
         // 텍스트 UI
@@ -433,21 +454,21 @@ export class Stage4BattleScene extends Phaser.Scene {
             // 화면 내 무작위 위치로 텔레포트
             enemy.setPosition(
                 Phaser.Math.Between(100, 580), // 무작위 X
-                Phaser.Math.Between(100, 100)   // 무작위 Y
+                Phaser.Math.Between(100, 200)   // 무작위 Y
             );
 
             if (enemy.active) {
-                for (let angle = -30; angle <= 30; angle += 15) {
-                    const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'jjokbarisuki_bullet');
+                for (let angle = -45; angle <= 180; angle += 15) {
+                    const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'jaeminsuki_bullet');
                     const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
                     bullet.setVelocity(velocity.x, velocity.y);
-                    bullet.setScale(0.3);
+                    bullet.setScale(0.2);
                     bullet.setCollideWorldBounds(true);
                     bullet.body.onWorldBounds = true;
                 }
 
                 for (let angle = 0; angle <= 360; angle += 45) {
-                    const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'jjokbarisuki_bullet');
+                    const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'jaeminsuki_bullet');
                     const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
                     bullet.setVelocity(velocity.x, velocity.y);
                     bullet.setScale(0.3);
@@ -455,6 +476,76 @@ export class Stage4BattleScene extends Phaser.Scene {
                     bullet.body.onWorldBounds = true;
                 }
             }
+        });
+    }
+
+    rotatePattern(pattern, rotation) {
+        let rotated = pattern;
+
+        for (let i = 0; i < rotation; i++) {
+            rotated = rotated.map(([x, y]) => [-y, x]);
+        }
+
+        return rotated;
+    }
+
+    spawnTetrisBlock(x, y, patternName, color='red_block') {
+        if (this.gameOver)
+            return;
+
+        const TETRIS_PATTERNS = {
+            I: [
+            [0,0],[1,0],[2,0],[3,0]
+            ],
+            O: [
+            [0,0],[1,0],
+            [0,1],[1,1]
+            ],
+            T: [
+            [0,0],[1,0],[2,0],
+                  [1,1]
+            ],
+            L: [
+            [0,0],
+            [0,1],
+            [0,2],
+            [1,2]
+            ],
+            J: [
+                [1,2],
+                [1,1],
+            [0,2],[1,2]
+            ],
+            S: [
+            [1,0],[2,0],
+            [0,1],[1,1]
+            ],
+            Z: [
+            [0,0],[1,0],
+            [1,1],[2,1]
+            ]
+        };
+        
+        let pattern = TETRIS_PATTERNS[patternName];
+        // 랜덤 회전
+        const rotation = Phaser.Math.Between(0,3);
+        pattern = this.rotatePattern(pattern, rotation);
+
+        const blockSize = 48;
+
+        console.log(patternName);
+
+        pattern.forEach(([px, py]) => {
+            const block = this.enemyBullets.create(
+                x + px * blockSize,
+                y + py * blockSize,
+                color
+            );
+
+            block.setVelocityY(600);
+            block.setScale(0.3);
+            block.setCollideWorldBounds(true);
+            block.body.onWorldBounds = true;
         });
     }
 
@@ -665,8 +756,15 @@ export class Stage4BattleScene extends Phaser.Scene {
             ]);
         }
 
+        if (this.enemyHP <= 400 && !this.roadrollerSpawned) {
+            this.roadrollerSpawned = true;
+            this.spawnRoadroller();
+        }
+
         if (this.enemyHP <= 250 && !this.secondDialogueDone) {
             this.secondDialogueDone = true;
+
+            this.voiceSFX2.play();
 
             this.pauseForDialogue([
                 { name: '나카무라 폰 아인츠베른 재민스키', text: '어이 네녀석, 네녀석은 날 두 번이나 화나게 했다!' },

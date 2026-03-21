@@ -33,15 +33,15 @@ export class CreditsScene extends Phaser.Scene {
 
         // STAFF 목록
         this.staffList = [
-            { role: 'PROGRAMMING', name: 'JUNSU SHIN' },
-            { role: 'ART & STORY Director', name: 'GWANWOO Jo' }
+            { role: '[PROGRAMMING]', name: 'JUNSU SHIN' },
+            { role: '[ART & STORY Director]', name: 'GWANWOO Jo' }
         ];
 
         this.currentIndex = 0;
 
         // 일정 시간마다 다음 STAFF 표시
         this.time.addEvent({
-            delay: 2000,
+            delay: 3000,
             callback: this.showNextStaff,
             callbackScope: this,
             loop: true
