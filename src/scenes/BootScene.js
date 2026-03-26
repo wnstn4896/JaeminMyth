@@ -51,9 +51,9 @@ export class BootScene extends Phaser.Scene {
         this.load.image('jaeminsuki_head_black', `${images}/jaeminsuki_head_black.png`);
         this.load.image('select_btn', `${images}/select_btn.png`);
 
-        for (let i=1; i<=7; i++)
+        for (let i = 1; i <= 7; i++)
             this.load.image('Jaemin_MTE' + i, `${images}/Jaemin_MTE` + i + '.png');
-        for (let i=1; i<=3; i++)
+        for (let i = 1; i <= 3; i++)
             this.load.image('Jaemin_Run' + i, `${images}/Jaemin_Run` + i + '.png');
 
         this.load.image('gameover', `${images}/gameover.png`);
@@ -66,6 +66,7 @@ export class BootScene extends Phaser.Scene {
         this.load.audio('sfx_muda', [`${sounds}/sfx_muda.m4a`]);
         this.load.audio('sfx_CykaBlyat', [`${sounds}/sfx_CykaBlyat.mp3`]);
         this.load.audio('sfx_choonjat', [`${sounds}/sfx_choonjat.wav`]);
+        this.load.audio('sfx_KingCrimson', [`${sounds}/sfx_KingCrimson.mp3`]);
         this.load.audio('PrologueBGM', [`${sounds}/PrologueBGM.mp3`]);
         this.load.audio('ROKA', [`${sounds}/ROKA.mp3`]);
         this.load.audio('esaka', [`${sounds}/esaka.mp3`]);
@@ -96,6 +97,7 @@ export class BootScene extends Phaser.Scene {
     }
 
     create() {
+        sessionStorage.setItem("stageClear", 4);
         this.scene.start('TitleScene');
     }
 }

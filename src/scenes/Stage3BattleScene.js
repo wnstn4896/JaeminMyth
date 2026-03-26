@@ -45,19 +45,19 @@ export class Stage3BattleScene extends Phaser.Scene {
         const maskShape = this.make.graphics({}, false);
         maskShape.fillStyle(0xffffff);
         maskShape.fillRect(0, 0, 808, 720); // 월드 경계와 동일한 크기
-        
+
         const mask = maskShape.createGeometryMask();
         this.background.setMask(mask);
-        
+
         this.physics.world.setBounds(0, 0, 790, 720); // 월드 경계 설정
 
-         // 플레이어 생성
+        // 플레이어 생성
         this.player = this.physics.add.sprite(380, 600, 'jaemin');
         this.player.setCollideWorldBounds(true);
         this.player.setScale(0.15);
 
         // 피탄 판정 히트박스 생성
-        this.playerHitbox = this.add.circle(this.player.x, this.player.y, 5, 0xffffff); 
+        this.playerHitbox = this.add.circle(this.player.x, this.player.y, 5, 0xffffff);
         this.physics.add.existing(this.playerHitbox, false);
 
         // 히트박스 테두리 생성
@@ -114,7 +114,7 @@ export class Stage3BattleScene extends Phaser.Scene {
                 font: '20px Arial',
                 fill: '#ffffff',
             })
-            .setOrigin(0.5); // 텍스트를 버튼의 정 중앙에 배치
+                .setOrigin(0.5); // 텍스트를 버튼의 정 중앙에 배치
 
             // 발사 버튼 이벤트 처리
             this.fireButton.on('pointerdown', () => {
@@ -150,7 +150,7 @@ export class Stage3BattleScene extends Phaser.Scene {
         // 탄막 그룹 설정
         this.playerBullets = this.physics.add.group();
         this.enemyBullets = this.physics.add.group({
-            allowGravity:false
+            allowGravity: false
         });
 
         // 스페이스바 눌림 상태 이벤트 설정
@@ -195,10 +195,10 @@ export class Stage3BattleScene extends Phaser.Scene {
             delay: 200,
             callback: () => {
 
-                const patterns = ['I','O','L','T', 'J', 'S', 'Z'];
+                const patterns = ['I', 'O', 'L', 'T', 'J', 'S', 'Z'];
                 const pattern = Phaser.Utils.Array.GetRandom(patterns);
 
-                const colors = ['red_block','blue_block'];
+                const colors = ['red_block', 'blue_block'];
                 const color = Phaser.Utils.Array.GetRandom(colors);
 
                 const x = Phaser.Math.Between(100, 600);
@@ -265,7 +265,7 @@ export class Stage3BattleScene extends Phaser.Scene {
         // 화면에 있는 탄막 제거
         this.playerBullets.clear(true, true);
         this.enemyBullets.clear(true, true);
-        
+
         this.physics.pause();     // 물리 엔진 정지
         this.time.paused = true;  // 타이머 정지
         this.isDialogueActive = true;
@@ -315,7 +315,7 @@ export class Stage3BattleScene extends Phaser.Scene {
         }
 
         // 클리어 시 다음 씬 이동
-        if (this.isClear){
+        if (this.isClear) {
             this.bgm.stop();
             sessionStorage.setItem("stageClear", 3);
             this.scene.start('VideoCutScene', { videoSrc: 'Nigerundayo' });
@@ -327,7 +327,7 @@ export class Stage3BattleScene extends Phaser.Scene {
             this.joystickActive = true;
         }
     }
-    
+
     moveJoystick(pointer) {
         if (this.joystickActive) {
             const angle = Phaser.Math.Angle.Between(
@@ -336,7 +336,7 @@ export class Stage3BattleScene extends Phaser.Scene {
                 pointer.x,
                 pointer.y
             );
-    
+
             const distance = Phaser.Math.Clamp(
                 Phaser.Math.Distance.Between(
                     this.joystickBase.x,
@@ -347,17 +347,17 @@ export class Stage3BattleScene extends Phaser.Scene {
                 0,
                 50
             );
-    
+
             const dx = Math.cos(angle) * distance;
             const dy = Math.sin(angle) * distance;
-    
+
             this.joystickHandle.setPosition(this.joystickBase.x + dx, this.joystickBase.y + dy);
-    
+
             // 플레이어 이동
             this.player.setVelocity(dx * 11, dy * 11);
         }
     }
-    
+
     stopJoystick() {
         this.joystickActive = false;
         this.joystickHandle.setPosition(this.joystickBase.x, this.joystickBase.y);
@@ -373,13 +373,13 @@ export class Stage3BattleScene extends Phaser.Scene {
             }
         }
     }
-    
+
     updateEnemyHPBar() {
         this.enemyHPBar.clear();
         this.enemyHPBar.fillStyle(0xff0000, 1); // 빨간색
         this.enemyHPBar.fillRect(20, 20, (this.enemyHP / 500) * 700, 20); // 적 체력 바 위치
     }
-    
+
     updateBombUI() {
         for (let i = 0; i < this.maxBombs; i++) {
             if (i < this.currentBombs) {
@@ -423,46 +423,46 @@ export class Stage3BattleScene extends Phaser.Scene {
         return rotated;
     }
 
-    spawnTetrisBlock(x, y, patternName, color='red_block') {
+    spawnTetrisBlock(x, y, patternName, color = 'red_block') {
         if (this.gameOver)
             return;
 
         const TETRIS_PATTERNS = {
             I: [
-            [0,0],[1,0],[2,0],[3,0]
+                [0, 0], [1, 0], [2, 0], [3, 0]
             ],
             O: [
-            [0,0],[1,0],
-            [0,1],[1,1]
+                [0, 0], [1, 0],
+                [0, 1], [1, 1]
             ],
             T: [
-            [0,0],[1,0],[2,0],
-                  [1,1]
+                [0, 0], [1, 0], [2, 0],
+                [1, 1]
             ],
             L: [
-            [0,0],
-            [0,1],
-            [0,2],
-            [1,2]
+                [0, 0],
+                [0, 1],
+                [0, 2],
+                [1, 2]
             ],
             J: [
-                [1,2],
-                [1,1],
-            [0,2],[1,2]
+                [1, 2],
+                [1, 1],
+                [0, 2], [1, 2]
             ],
             S: [
-            [1,0],[2,0],
-            [0,1],[1,1]
+                [1, 0], [2, 0],
+                [0, 1], [1, 1]
             ],
             Z: [
-            [0,0],[1,0],
-            [1,1],[2,1]
+                [0, 0], [1, 0],
+                [1, 1], [2, 1]
             ]
         };
-        
+
         let pattern = TETRIS_PATTERNS[patternName];
         // 랜덤 회전
-        const rotation = Phaser.Math.Between(0,3);
+        const rotation = Phaser.Math.Between(0, 3);
         pattern = this.rotatePattern(pattern, rotation);
 
         const blockSize = 48;
@@ -499,7 +499,7 @@ export class Stage3BattleScene extends Phaser.Scene {
 
         bullet.setCollideWorldBounds(true);
 
-        bullet.setBounce(1,1); // 완전 반사
+        bullet.setBounce(1, 1); // 완전 반사
 
         bullet.body.onWorldBounds = true;
 
@@ -581,16 +581,16 @@ export class Stage3BattleScene extends Phaser.Scene {
     }
 
     endSkill() {
-    if (!this.isSkillActive) return;
+        if (!this.isSkillActive) return;
 
-    this.isInvincible = false;
-    this.isSkillActive = false;
+        this.isInvincible = false;
+        this.isSkillActive = false;
 
-    if (this.skillWave) {
-        this.skillWave.destroy();
-        this.skillWave = null;
+        if (this.skillWave) {
+            this.skillWave.destroy();
+            this.skillWave = null;
+        }
     }
-}
 
     handleBulletHit(bullet, enemy) {
         // 적 체력 감소
@@ -619,7 +619,7 @@ export class Stage3BattleScene extends Phaser.Scene {
 
         // 무적 시작
         this.isInvincible = true;
-    
+
         // 1초 동안 화면이 빨갛게 번쩍임 (플레이어 피격 연출)
         this.cameras.main.flash(1000, 255, 0, 0);
 
@@ -631,7 +631,7 @@ export class Stage3BattleScene extends Phaser.Scene {
             yoyo: true,
             repeat: 10
         });
-    
+
         // 플레이어 체력 감소
         this.playerHP -= 1;
         this.updatePlayerHPBar();
@@ -640,13 +640,13 @@ export class Stage3BattleScene extends Phaser.Scene {
         this.time.delayedCall(this.invincibleDuration, () => {
             this.isInvincible = false;
         });
-    
+
         if (this.playerHP <= 0) {
             // 게임 오버 연출 시작
             this.gameOverSequence();
         }
     }
-    
+
     gameOverSequence() {
         this.gameOver = true;
 
@@ -688,11 +688,11 @@ export class Stage3BattleScene extends Phaser.Scene {
         this.bgm.stop();
 
         this.sound.add('Jaemin_laugh').setVolume(0.3).play();
-    
+
         setTimeout(() => {
             window.location.reload();
         }, 2800);
-    } 
+    }
 
     update() {
         if (this.isDialogueActive) return;
@@ -754,7 +754,7 @@ export class Stage3BattleScene extends Phaser.Scene {
 
         // 히트박스 위치 동기화
         this.playerHitbox.setPosition(this.player.x, this.player.y);
-    
+
         // 적 경계 이탈 방지
         this.enemies.children.iterate((enemy) => {
             if (enemy.x <= 0 || enemy.x >= 1260) enemy.setVelocityX(-enemy.body.velocity.x);
