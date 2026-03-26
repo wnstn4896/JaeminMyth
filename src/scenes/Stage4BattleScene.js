@@ -102,7 +102,8 @@ export class Stage4BattleScene extends Phaser.Scene {
         this.voiceSFX1 = this.sound.add('Jaemin_voice1');
         this.voiceSFX2 = this.sound.add('Jaemin_voice2');
 
-        this.kingCrimsonSFX = this.sound.add('sfx_KingCrimson', { volume: 0.4 });
+        this.kingCrimsonSFX = this.sound.add('sfx_KingCrimson');
+        this.timeSkipSFX = this.sound.add('sfx_timeSkip');
 
         // 입력 키 설정
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -495,6 +496,7 @@ export class Stage4BattleScene extends Phaser.Scene {
 
         this.time.delayedCall(1000, () => {
             this.timeSkip = false;
+            this.timeSkipSFX.play();
             this.physics.resume();
         });
     }
@@ -589,6 +591,7 @@ export class Stage4BattleScene extends Phaser.Scene {
     activateSkill() {
         if (!this.canUseBomb) return;
         if (this.currentBombs <= 0) return;
+        if (this.timeSkip) return;
 
         // Bomb 1개 차감
         this.currentBombs--;
