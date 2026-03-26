@@ -9,7 +9,7 @@ export class CreditsScene extends Phaser.Scene {
 
         // 애니메이션 프레임 처리
         const MTEFrames = [];
-        for (let i=1; i <= 7; i++)
+        for (let i = 1; i <= 7; i++)
             MTEFrames.push({ key: 'Jaemin_MTE' + i });
 
         this.anims.create({
@@ -34,7 +34,8 @@ export class CreditsScene extends Phaser.Scene {
         // STAFF 목록
         this.staffList = [
             { role: '[PROGRAMMING]', name: 'JUNSU SHIN' },
-            { role: '[ART & STORY Director]', name: 'GWANWOO Jo' }
+            { role: '[ART & STORY DIRECTOR]', name: 'GWANWOO JO' },
+            { role: '[CV/VA]', name: 'JAEMIN NA' }
         ];
 
         this.currentIndex = 0;
@@ -48,7 +49,7 @@ export class CreditsScene extends Phaser.Scene {
         });
     }
 
-     showNextStaff() {
+    showNextStaff() {
         if (this.currentIndex >= this.staffList.length) {
             // 모든 STAFF 표시 후: 장면 전환 or 크레딧 종료
             this.time.delayedCall(1000000, () => {
