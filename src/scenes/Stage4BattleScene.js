@@ -477,25 +477,63 @@ export class Stage4BattleScene extends Phaser.Scene {
                     const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'jaeminsuki_bullet');
                     const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
                     bullet.setVelocity(velocity.x, velocity.y);
-                    bullet.setScale(0.3);
+                    (this.timeSkip) ? bullet.setScale(0.2) : bullet.setScale(0.3);
                     bullet.setCollideWorldBounds(true);
                     bullet.body.onWorldBounds = true;
+                }
+
+                if (this.timeSkip && this.enemyHP <= 150){
+                    for (let angle = -30; angle <= 30; angle += 30) {
+                        const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'jaeminsuki_bullet');
+                        const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
+                        bullet.setVelocity(velocity.x, velocity.y);
+                        bullet.setScale(0.1);
+                        bullet.setCollideWorldBounds(true);
+                        bullet.body.onWorldBounds = true;
+                    }
                 }
             }
         });
     }
 
     kingCrimson() {
-        if (!this.secondDialogueDone)
+        if (!this.secondDialogueDone || this.gameOver)
             return;
+
+        const overlay = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
+            .setOrigin(0)
+            .setDepth(999)
+            .setAlpha(0);
+
+        this.tweens.add({
+            targets: overlay,
+            alpha: 1,
+            duration: 300,
+            ease: 'Power2'
+        });
+
+        if (this.isDialogueActive || this.enemyHP <= 0){
+            overlay.destroy();
+            return;
+        }
 
         this.timeSkip = true;
         this.kingCrimsonSFX.play();
-        this.cameras.main.flash(3000, 0, 0, 0);
+
         this.physics.pause();
 
         this.time.delayedCall(1000, () => {
             this.timeSkip = false;
+
+            this.tweens.add({
+                targets: overlay,
+                alpha: 0,
+                duration: 500,
+                onComplete: () => overlay.destroy()
+            });
+
+            this.teleportEnemy();
+            this.cameras.main.shake(300, 0.05);
             this.timeSkipSFX.play();
             this.physics.resume();
         });
@@ -652,7 +690,7 @@ export class Stage4BattleScene extends Phaser.Scene {
 
     handleBulletHit(bullet, enemy) {
         // 적 체력 감소
-        this.enemyHP -= 1;
+        (this.secondDialogueDone) ? this.enemyHP -= 0.5 : this.enemyHP -= 1;
         this.updateEnemyHPBar();
 
         if (this.enemyHP <= 0) {
