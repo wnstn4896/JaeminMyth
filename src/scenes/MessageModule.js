@@ -47,6 +47,13 @@ const CHARACTER_CONFIG = {
         y: 720,
         scale: 0.4,
         flipX: true,
+    },
+    '얼티밋 씽 재민스키': {
+        texture: 'meka_jaeminsuki',
+        x: 680,
+        y: 720,
+        scale: 0.4,
+        flipX: true,
     }
 };
 

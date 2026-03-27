@@ -14,6 +14,7 @@ export class BootScene extends Phaser.Scene {
         this.load.image('title_sponsor', `${images}/title_sponsor.png`);
 
         this.load.image('background', `${images}/background.png`);
+        this.load.image('background_black', `${images}/background_black.png`);
         this.load.image('loading', `${images}/loading.png`);
         this.load.image('adc_lectureroom', `${images}/adc_lectureroom.png`);
         this.load.image('adc_lectureroom_broken', `${images}/adc_lectureroom_broken.png`);
@@ -21,6 +22,7 @@ export class BootScene extends Phaser.Scene {
         this.load.image('Jaemin_front', `${images}/Jaemin_front.png`);
         this.load.image('Jaemin_clone', `${images}/Jaemin_clone.png`);
         this.load.image('Jaeminsuki', `${images}/Jaeminsuki.png`);
+        this.load.image('meka_jaeminsuki', `${images}/meka_jaeminsuki.png`);
 
         this.load.image('jaemin', `${images}/jaemin.png`);
         this.load.image('jaemin', `${images}/jjokbarisuki.png`);
@@ -41,6 +43,10 @@ export class BootScene extends Phaser.Scene {
         this.load.image('soviet', `${images}/soviet.png`);
 
         this.load.image('jaeminsuki_bullet', `${images}/jaeminsuki_bullet.png`);
+
+        this.load.image('Omega_jaeminsuki', `${images}/Omega_jaeminsuki.png`);
+        this.load.image('red_bullet', `${images}/red_bullet.png`);
+        this.load.image('blue_bullet', `${images}/blue_bullet.png`);
 
         this.load.image('heart', `${images}/heart.png`);
 
