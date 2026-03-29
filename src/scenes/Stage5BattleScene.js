@@ -27,17 +27,12 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.isClear = false;
 
         this.patternRotation = 0;       // 현재 탄막 회전 각도(도)
-        this.patternRotationSpeed = 8;  // teleportEnemy 호출마다 8도씩 회전
+        this.patternRotationSpeed = 8;
     }
 
     create() {
         // 배경 설정
         this.backgroundUI = this.add.tileSprite(640, 360, 1280, 720, 'background_black'); // 배경 UI
-
-        // 클리핑 영역을 위한 그래픽스 객체 생성
-        const maskShape = this.make.graphics({}, false);
-        maskShape.fillStyle(0xffffff);
-        maskShape.fillRect(0, 0, 808, 720); // 월드 경계와 동일한 크기
         
         this.physics.world.setBounds(0, 0, 790, 720); // 월드 경계 설정
 
@@ -170,6 +165,14 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.monitor.setScale(0.087);
         this.monitor.play(true);
 
+        // 클리핑 영역을 위한 그래픽스 객체 생성
+        const maskShape = this.make.graphics({}, false);
+        maskShape.fillStyle(0xffffff);
+        maskShape.fillRect(100, 0, 400, 720);
+
+        const mask = maskShape.createGeometryMask();
+        this.monitor.setMask(mask);
+
         // 적 텔레포트 및 무작위 탄막 발사
         this.time.addEvent({
             delay: 150, // 텔레포트 주기
@@ -208,7 +211,7 @@ export class Stage5BattleScene extends Phaser.Scene {
         // 충돌 처리
         this.physics.add.overlap(this.playerBullets, this.enemies, this.handleBulletHit, null, this);
         this.physics.add.overlap(this.enemyBullets, this.playerHitbox, this.handlePlayerHit, null, this);
-        this.physics.add.collider(this.player, this.enemies);
+        // this.physics.add.collider(this.player, this.enemies);
 
         // 월드맵을 벗어난 탄막 제거
         this.physics.world.on('worldbounds', (body) => {
@@ -222,7 +225,7 @@ export class Stage5BattleScene extends Phaser.Scene {
         // 키 입력 처리
         this.shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 
-        this.bgm = this.sound.add('esaka', { loop: true });
+        this.bgm = this.sound.add('Jaeminsuki_theme', { loop: true });
         this.bgm.setVolume(0.4).play();
     }
 
