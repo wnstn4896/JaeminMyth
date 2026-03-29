@@ -211,7 +211,7 @@ export class Stage5BattleScene extends Phaser.Scene {
         // 충돌 처리
         this.physics.add.overlap(this.playerBullets, this.enemies, this.handleBulletHit, null, this);
         this.physics.add.overlap(this.enemyBullets, this.playerHitbox, this.handlePlayerHit, null, this);
-        // this.physics.add.collider(this.player, this.enemies);
+        this.physics.add.collider(this.player, this.enemies);
 
         // 월드맵을 벗어난 탄막 제거
         this.physics.world.on('worldbounds', (body) => {
