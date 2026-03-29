@@ -82,6 +82,7 @@ export class BootScene extends Phaser.Scene {
         this.load.audio('MTEWorld', [`${sounds}/MTEWorld.mp3`]);
         this.load.audio('TaekwonV', [`${sounds}/TaekwonV.mp3`]);
         this.load.audio('dark', [`${sounds}/dark.mp3`]);
+        this.load.audio('JoJo_Fight_to_Antagonize', [`${sounds}/JoJo_Fight_to_Antagonize.m4a`])
         this.load.audio('Jaemin_voice1', [`${sounds}/Jaemin_voice1.mp3`]);
         this.load.audio('Jaemin_voice2', [`${sounds}/Jaemin_voice2.mp3`]);
 

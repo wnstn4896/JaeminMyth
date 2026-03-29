@@ -6,8 +6,8 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.enemyHP = 500;  // 적 체력
         this.shiftKey;
 
-        this.maxHP = 5; // 최대 HP
-        this.playerHP = 5; // 현재 HP
+        this.maxHP = 7; // 최대 HP
+        this.playerHP = 7; // 현재 HP
         this.isInvincible = false;
         this.invincibleDuration = 1000; // 피격 시 무적 시간
 
@@ -225,7 +225,7 @@ export class Stage5BattleScene extends Phaser.Scene {
         // 키 입력 처리
         this.shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 
-        this.bgm = this.sound.add('Jaeminsuki_theme', { loop: true });
+        this.bgm = this.sound.add('JoJo_Fight_to_Antagonize', { loop: true });
         this.bgm.setVolume(0.4).play();
     }
 
