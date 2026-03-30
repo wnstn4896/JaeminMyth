@@ -27,7 +27,7 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.isClear = false;
 
         this.patternRotation = 0;       // 현재 탄막 회전 각도(도)
-        this.patternRotationSpeed = 8;
+        this.patternRotationSpeed = 16;
     }
 
     create() {

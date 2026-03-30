@@ -96,6 +96,9 @@ export class LoadingScene extends Phaser.Scene {
                 case 'CreditsScene':
                     this.scene.start('CreditsScene');
                     break;
+                case 5:
+                    this.scene.start('Stage5BattleScene');
+                    break;
                 default:
                     alert('오류.');
                     return;

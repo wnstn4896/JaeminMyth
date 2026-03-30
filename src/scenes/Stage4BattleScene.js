@@ -836,7 +836,7 @@ export class Stage4BattleScene extends Phaser.Scene {
             this.dialogueTriggered = true;
 
             this.pauseForDialogue([
-                { name: '재민(가명)', text: '대사 써야됨.' }
+                { name: '재민(가명)', text: '꼴 떨지 말고 이거나 받아라~!' }
             ]);
         }
 

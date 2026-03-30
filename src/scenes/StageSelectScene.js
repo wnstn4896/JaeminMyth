@@ -20,7 +20,7 @@ export class StageSelectScene extends Phaser.Scene {
 
     create() {
         this.background = this.add.tileSprite(640, 360, 1280, 720, 'background');
-        this.physics.world.setBounds(-70, 0, 1430, 600); // 월드 경계 설정
+        this.physics.world.setBounds(-70, 0, 1430, 700); // 월드 경계 설정
 
         this.background = this.add.video(360, 370, 'TaekwonV_Jaemin');
         this.background.setScale(2.1);
@@ -102,6 +102,15 @@ export class StageSelectScene extends Phaser.Scene {
                 this.stage3Icon.setScale(0.5);
         }
 
+        if (this.stageClear >= 4){
+            this.stage4Icon = this.add.sprite(400, 600, 'gameover').setInteractive();
+            this.stage4Icon.on('pointerdown', () => {
+                this.startAutoMove(this.stage4Icon.x, this.stage4Icon.y);
+                this.select = 4;
+            });
+            this.stage4Icon.setScale(0.2);
+        }
+
         // 기본 스프라이트 설정
         this.player = this.physics.add.sprite(100, 300, 'Jaemin_Run1');
         this.player.setCollideWorldBounds(true);
@@ -168,6 +177,10 @@ export class StageSelectScene extends Phaser.Scene {
                             this.stage = 'FakeBossScene';
                         else
                             this.stage = 4;
+                        break;
+                    case 4:
+                        this.stageText.setText("Hidden Stage");
+                        this.stage = 5;
                         break;
                 }
 
