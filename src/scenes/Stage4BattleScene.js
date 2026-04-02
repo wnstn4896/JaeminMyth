@@ -482,7 +482,7 @@ export class Stage4BattleScene extends Phaser.Scene {
                     bullet.body.onWorldBounds = true;
                 }
 
-                if (this.timeSkip && this.enemyHP <= 150){
+                if (this.timeSkip && this.enemyHP <= 150) {
                     for (let angle = -30; angle <= 30; angle += 30) {
                         const bullet = this.enemyBullets.create(enemy.x - 20, enemy.y, 'jaeminsuki_bullet');
                         const velocity = new Phaser.Math.Vector2(50, 500).rotate(Phaser.Math.DegToRad(angle));
@@ -512,7 +512,7 @@ export class Stage4BattleScene extends Phaser.Scene {
             ease: 'Power2'
         });
 
-        if (this.isDialogueActive || this.enemyHP <= 0){
+        if (this.isDialogueActive || this.enemyHP <= 0) {
             overlay.destroy();
             return;
         }
@@ -694,8 +694,6 @@ export class Stage4BattleScene extends Phaser.Scene {
         this.updateEnemyHPBar();
 
         if (this.enemyHP <= 0) {
-            if (this.playerHP === 10)
-                this.playerHP = 120; // 게임 오버 연출 중복 실행 방지
             bullet.destroy();
             enemy.destroy();
             this.cameras.main.flash(2000, 255, 255, 255);
@@ -738,7 +736,7 @@ export class Stage4BattleScene extends Phaser.Scene {
             this.isInvincible = false;
         });
 
-        if (this.playerHP <= 0) {
+        if (this.playerHP <= 0 && this.enemyHP > 0) {
             // 게임 오버 연출 시작
             this.gameOverSequence();
         }

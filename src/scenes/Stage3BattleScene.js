@@ -598,8 +598,6 @@ export class Stage3BattleScene extends Phaser.Scene {
         this.updateEnemyHPBar();
 
         if (this.enemyHP <= 0) {
-            if (this.playerHP === 10)
-                this.playerHP = 120; // 게임 오버 연출 중복 실행 방지
             bullet.destroy();
             this.cameras.main.flash(2000, 255, 255, 255);
             setTimeout(() => {
@@ -641,7 +639,7 @@ export class Stage3BattleScene extends Phaser.Scene {
             this.isInvincible = false;
         });
 
-        if (this.playerHP <= 0) {
+        if (this.playerHP <= 0 && this.enemyHP > 0) {
             // 게임 오버 연출 시작
             this.gameOverSequence();
         }

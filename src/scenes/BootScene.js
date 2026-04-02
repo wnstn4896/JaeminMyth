@@ -45,6 +45,10 @@ export class BootScene extends Phaser.Scene {
         this.load.image('jaeminsuki_bullet', `${images}/jaeminsuki_bullet.png`);
 
         this.load.image('Omega_jaeminsuki', `${images}/Omega_jaeminsuki.png`);
+        this.load.image('Omega_jaeminsuki_default', `${images}/Omega_jaeminsuki_default.png`);
+        this.load.image('Omega_jaeminsuki_stone', `${images}/Omega_jaeminsuki_stone.png`);
+        this.load.image('Omega_jaeminsuki_jjokbarisuki', `${images}/Omega_jaeminsuki_jjokbarisuki.png`);
+        this.load.image('Omega_jaeminsuki_junsusuki', `${images}/Omega_jaeminsuki_junsusuki.png`);
         this.load.image('red_bullet', `${images}/red_bullet.png`);
         this.load.image('blue_bullet', `${images}/blue_bullet.png`);
 

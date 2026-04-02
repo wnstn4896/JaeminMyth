@@ -48,19 +48,19 @@ export class Stage2BattleScene extends Phaser.Scene {
         const maskShape = this.make.graphics({}, false);
         maskShape.fillStyle(0xffffff);
         maskShape.fillRect(0, 0, 808, 720); // 월드 경계와 동일한 크기
-        
+
         const mask = maskShape.createGeometryMask();
         this.background.setMask(mask);
-        
+
         this.physics.world.setBounds(0, 0, 790, 720); // 월드 경계 설정
 
-         // 플레이어 생성
+        // 플레이어 생성
         this.player = this.physics.add.sprite(380, 600, 'jaemin');
         this.player.setCollideWorldBounds(true);
         this.player.setScale(0.15);
 
         // 피탄 판정 히트박스 생성
-        this.playerHitbox = this.add.circle(this.player.x, this.player.y, 5, 0xffffff); 
+        this.playerHitbox = this.add.circle(this.player.x, this.player.y, 5, 0xffffff);
         this.physics.add.existing(this.playerHitbox, false);
 
         // 히트박스 테두리 생성
@@ -117,7 +117,7 @@ export class Stage2BattleScene extends Phaser.Scene {
                 font: '20px Arial',
                 fill: '#ffffff',
             })
-            .setOrigin(0.5); // 텍스트를 버튼의 정 중앙에 배치
+                .setOrigin(0.5); // 텍스트를 버튼의 정 중앙에 배치
 
             // 발사 버튼 이벤트 처리
             this.fireButton.on('pointerdown', () => {
@@ -247,7 +247,7 @@ export class Stage2BattleScene extends Phaser.Scene {
         if (this.roadroller) {
             this.roadroller.destroy();
         }
-        
+
         this.physics.pause();     // 물리 엔진 정지
         this.time.paused = true;  // 타이머 정지
         this.isDialogueActive = true;
@@ -289,7 +289,7 @@ export class Stage2BattleScene extends Phaser.Scene {
         }
 
         // 클리어 시 다음 씬 이동
-        if (this.isClear){
+        if (this.isClear) {
             this.bgm.stop();
             sessionStorage.setItem("stageClear", 2);
             this.scene.start('LoadingScene', { goToStage: 3 });
@@ -305,7 +305,7 @@ export class Stage2BattleScene extends Phaser.Scene {
         if (forceSide) {
             this.roadrollerSide = forceSide;
         } else {
-            this.roadrollerSide = Phaser.Math.Between(0,1) === 0 ? 'left' : 'right';
+            this.roadrollerSide = Phaser.Math.Between(0, 1) === 0 ? 'left' : 'right';
         }
 
         const isLeft = this.roadrollerSide === 'left';
@@ -363,7 +363,7 @@ export class Stage2BattleScene extends Phaser.Scene {
             this.joystickActive = true;
         }
     }
-    
+
     moveJoystick(pointer) {
         if (this.joystickActive) {
             const angle = Phaser.Math.Angle.Between(
@@ -372,7 +372,7 @@ export class Stage2BattleScene extends Phaser.Scene {
                 pointer.x,
                 pointer.y
             );
-    
+
             const distance = Phaser.Math.Clamp(
                 Phaser.Math.Distance.Between(
                     this.joystickBase.x,
@@ -383,17 +383,17 @@ export class Stage2BattleScene extends Phaser.Scene {
                 0,
                 50
             );
-    
+
             const dx = Math.cos(angle) * distance;
             const dy = Math.sin(angle) * distance;
-    
+
             this.joystickHandle.setPosition(this.joystickBase.x + dx, this.joystickBase.y + dy);
-    
+
             // 플레이어 이동
             this.player.setVelocity(dx * 11, dy * 11);
         }
     }
-    
+
     stopJoystick() {
         this.joystickActive = false;
         this.joystickHandle.setPosition(this.joystickBase.x, this.joystickBase.y);
@@ -409,13 +409,13 @@ export class Stage2BattleScene extends Phaser.Scene {
             }
         }
     }
-    
+
     updateEnemyHPBar() {
         this.enemyHPBar.clear();
         this.enemyHPBar.fillStyle(0xff0000, 1); // 빨간색
         this.enemyHPBar.fillRect(20, 20, (this.enemyHP / 500) * 700, 20); // 적 체력 바 위치
     }
-    
+
     updateBombUI() {
         for (let i = 0; i < this.maxBombs; i++) {
             if (i < this.currentBombs) {
@@ -531,16 +531,16 @@ export class Stage2BattleScene extends Phaser.Scene {
     }
 
     endSkill() {
-    if (!this.isSkillActive) return;
+        if (!this.isSkillActive) return;
 
-    this.isInvincible = false;
-    this.isSkillActive = false;
+        this.isInvincible = false;
+        this.isSkillActive = false;
 
-    if (this.skillWave) {
-        this.skillWave.destroy();
-        this.skillWave = null;
+        if (this.skillWave) {
+            this.skillWave.destroy();
+            this.skillWave = null;
+        }
     }
-}
 
     handleBulletHit(bullet, enemy) {
         // 적 체력 감소
@@ -548,8 +548,6 @@ export class Stage2BattleScene extends Phaser.Scene {
         this.updateEnemyHPBar();
 
         if (this.enemyHP <= 0) {
-            if (this.playerHP === 10)
-                this.playerHP = 120; // 게임 오버 연출 중복 실행 방지
             bullet.destroy();
             enemy.destroy();
             this.cameras.main.flash(2000, 255, 255, 255);
@@ -570,7 +568,7 @@ export class Stage2BattleScene extends Phaser.Scene {
 
         // 무적 시작
         this.isInvincible = true;
-    
+
         // 1초 동안 화면이 빨갛게 번쩍임 (플레이어 피격 연출)
         this.cameras.main.flash(1000, 255, 0, 0);
 
@@ -582,7 +580,7 @@ export class Stage2BattleScene extends Phaser.Scene {
             yoyo: true,
             repeat: 10
         });
-    
+
         // 플레이어 체력 감소
         this.playerHP -= 1;
         this.updatePlayerHPBar();
@@ -591,13 +589,13 @@ export class Stage2BattleScene extends Phaser.Scene {
         this.time.delayedCall(this.invincibleDuration, () => {
             this.isInvincible = false;
         });
-    
-        if (this.playerHP <= 0) {
+
+        if (this.playerHP <= 0 && this.enemyHP > 0) {
             // 게임 오버 연출 시작
             this.gameOverSequence();
         }
     }
-    
+
     gameOverSequence() {
         this.gameOver = true;
 
@@ -627,7 +625,7 @@ export class Stage2BattleScene extends Phaser.Scene {
             this.roadroller.destroy();
         if (this.roadrollerTimer)
             this.roadrollerTimer.remove(false);
-        
+
         for (let i = 0; i < this.maxHP; i++) {
             this.heartIcons[i].setVisible(false);
         }
@@ -641,11 +639,11 @@ export class Stage2BattleScene extends Phaser.Scene {
         this.bgm.stop();
 
         this.sound.add('Jaemin_laugh').setVolume(0.3).play();
-    
+
         setTimeout(() => {
             window.location.reload();
         }, 2800);
-    } 
+    }
 
     update() {
         if (this.isDialogueActive) return;
@@ -705,7 +703,7 @@ export class Stage2BattleScene extends Phaser.Scene {
 
         // 히트박스 위치 동기화
         this.playerHitbox.setPosition(this.player.x, this.player.y);
-    
+
         // 적 경계 이탈 방지
         this.enemies.children.iterate((enemy) => {
             if (enemy.x <= 0 || enemy.x >= 1260) enemy.setVelocityX(-enemy.body.velocity.x);
