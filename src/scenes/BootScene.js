@@ -49,6 +49,7 @@ export class BootScene extends Phaser.Scene {
         this.load.image('Omega_jaeminsuki_stone', `${images}/Omega_jaeminsuki_stone.png`);
         this.load.image('Omega_jaeminsuki_jjokbarisuki', `${images}/Omega_jaeminsuki_jjokbarisuki.png`);
         this.load.image('Omega_jaeminsuki_junsusuki', `${images}/Omega_jaeminsuki_junsusuki.png`);
+        this.load.image('Omega_jaeminsuki_head', `${images}/Omega_jaeminsuki_head.png`);
         this.load.image('red_bullet', `${images}/red_bullet.png`);
         this.load.image('blue_bullet', `${images}/blue_bullet.png`);
 
@@ -94,6 +95,7 @@ export class BootScene extends Phaser.Scene {
         this.load.video('Jaeminsuki_buriburi', `${images}/Jaeminsuki_buriburi.mp4`, 'loadeddata', false, true);
         this.load.video('Jaemin_Appear', `${images}/Jaemin_Appear.mp4`, 'loadeddata', false, true);
         this.load.video('toongsil', `${images}/toongsil.mp4`, 'loadeddata', false, true);
+        this.load.video('junsusuki_keyboard', `${images}/junsusuki_keyboard.mp4`, 'loadeddata', false, true);
         this.load.video('chosun', `${images}/chosun.mp4`, 'loadeddata', false, true);
         this.load.video('japan', `${images}/japan.mp4`, 'loadeddata', false, true);
         this.load.video('Kazachok', `${images}/Kazachok.mp4`, 'loadeddata', false, true);

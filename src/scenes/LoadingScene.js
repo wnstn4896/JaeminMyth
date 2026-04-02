@@ -76,8 +76,8 @@ export class LoadingScene extends Phaser.Scene {
             this.barHeight
         );
 
-        if (this.player.x >= 999){
-            switch(this.goToStage){
+        if (this.player.x >= 999) {
+            switch (this.goToStage) {
                 case 1:
                     this.scene.start('Stage1BattleScene');
                     break;
@@ -95,6 +95,9 @@ export class LoadingScene extends Phaser.Scene {
                     break;
                 case 'CreditsScene':
                     this.scene.start('CreditsScene');
+                    break;
+                case 'HiddenStageScene':
+                    this.scene.start('HiddenStageScene');
                     break;
                 case 5:
                     this.scene.start('Stage5BattleScene');

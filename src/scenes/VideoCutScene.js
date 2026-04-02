@@ -17,7 +17,7 @@ export class VideoCutScene extends Phaser.Scene {
         video.play();
 
         video.on('complete', () => {
-            switch (this.videoSrc){
+            switch (this.videoSrc) {
                 case 'Nigerundayo':
                     this.scene.start('LoadingScene', { goToStage: 'FakeBossScene' });
                     break;
@@ -26,6 +26,9 @@ export class VideoCutScene extends Phaser.Scene {
                     break;
                 case 'Jaemin-jaeminsuki_gayjoygo':
                     this.scene.start('LoadingScene', { goToStage: 'CreditsScene' });
+                    break;
+                case 'junsusuki_keyboard':
+                    this.scene.start('Stage5BattleScene');
                     break;
             }
         });

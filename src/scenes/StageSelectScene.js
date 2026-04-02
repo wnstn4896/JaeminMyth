@@ -71,7 +71,7 @@ export class StageSelectScene extends Phaser.Scene {
         });
         this.defaultIcon.setScale(0.5);
 
-        if (this.stageClear >= 1){
+        if (this.stageClear >= 1) {
             this.stage1Icon = this.add.sprite(300, 400, 'jjokbarisuki_head').setInteractive();
             this.stage1Icon.on('pointerdown', () => {
                 this.startAutoMove(this.stage1Icon.x, this.stage1Icon.y);
@@ -80,7 +80,7 @@ export class StageSelectScene extends Phaser.Scene {
             this.stage1Icon.setScale(0.5);
         }
 
-        if (this.stageClear >= 2){
+        if (this.stageClear >= 2) {
             this.stage2Icon = this.add.sprite(500, 400, 'junsusuki_head').setInteractive();
             this.stage2Icon.on('pointerdown', () => {
                 this.startAutoMove(this.stage2Icon.x, this.stage2Icon.y);
@@ -89,26 +89,26 @@ export class StageSelectScene extends Phaser.Scene {
             this.stage2Icon.setScale(0.5);
         }
 
-        if (this.stageClear >= 3){
+        if (this.stageClear >= 3) {
             if (this.FakeBoss)
                 this.stage3Icon = this.add.sprite(700, 400, 'jaeminsuki_head').setInteractive();
             else
                 this.stage3Icon = this.add.sprite(700, 400, 'jaeminsuki_head_black').setInteractive();
 
-                this.stage3Icon.on('pointerdown', () => {
-                    this.startAutoMove(this.stage3Icon.x, this.stage3Icon.y);
-                    this.select = 3;
-                });
-                this.stage3Icon.setScale(0.5);
+            this.stage3Icon.on('pointerdown', () => {
+                this.startAutoMove(this.stage3Icon.x, this.stage3Icon.y);
+                this.select = 3;
+            });
+            this.stage3Icon.setScale(0.5);
         }
 
-        if (this.stageClear >= 4){
-            this.stage4Icon = this.add.sprite(400, 600, 'gameover').setInteractive();
+        if (this.stageClear >= 4) {
+            this.stage4Icon = this.add.sprite(400, 600, 'Omega_jaeminsuki_head').setInteractive();
             this.stage4Icon.on('pointerdown', () => {
                 this.startAutoMove(this.stage4Icon.x, this.stage4Icon.y);
                 this.select = 4;
             });
-            this.stage4Icon.setScale(0.2);
+            this.stage4Icon.setScale(0.6);
         }
 
         // 기본 스프라이트 설정
@@ -132,7 +132,7 @@ export class StageSelectScene extends Phaser.Scene {
         this.isAutoMove = true;
 
         // 방향 바라보기
-        if (this.targetX > this.player.x) 
+        if (this.targetX > this.player.x)
             this.player.setFlipX(true);
         else
             this.player.setFlipX(false);
@@ -180,7 +180,7 @@ export class StageSelectScene extends Phaser.Scene {
                         break;
                     case 4:
                         this.stageText.setText("Hidden Stage");
-                        this.stage = 5;
+                        this.stage = 'HiddenStageScene';
                         break;
                 }
 
@@ -208,7 +208,7 @@ export class StageSelectScene extends Phaser.Scene {
         this.player.setVelocity(0, 0);
 
         // 목적지 도착 후 선택 키 입력 시 해당 씬으로 전환
-        if ((this.isBtnPressed || this.spaceKey.isDown)){
+        if ((this.isBtnPressed || this.spaceKey.isDown)) {
             this.bgm.stop();
             this.selectSFX.play();
             this.scene.start('LoadingScene', { goToStage: this.stage });

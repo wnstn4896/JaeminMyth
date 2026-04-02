@@ -10,17 +10,18 @@ import { VideoCutScene } from './scenes/VideoCutScene.js';
 import { FakeBossScene } from './scenes/FakeBossScene.js';
 import { Stage4BattleScene } from './scenes/Stage4BattleScene.js';
 import { Stage5BattleScene } from './scenes/Stage5BattleScene.js';
+import { HiddenStageScene } from './scenes/HiddenStageScene.js';
 
 import { CreditsScene } from './scenes/CreditsScene.js';
 
-document.oncontextmenu = function(e) { return false; }
+document.oncontextmenu = function (e) { return false; }
 
 const config = {
     type: Phaser.AUTO,
     width: 1280,
     height: 720,
     transparent: true, // 캔버스 배경을 투명하게 설정
-    scene: [BootScene, TitleScene, PrologueScene, LoadingScene, Stage1BattleScene, Stage2BattleScene, Stage3BattleScene, Stage4BattleScene, Stage5BattleScene, VideoCutScene, FakeBossScene, StageSelectScene, CreditsScene], // 모든 Scene 등록
+    scene: [BootScene, TitleScene, PrologueScene, LoadingScene, Stage1BattleScene, Stage2BattleScene, Stage3BattleScene, Stage4BattleScene, HiddenStageScene, Stage5BattleScene, VideoCutScene, FakeBossScene, StageSelectScene, CreditsScene], // 모든 Scene 등록
     scale: {
         mode: Phaser.Scale.FIT, // 디바이스 화면에 맞게 비율 조정
         autoCenter: Phaser.Scale.CENTER_BOTH, // 화면 중앙 정렬
