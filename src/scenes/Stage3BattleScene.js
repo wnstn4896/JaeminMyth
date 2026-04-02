@@ -467,8 +467,6 @@ export class Stage3BattleScene extends Phaser.Scene {
 
         const blockSize = 48;
 
-        console.log(patternName);
-
         pattern.forEach(([px, py]) => {
             const block = this.enemyBullets.create(
                 x + px * blockSize,
