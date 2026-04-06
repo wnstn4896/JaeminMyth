@@ -176,6 +176,8 @@ export class HiddenStageScene extends Phaser.Scene {
                 enemy.setCollideWorldBounds(true); // 월드 경계 밖으로 못 나가게 설정
                 enemy.setBounce(1); // 충돌 시 반전
             });
+
+            this.cameras.main.flash(2000, 0, 0, 0);
         }
 
         // 텍스트 UI
