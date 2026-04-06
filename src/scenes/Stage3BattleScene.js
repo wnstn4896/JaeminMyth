@@ -680,14 +680,11 @@ export class Stage3BattleScene extends Phaser.Scene {
 
         // 배경 변경: 게임 오버 화면으로 설정
         this.background.setVisible(false);
-        this.backgroundUI.setTexture('gameover');
         this.bgm.stop();
 
-        this.sound.add('Jaemin_laugh').setVolume(0.3).play();
-
         setTimeout(() => {
-            window.location.reload();
-        }, 2800);
+            this.scene.start('VideoCutScene', { videoSrc: 'gameover' });
+        }, 1000);
     }
 
     update() {

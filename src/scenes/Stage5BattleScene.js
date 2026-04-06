@@ -561,7 +561,7 @@ export class Stage5BattleScene extends Phaser.Scene {
             this.voiceSFX3.play();
 
             this.pauseForDialogue([
-                { name: '얼티밋 오메가알파델타 재민스키', text: '아무리 네녀석이라도, 나의 힘은 뛰어넘을 수 없을 것이다!' }
+                { name: '그랜드 얼티밋 마제스티 재민스키', text: '아무리 네녀석이라도, 나의 힘은 뛰어넘을 수 없을 것이다!' }
             ]);
         }
 
@@ -569,7 +569,7 @@ export class Stage5BattleScene extends Phaser.Scene {
             this.secondDialogueDone = true;
 
             this.pauseForDialogue([
-                { name: '얼티밋 오메가알파델타 재민스키', text: '대사 테스트' }
+                { name: '그랜드 얼티밋 마제스티 재민스키', text: '대사 테스트' }
             ]);
         }
 
