@@ -56,6 +56,9 @@ export class VideoCutScene extends Phaser.Scene {
                         this.scene.start('Stage5BattleScene');
                     });
                     break;
+                case 'gameover':
+                    window.location.reload();
+                    break;
             }
         });
 
