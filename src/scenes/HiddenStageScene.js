@@ -24,6 +24,13 @@ export class HiddenStageScene extends Phaser.Scene {
         this.isClear = false;
     }
 
+    init(data) {
+        if (data && data.HiddenSceneDone)
+            this.HiddenSceneDone = true;
+        else
+            this.HiddenSceneDone = false;
+    }
+
     create() {
         // 배경 설정
         this.backgroundUI = this.add.tileSprite(640, 360, 1280, 720, 'background_black'); // 배경 UI
@@ -156,6 +163,21 @@ export class HiddenStageScene extends Phaser.Scene {
             enemy.setBounce(1); // 충돌 시 반전
         });
 
+        // 두 번째 적 생성
+        if (this.HiddenSceneDone){
+            this.enemies = this.physics.add.group({
+                key: 'Jaeminsuki',
+                repeat: 0, // 적 1개만 생성
+                setXY: { x: 500, y: 100 },
+            });
+
+            this.enemies.children.iterate((enemy) => {
+                enemy.setScale(0.065);
+                enemy.setCollideWorldBounds(true); // 월드 경계 밖으로 못 나가게 설정
+                enemy.setBounce(1); // 충돌 시 반전
+            });
+        }
+
         // 텍스트 UI
         this.controlsText = this.add.text(870, 260, '↑↓←→: 이동 | 스페이스바: 탄막 발사 | 쉬프트: 스킬', {
             fontSize: '16px',
@@ -243,8 +265,10 @@ export class HiddenStageScene extends Phaser.Scene {
         this.isDialogueActive = false;
 
         this.bgm.stop();
-        sessionStorage.setItem("FakeBoss", true);
-        this.scene.start('VideoCutScene', { videoSrc: 'junsusuki_keyboard' });
+        if (this.HiddenSceneDone)
+            this.scene.start('VideoCutScene', { videoSrc: 'Jaeminsuki_buriburi' });
+        else
+            this.scene.start('VideoCutScene', { videoSrc: 'junsusuki_keyboard' });
     }
 
     startJoystick(pointer) {
@@ -504,6 +528,17 @@ export class HiddenStageScene extends Phaser.Scene {
                 { name: '재민(가명)', text: '너 이 스키, 설마?!' },
                 { name: '블라디미르 준수스키', text: '「그 분」과는 달리, 저는 그런 시덥잖은 목적으로 당신을 휘말리게 한 게 아닙니다. 그저...' },
                 { name: '블라디미르 준수스키', text: '소비에트 연방의 재건을 위하여!\n\n\n(제작자의 의견과 전혀 관련이 없습니다.)' },
+            ]);
+        }
+
+        if (this.HiddenSceneDone){
+            this.dialogueTriggered = true;
+
+            this.pauseForDialogue([
+                { name: '블라디미르 준수스키', text: '이것으로 「그」는 부활했습니다.' },
+                { name: '재민(가명)', text: '?!' },
+                { name: '나카무라 폰 아인츠베른 재민스키', text: '...이젠 이 세계가 어떻게 되든 상관 없다. 그러므로 「금단의 방법」을 사용할 것이다.' },
+                { name: '나카무라 폰 아인츠베른 재민스키', text: '이 세계와 내 모든 것을 걸고 네녀석 만큼은 확실하게 처리해 주겠다!' }
             ]);
         }
 

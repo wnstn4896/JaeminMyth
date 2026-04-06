@@ -77,6 +77,8 @@ export class Stage5BattleScene extends Phaser.Scene {
         // 스킬(Bomb) 효과음 정의
         this.bombSFX = this.sound.add('sfx_Bomb', { volume: 0.4 });
 
+        this.voiceSFX3 = this.sound.add('Jaemin_voice3');
+
         // 입력 키 설정
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -225,7 +227,7 @@ export class Stage5BattleScene extends Phaser.Scene {
         // 키 입력 처리
         this.shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 
-        this.bgm = this.sound.add('JoJo_Fight_to_Antagonize', { loop: true });
+        this.bgm = this.sound.add('JoJo_Awaken_part2', { loop: true });
         this.bgm.setVolume(0.4).play();
     }
 
@@ -559,9 +561,10 @@ export class Stage5BattleScene extends Phaser.Scene {
         if (this.enemyHP <= 500 && !this.firstDialogueDone) {
             this.firstDialogueDone = true;
 
-            this.pauseForDialogue([
-                { name: '얼티밋 씽 재민스키', text: '대사 테스트' }
+            this.voiceSFX3.play();
 
+            this.pauseForDialogue([
+                { name: '얼티밋 오메가알파델타 재민스키', text: '아무리 네녀석이라도, 나의 힘은 뛰어넘을 수 없을 것이다!' }
             ]);
         }
 
@@ -569,7 +572,7 @@ export class Stage5BattleScene extends Phaser.Scene {
             this.secondDialogueDone = true;
 
             this.pauseForDialogue([
-                { name: '얼티밋 씽 재민스키', text: '대사 테스트' }
+                { name: '얼티밋 오메가알파델타 재민스키', text: '대사 테스트' }
             ]);
         }
 
