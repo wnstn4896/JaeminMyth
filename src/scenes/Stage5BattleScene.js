@@ -545,11 +545,12 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.monitor.setVisible(false);
 
         // 배경 변경: 게임 오버 화면으로 설정
+        this.backgroundUI.setTexture('background_black');
         this.bgm.stop();
 
         setTimeout(() => {
             this.scene.start('VideoCutScene', { videoSrc: 'gameover' });
-        }, 1000);
+        }, 500);
     }
 
     update() {
