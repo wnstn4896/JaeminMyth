@@ -726,8 +726,10 @@ export class Stage4BattleScene extends Phaser.Scene {
         });
 
         // 플레이어 체력 감소
-        this.playerHP -= 1;
-        this.updatePlayerHPBar();
+        if (!this.gameOver) {
+            this.playerHP -= 1;
+            this.updatePlayerHPBar();
+        }
 
         // 무적 타이머
         this.time.delayedCall(this.invincibleDuration, () => {
