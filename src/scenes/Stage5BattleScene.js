@@ -183,6 +183,14 @@ export class Stage5BattleScene extends Phaser.Scene {
             loop: true,
         });
 
+        // 블래스터 공격 타이머
+        this.blasterEvent = this.time.addEvent({
+            delay: 3000,
+            callback: this.spawnBlaster,
+            callbackScope: this,
+            loop: true,
+        });
+
         // 텍스트 UI
         this.controlsText = this.add.text(870, 260, '↑↓←→: 이동 | 스페이스바: 탄막 발사 | 쉬프트: 스킬', {
             fontSize: '16px',
@@ -376,6 +384,101 @@ export class Stage5BattleScene extends Phaser.Scene {
         });
     }
 
+    spawnBlaster() {
+        if (this.gameOver || this.physics.world.isPaused) return;
+
+        const x = Phaser.Math.Between(50, 740);
+        const y = Phaser.Math.Between(300, 500);
+
+        const blaster = this.add.sprite(x, y, 'Jaemin_breath1');
+        blaster.setScale(0.6);
+
+        this.sound.play('sfx_breathCharge');
+
+        // 플레이어 방향 계산
+        const rawAngle = Phaser.Math.Angle.Between(x, y, this.player.x, this.player.y);
+
+        // 4방향 대각선으로 스냅
+        const directions = [
+            Phaser.Math.DegToRad(45),
+            Phaser.Math.DegToRad(135),
+            Phaser.Math.DegToRad(-45),
+            Phaser.Math.DegToRad(-135),
+        ];
+
+        // 가장 가까운 각도 선택
+        let angle = directions[0];
+        let minDiff = Math.abs(Phaser.Math.Angle.Wrap(rawAngle - angle));
+
+        for (let dir of directions) {
+            const diff = Math.abs(Phaser.Math.Angle.Wrap(rawAngle - dir));
+            if (diff < minDiff) {
+                minDiff = diff;
+                angle = dir;
+            }
+        }
+
+        // flip 처리
+        if (Math.cos(angle) < 0) {
+            blaster.setFlipY(true);  // 필요하면 flipX로 바꿔 테스트
+        } else {
+            blaster.setFlipY(false);
+        }
+
+        blaster.rotation = angle;
+
+        this.time.delayedCall(1000, () => {
+            this.fireBlaster(blaster, angle);
+        });
+    }
+
+    fireBlaster(blaster, angle) {
+        if (!blaster || !blaster.active || this.gameOver) return;
+
+        blaster.setTexture('Jaemin_breath2');
+        this.sound.play('sfx_breathFire');
+
+        const bulletSpeed = 1000;
+        const fireRate = 50; // 발사 간격
+        const duration = 1000; // 전체 발사 시간
+
+        // 기관총처럼 반복 발사
+        const shootEvent = this.time.addEvent({
+            delay: fireRate,
+            repeat: duration / fireRate,
+            callback: () => {
+                if (!blaster.active) return;
+
+                // 살짝 퍼지게 하고 싶으면 랜덤 추가
+                const spread = Phaser.Math.DegToRad(Phaser.Math.Between(-10, 10));
+                const finalAngle = angle + spread;
+
+                const bullet = this.enemyBullets.create(
+                    blaster.x,
+                    blaster.y+40,
+                    'red_bullet'
+                );
+
+                bullet.setScale(0.2);
+                bullet.setVelocity(
+                    Math.cos(finalAngle) * bulletSpeed,
+                    Math.sin(finalAngle) * bulletSpeed
+                );
+
+                bullet.setCollideWorldBounds(true);
+                bullet.body.onWorldBounds = true;
+            }
+        });
+
+        this.cameras.main.shake(800, 0.01);
+
+        // 발사 끝나면 정리
+        this.time.delayedCall(duration, () => {
+            shootEvent.remove();
+            blaster.destroy();
+        });
+    }
+
     shootPlayerBullet() {
         return;
         if (this.spaceKeyDown && !this.gameOver) {
@@ -523,10 +626,16 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.playerHitboxBorder.setVisible(false);
         this.enemies.clear(true, true); // 적 제거
         this.playerBullets.clear(true, true); // 플레이어 탄막 제거
-        this.enemyBullets.clear(true, true); // 적 탄막 제
+        this.enemyBullets.clear(true, true); // 적 탄막 제거
         this.controlsText.destroy();
         this.lifeText.destroy();
         this.skillText.destroy();
+
+        // 블래스터 타이머 제거
+        if (this.blasterEvent) {
+            this.blasterEvent.remove(false);
+            this.blasterEvent = null;
+        }
 
         if (this.joystickBase) {
             this.joystickBase.setVisible(false);

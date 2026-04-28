@@ -67,7 +67,8 @@ export class BootScene extends Phaser.Scene {
         for (let i = 1; i <= 3; i++)
             this.load.image('Jaemin_Run' + i, `${images}/Jaemin_Run` + i + '.png');
 
-        this.load.image('gameover', `${images}/gameover.png`);
+        this.load.image('Jaemin_breath1', `${images}/Jaemin_breath1.png`);
+        this.load.image('Jaemin_breath2', `${images}/Jaemin_breath2.png`);
 
         this.load.audio('Jaemin_laugh', [`${sounds}/Jaemin_laugh.m4a`]);
         this.load.audio('sponsor', [`${sounds}/sponsor.m4a`]);
