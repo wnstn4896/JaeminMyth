@@ -177,7 +177,7 @@ export class Stage5BattleScene extends Phaser.Scene {
 
         // 적 텔레포트 및 무작위 탄막 발사
         this.time.addEvent({
-            delay: 150, // 텔레포트 주기
+            delay: 200, // 텔레포트 주기
             callback: this.teleportEnemy,
             callbackScope: this,
             loop: true,
