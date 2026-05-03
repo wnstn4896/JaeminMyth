@@ -385,7 +385,8 @@ export class Stage5BattleScene extends Phaser.Scene {
     }
 
     spawnBlaster() {
-        if (this.gameOver || this.physics.world.isPaused) return;
+        if (this.physics.world.isPaused) return;
+        if (this.gameOver) blaster.destroy();
 
         const x = Phaser.Math.Between(50, 740);
         const y = Phaser.Math.Between(300, 500);
@@ -433,7 +434,8 @@ export class Stage5BattleScene extends Phaser.Scene {
     }
 
     fireBlaster(blaster, angle) {
-        if (!blaster || !blaster.active || this.gameOver) return;
+        if (!blaster || !blaster.active) return;
+        if (this.gameOver) blaster.destroy();
 
         blaster.setTexture('Jaemin_breath2');
         this.sound.play('sfx_breathFire');
