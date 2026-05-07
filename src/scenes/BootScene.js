@@ -52,6 +52,7 @@ export class BootScene extends Phaser.Scene {
         this.load.image('Omega_jaeminsuki_head', `${images}/Omega_jaeminsuki_head.png`);
         this.load.image('red_bullet', `${images}/red_bullet.png`);
         this.load.image('blue_bullet', `${images}/blue_bullet.png`);
+        this.load.image('green_bullet', `${images}/green_bullet.png`);
 
         this.load.image('heart', `${images}/heart.png`);
 

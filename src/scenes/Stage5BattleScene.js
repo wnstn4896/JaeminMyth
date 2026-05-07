@@ -177,7 +177,7 @@ export class Stage5BattleScene extends Phaser.Scene {
 
         // 적 텔레포트 및 무작위 탄막 발사
         this.time.addEvent({
-            delay: 200, // 텔레포트 주기
+            delay: 280, // 텔레포트 주기
             callback: this.teleportEnemy,
             callbackScope: this,
             loop: true,
@@ -457,8 +457,8 @@ export class Stage5BattleScene extends Phaser.Scene {
 
                 const bullet = this.enemyBullets.create(
                     blaster.x,
-                    blaster.y+40,
-                    'red_bullet'
+                    blaster.y + 40,
+                    'green_bullet'
                 );
 
                 bullet.setScale(0.2);
