@@ -386,7 +386,10 @@ export class Stage5BattleScene extends Phaser.Scene {
 
     spawnBlaster() {
         if (this.physics.world.isPaused) return;
-        if (this.gameOver) blaster.destroy();
+        if (this.gameOver) {
+            blaster.destroy();
+            return;
+        }
 
         const x = Phaser.Math.Between(50, 740);
         const y = Phaser.Math.Between(300, 500);
