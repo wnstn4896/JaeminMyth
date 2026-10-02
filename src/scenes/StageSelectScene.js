@@ -15,6 +15,7 @@ export class StageSelectScene extends Phaser.Scene {
         this.stage;
         this.stageClear = Number(sessionStorage.getItem("stageClear")) || 0;
         this.FakeBoss = sessionStorage.getItem("FakeBoss");
+        this.HiddenSceneDone = sessionStorage.getItem("HiddenSceneDone");
         this.isBtnPressed;
     }
 
@@ -180,7 +181,10 @@ export class StageSelectScene extends Phaser.Scene {
                         break;
                     case 4:
                         this.stageText.setText("Hidden Stage");
-                        this.stage = 'HiddenStageScene';
+                        if (this.HiddenSceneDone)
+                            this.stage = 5;
+                        else
+                            this.stage = 'HiddenStageScene';
                         break;
                 }
 

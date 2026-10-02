@@ -164,7 +164,7 @@ export class HiddenStageScene extends Phaser.Scene {
         });
 
         // 두 번째 적 생성
-        if (this.HiddenSceneDone){
+        if (this.HiddenSceneDone) {
             this.enemies = this.physics.add.group({
                 key: 'Jaeminsuki',
                 repeat: 0, // 적 1개만 생성
@@ -478,7 +478,7 @@ export class HiddenStageScene extends Phaser.Scene {
         this.playerHitboxBorder.setVisible(false);
         this.enemies.clear(true, true); // 적 제거
         this.playerBullets.clear(true, true); // 플레이어 탄막 제거
-        this.enemyBullets.clear(true, true); // 적 탄막 제
+        this.enemyBullets.clear(true, true); // 적 탄막 제거
         this.controlsText.destroy();
         this.lifeText.destroy();
         this.skillText.destroy();
@@ -533,7 +533,7 @@ export class HiddenStageScene extends Phaser.Scene {
             ]);
         }
 
-        if (this.HiddenSceneDone){
+        if (this.HiddenSceneDone) {
             this.dialogueTriggered = true;
 
             this.pauseForDialogue([

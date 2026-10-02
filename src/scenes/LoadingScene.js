@@ -9,6 +9,8 @@ export class LoadingScene extends Phaser.Scene {
         this.targetX = null;
         this.targetY = null;
         this.autoSpeed = 360;
+
+        this.isTransitioning = false;
     }
 
     init(data) {
@@ -77,6 +79,10 @@ export class LoadingScene extends Phaser.Scene {
         );
 
         if (this.player.x >= 999) {
+            if (this.isTransitioning) return;
+
+            this.isTransitioning = true;
+
             switch (this.goToStage) {
                 case 1:
                     this.scene.start('Stage1BattleScene');
@@ -100,7 +106,24 @@ export class LoadingScene extends Phaser.Scene {
                     this.scene.start('HiddenStageScene');
                     break;
                 case 5:
-                    this.scene.start('Stage5BattleScene');
+                    this.hiddenbgm = this.sound.add('JoJo_Awaken_part1');
+                    this.hiddenbgm.setVolume(0.7).play();
+
+                    const overlay = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
+                        .setOrigin(0)
+                        .setDepth(999)
+                        .setAlpha(0);
+
+                    this.tweens.add({
+                        targets: overlay,
+                        alpha: 1,
+                        duration: 300,
+                        ease: 'Power2'
+                    });
+
+                    this.hiddenbgm.on('complete', () => {
+                        this.scene.start('Stage5BattleScene');
+                    });
                     break;
                 default:
                     alert('오류.');

@@ -28,7 +28,7 @@ export class VideoCutScene extends Phaser.Scene {
                     this.scene.start('LoadingScene', { goToStage: 'CreditsScene' });
                     break;
                 case 'junsusuki_keyboard':
-                    this.scene.start('HiddenStageScene', { HiddenSceneDone : true });
+                    this.scene.start('HiddenStageScene', { HiddenSceneDone: true });
                     break;
                 case 'Jaeminsuki_buriburi':
                     this.bgm = this.sound.add('JoJo_Awaken_part1');
@@ -53,6 +53,7 @@ export class VideoCutScene extends Phaser.Scene {
                             duration: 500,
                             onComplete: () => overlay.destroy()
                         });
+                        sessionStorage.setItem("HiddenSceneDone", true);
                         this.scene.start('Stage5BattleScene');
                     });
                     break;
