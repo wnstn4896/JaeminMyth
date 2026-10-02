@@ -121,7 +121,7 @@ export class LoadingScene extends Phaser.Scene {
                         ease: 'Power2'
                     });
 
-                    this.hiddenbgm.on('complete', () => {
+                    this.hiddenbgm.once('complete', () => {
                         this.scene.start('Stage5BattleScene');
                     });
                     break;
