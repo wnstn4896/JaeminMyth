@@ -32,7 +32,7 @@ export class VideoCutScene extends Phaser.Scene {
                     break;
                 case 'Jaeminsuki_buriburi':
                     this.bgm = this.sound.add('JoJo_Awaken_part1');
-                    this.bgm.setVolume(0.7).play();
+                    this.bgm.setVolume(0.4).play();
 
                     const overlay = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
                         .setOrigin(0)

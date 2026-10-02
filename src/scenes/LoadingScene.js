@@ -41,7 +41,7 @@ export class LoadingScene extends Phaser.Scene {
         this.player.setFlipX(true);
 
         this.loadingBar = this.add.graphics();
-        this.loadingBar.setScrollFactor(0); // ✅ 화면 고정
+        this.loadingBar.setScrollFactor(0); // 화면 고정
 
         this.startX = 150;
         this.endX = 999;
@@ -107,7 +107,7 @@ export class LoadingScene extends Phaser.Scene {
                     break;
                 case 5:
                     this.hiddenbgm = this.sound.add('JoJo_Awaken_part1');
-                    this.hiddenbgm.setVolume(0.7).play();
+                    this.hiddenbgm.setVolume(0.4).play();
 
                     const overlay = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
                         .setOrigin(0)
