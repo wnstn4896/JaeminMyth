@@ -47,13 +47,6 @@ const CHARACTER_CONFIG = {
         y: 720,
         scale: 0.4,
         flipX: true,
-    },
-    '그랜드 얼티밋 마제스티 재민스키': {
-        texture: 'meka_jaeminsuki',
-        x: 680,
-        y: 720,
-        scale: 0.4,
-        flipX: true,
     }
 };
 

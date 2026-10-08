@@ -22,7 +22,6 @@ export class BootScene extends Phaser.Scene {
         this.load.image('Jaemin_front', `${images}/Jaemin_front.png`);
         this.load.image('Jaemin_clone', `${images}/Jaemin_clone.png`);
         this.load.image('Jaeminsuki', `${images}/Jaeminsuki.png`);
-        this.load.image('meka_jaeminsuki', `${images}/meka_jaeminsuki.png`);
 
         this.load.image('jaemin', `${images}/jaemin.png`);
         this.load.image('jaemin', `${images}/jjokbarisuki.png`);
