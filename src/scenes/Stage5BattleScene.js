@@ -3,7 +3,7 @@ import { MessageModule } from './MessageModule.js';
 export class Stage5BattleScene extends Phaser.Scene {
     constructor() {
         super('Stage5BattleScene');
-        this.enemyHP = 2100;  // 적 체력
+        this.enemyHP = 6000;  // 적 체력
         this.shiftKey;
 
         this.maxHP = 7; // 최대 HP
