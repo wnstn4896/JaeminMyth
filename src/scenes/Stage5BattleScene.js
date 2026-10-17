@@ -3,7 +3,7 @@ import { MessageModule } from './MessageModule.js';
 export class Stage5BattleScene extends Phaser.Scene {
     constructor() {
         super('Stage5BattleScene');
-        this.enemyHP = 3100;  // 적 체력
+        this.enemyHP = 600;  // 적 체력
         this.shiftKey;
 
         this.maxHP = 7; // 최대 HP
@@ -31,6 +31,7 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.junsusukiTurn = false;
         this.jaeminsukiTurn = false;
 
+        this.allDefeated = false;
         this.isClear = false;
 
         this.patternRotation = 0;       // 현재 탄막 회전 각도
@@ -44,6 +45,7 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.stonePatternStarted = false; // 패턴 중복 시작 방지
 
         this.blasterList = [];
+        this.teleportEnemySprite = null;
     }
 
     create() {
@@ -98,6 +100,9 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.appearSFX = this.sound.add('sfx_soulAppear', { volume: 0.7 });
 
         this.droneSFX = this.sound.add('sfx_AIdroneBot', { volume: 0.4 });
+
+        this.kingCrimsonSFX = this.sound.add('sfx_KingCrimson');
+        this.timeSkipSFX = this.sound.add('sfx_timeSkip');
 
         // 입력 키 설정
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -196,8 +201,15 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.monitor.setMask(this.monitorMask);
 
         // 적 텔레포트 및 무작위 탄막 발사
+        this.bulletEnemyEvent = this.time.addEvent({
+            delay: 280,
+            callback: this.bulletEnemy,
+            callbackScope: this,
+            loop: true,
+        });
+
         this.time.addEvent({
-            delay: 280, // 텔레포트 주기
+            delay: 600, // 텔레포트 주기
             callback: this.teleportEnemy,
             callbackScope: this,
             loop: true,
@@ -207,6 +219,31 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.blasterEvent = this.time.addEvent({
             delay: 3000,
             callback: this.spawnBlaster,
+            callbackScope: this,
+            loop: true,
+        });
+
+        this.time.addEvent({
+            delay: 1000,
+            callback: () => {
+
+                const patterns = ['I', 'O', 'L', 'T', 'J', 'S', 'Z'];
+                const pattern = Phaser.Utils.Array.GetRandom(patterns);
+
+                const colors = ['red_block', 'blue_block'];
+                const color = Phaser.Utils.Array.GetRandom(colors);
+
+                const x = Phaser.Math.Between(100, 600);
+
+                this.spawnTetrisBlock(x, 200, pattern, color);
+
+            },
+            loop: true
+        });
+
+        this.time.addEvent({
+            delay: 5000, // 시간삭제 주기
+            callback: this.kingCrimson,
             callbackScope: this,
             loop: true,
         });
@@ -260,7 +297,9 @@ export class Stage5BattleScene extends Phaser.Scene {
             phase1: 'JoJo_Awaken_part2',
             phase2: 'megalovania',
             phase3: 'tajiri_theme',
-            phase4: 'megalovania'
+            phase4: 'megalovania',
+            phase5: 'finale',
+            phase6: 'JoJo_Fight_to_Antagonize'
         };
 
         // 현재 재생 중인 BGM
@@ -347,8 +386,8 @@ export class Stage5BattleScene extends Phaser.Scene {
                 this.currentBGM = null;
             }
 
-            sessionStorage.setItem("stageClear", 2);
-            this.scene.start('LoadingScene', { goToStage: 3 });
+            sessionStorage.setItem("stageClear", 5);
+            this.scene.start('LoadingScene', { goToStage: 'CreditsScene' });
         }
     }
 
@@ -432,7 +471,7 @@ export class Stage5BattleScene extends Phaser.Scene {
         }
     }
 
-    teleportEnemy() {
+    bulletEnemy() {
         this.enemies.children.iterate((enemy) => {
             if (!enemy.active) return;
 
@@ -447,7 +486,7 @@ export class Stage5BattleScene extends Phaser.Scene {
 
             // 원형 탄막
             for (let angle = 0; angle < 360; angle += 45) {
-                if (this.firstTurn){
+                if (this.firstTurn || this.jaeminsukiTurn){
                     const bulletTypes = ['red_bullet', 'blue_bullet'];
                     const randomBullet = Phaser.Utils.Array.GetRandom(bulletTypes);
 
@@ -525,6 +564,100 @@ export class Stage5BattleScene extends Phaser.Scene {
                 }
             }
         });
+    }
+
+    createTeleportEnemy(texture = 'junsusuki') {
+        if (this.teleportEnemySprite?.active) {
+            this.teleportEnemySprite.setTexture(texture);
+            this.teleportEnemySprite.setVisible(false);
+            return;
+        }
+
+        this.teleportEnemySprite = this.add.sprite(
+            400,
+            400,
+            texture
+        );
+
+        if (this.junsusukiTurn)
+            this.teleportEnemySprite.setScale(0.27);
+        else (this.jaeminsukiTurn)
+            this.teleportEnemySprite.setScale(0.001);
+        this.teleportEnemySprite.setDepth(10);
+        this.teleportEnemySprite.setVisible(false);
+    }
+
+    teleportEnemy() {
+        if (!this.junsusukiTurn && !this.jaeminsukiTurn) return;
+
+        const spriteKey = this.jaeminsukiTurn
+            ? 'red_bullet'
+            : 'junsusuki';
+
+        // 스프라이트가 없거나 제거된 경우 생성
+        if (!this.teleportEnemySprite?.active) {
+            this.createTeleportEnemy(spriteKey);
+        }
+
+        const enemy = this.teleportEnemySprite;
+
+        if (!enemy || !enemy.active) return;
+
+        // 페이즈에 맞는 텍스처 적용
+        enemy.setTexture(spriteKey);
+        enemy.setVisible(true);
+
+        // 무작위 위치로 텔레포트
+        enemy.setPosition(
+            Phaser.Math.Between(100, 580),
+            Phaser.Math.Between(300, 350)
+        );
+
+        if (this.junsusukiTurn){
+            for (let angle = 0; angle < 360; angle += 45) {
+                const bullet = this.enemyBullets.create(
+                    enemy.x - 20,
+                    enemy.y,
+                    'junsusuki_bullet'
+                );
+
+                if (!bullet) continue;
+
+                const velocity = new Phaser.Math.Vector2(50, 500)
+                    .rotate(Phaser.Math.DegToRad(angle));
+
+                bullet.setVelocity(velocity.x, velocity.y);
+                bullet.setScale(0.3);
+                bullet.setCollideWorldBounds(true);
+                bullet.body.onWorldBounds = true;
+            }
+        }
+        else if (this.jaeminsukiTurn){
+            for (let angle = 0; angle < 360; angle += 45) {
+                const bullet = this.enemyBullets.create(
+                    enemy.x - 20,
+                    enemy.y,
+                    'jaeminsuki_bullet'
+                );
+
+                if (!bullet) continue;
+
+                const velocity = new Phaser.Math.Vector2(50, 500)
+                    .rotate(Phaser.Math.DegToRad(angle));
+
+                bullet.setVelocity(velocity.x, velocity.y);
+                bullet.setScale(0.15);
+                bullet.setCollideWorldBounds(true);
+                bullet.body.onWorldBounds = true;
+            }
+        }
+    }
+
+    removeTeleportEnemy() {
+        if (this.teleportEnemySprite) {
+            this.teleportEnemySprite.destroy();
+            this.teleportEnemySprite = null;
+        }
     }
 
     spawnBlaster() {
@@ -802,6 +935,117 @@ export class Stage5BattleScene extends Phaser.Scene {
         }
     }
 
+    rotatePattern(pattern, rotation) {
+        let rotated = pattern;
+
+        for (let i = 0; i < rotation; i++) {
+            rotated = rotated.map(([x, y]) => [-y, x]);
+        }
+
+        return rotated;
+    }
+
+    spawnTetrisBlock(x, y, patternName, color = 'red_block') {
+        if (this.gameOver || !this.junsusukiTurn)
+            return;
+
+        const TETRIS_PATTERNS = {
+            I: [
+                [0, 0], [1, 0], [2, 0], [3, 0]
+            ],
+            O: [
+                [0, 0], [1, 0],
+                [0, 1], [1, 1]
+            ],
+            T: [
+                [0, 0], [1, 0], [2, 0],
+                [1, 1]
+            ],
+            L: [
+                [0, 0],
+                [0, 1],
+                [0, 2],
+                [1, 2]
+            ],
+            J: [
+                [1, 2],
+                [1, 1],
+                [0, 2], [1, 2]
+            ],
+            S: [
+                [1, 0], [2, 0],
+                [0, 1], [1, 1]
+            ],
+            Z: [
+                [0, 0], [1, 0],
+                [1, 1], [2, 1]
+            ]
+        };
+
+        let pattern = TETRIS_PATTERNS[patternName];
+        // 랜덤 회전
+        const rotation = Phaser.Math.Between(0, 3);
+        pattern = this.rotatePattern(pattern, rotation);
+
+        const blockSize = 48;
+
+        pattern.forEach(([px, py]) => {
+            const block = this.enemyBullets.create(
+                x + px * blockSize,
+                y + py * blockSize,
+                color
+            );
+
+            block.setVelocityY(400);
+            block.setScale(0.3);
+            block.setCollideWorldBounds(true);
+            block.body.onWorldBounds = true;
+        });
+    }
+
+    kingCrimson() {
+        if (!this.jaeminsukiTurn || this.gameOver)
+            return;
+
+        const overlay = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
+            .setOrigin(0)
+            .setDepth(999)
+            .setAlpha(0);
+
+        this.tweens.add({
+            targets: overlay,
+            alpha: 1,
+            duration: 300,
+            ease: 'Power2'
+        });
+
+        if (this.isDialogueActive || this.enemyHP <= 0) {
+            overlay.destroy();
+            return;
+        }
+
+        this.timeSkip = true;
+        this.kingCrimsonSFX.play();
+
+        this.physics.pause();
+
+        this.time.delayedCall(1000, () => {
+            this.timeSkip = false;
+
+            this.tweens.add({
+                targets: overlay,
+                alpha: 0,
+                duration: 500,
+                onComplete: () => overlay.destroy()
+            });
+
+            this.teleportEnemy();
+            this.cameras.main.shake(300, 0.05);
+            this.timeSkipSFX.play();
+            this.physics.resume();
+        });
+    }
+
     shootPlayerBullet() {
         if (this.spaceKeyDown && !this.gameOver) {
             const straightBullet = this.playerBullets.create(this.player.x, this.player.y + 20, 'bullet');
@@ -977,6 +1221,8 @@ export class Stage5BattleScene extends Phaser.Scene {
 
         this.stoneMinions = [];
 
+        this.removeTeleportEnemy();
+
         if (this.joystickBase) {
             this.joystickBase.setVisible(false);
             this.joystickHandle.setVisible(false);
@@ -1038,7 +1284,7 @@ export class Stage5BattleScene extends Phaser.Scene {
             ]);
         }
 
-        if (this.enemyHP <= 5000 && !this.stoneTurn && !this.jjokbarisukiTurn && !this.junsusukiTurn) {
+        if (this.enemyHP <= 5000 && !this.stoneTurn && !this.jjokbarisukiTurn && !this.junsusukiTurn && !this.jaeminsukiTurn && !this.allDefeated) {
             this.firstTurn = false;
             this.stoneTurn = true;
 
@@ -1053,11 +1299,11 @@ export class Stage5BattleScene extends Phaser.Scene {
             });
 
             this.pauseForDialogue([
-                { name: '돌멩이', text: '대사 테스트' },
+                { name: '돌멩이', text: '길바닥의 돌맹이를 밟고 지나간 것을 다시 한 번 후회하게 만들어주마!' }
             ]);
         }
 
-        if (this.enemyHP <= 4000 && !this.jjokbarisukiTurn && this.stoneTurn && !this.junsusukiTurn) {
+        if (this.enemyHP <= 4000 && !this.jjokbarisukiTurn && this.stoneTurn && !this.junsusukiTurn && !this.jaeminsukiTurn && !this.allDefeated) {
             this.stoneTurn = false;
             this.jjokbarisukiTurn = true;
 
@@ -1071,13 +1317,16 @@ export class Stage5BattleScene extends Phaser.Scene {
             });
 
             this.pauseForDialogue([
-                { name: '쪽바리스키', text: '대사 테스트' },
+                { name: '쪽바리스키', text: '덴노헤카 반자이다----!!!!!' },
+                { name: '쪽바리스키', text: '그린 미스트를 맛 보여주마' }
             ]);
         }
 
-        if (this.enemyHP <= 3000 && !this.junsusukiTurn && this.jjokbarisukiTurn && !this.stoneTurn) {
+        if (this.enemyHP <= 3000 && !this.junsusukiTurn && this.jjokbarisukiTurn && !this.stoneTurn && !this.jaeminsukiTurn && !this.allDefeated) {
             this.jjokbarisukiTurn = false;
             this.junsusukiTurn = true;
+
+            this.createTeleportEnemy();
 
             this.cameras.main.flash(2000, 0, 0, 0);
             this.appearSFX.play();
@@ -1089,15 +1338,50 @@ export class Stage5BattleScene extends Phaser.Scene {
             });
 
             this.pauseForDialogue([
-                { name: '블라디미르 준수스키', text: '대사 테스트' },
+                { name: '블라디미르 준수스키', text: '모든것은  "그분의" 의지에 따라서...' }
             ]);
         }
 
-        if (this.isClear) {
-            this.dialogueTriggered = true;
+        if (this.enemyHP <= 2000 && !this.jaeminsukiTurn && this.junsusukiTurn && !this.jjokbarisukiTurn && !this.stoneTurn && !this.allDefeated) {
+            this.junsusukiTurn = false;
+            this.jaeminsukiTurn = true;
+
+            this.removeTeleportEnemy();
+
+            this.cameras.main.flash(2000, 0, 0, 0);
+            this.appearSFX.play();
+            this.changeBGM('phase5', 0.4);
+
+            this.bulletEnemyEvent.delay = 900;
+
+            // 적 텍스처 변경 (스테이지 4 강화)
+            this.enemies.children.iterate((enemy) => {
+                enemy.setTexture('Omega_jaeminsuki');
+            });
 
             this.pauseForDialogue([
-                { name: '재민(가명)', text: '뭐 저런 녀석이 다 있어...' }
+                { name: '그랜드 얼티밋 마제스티 재민스키', text: '이제 다른건 다 필요없다!!!' },
+                { name: '그랜드 얼티밋 마제스티 재민스키', text: '내가 지옥으로 떨어지는 한이 있더라도 다 죽여버리겠다!' },
+            ]);
+        }
+
+        if (this.enemyHP <= 500 && !this.allDefeated && this.jaeminsukiTurn && !this.stoneTurn && !this.jjokbarisukiTurn && !this.junsusukiTurn){
+            this.jaeminsukiTurn = false;
+            this.allDefeated = true;
+
+            this.cameras.main.flash(2000, 0, 0, 0);
+            this.changeBGM('phase6', 0.4);
+
+            this.enemies.children.iterate((enemy) => {
+                enemy.setTexture('Omega_jaeminsuki_default');
+
+                enemy.setBounce(1);
+                enemy.setCollideWorldBounds(true);
+            });
+
+            this.pauseForDialogue([
+                { name: '그랜드 얼티밋 마제스티 재민스키', text: '이럴 수가...!' },
+                { name: '재민(가명)', text: '드디어 끝인가. 이제 반격이다!' }
             ]);
         }
 

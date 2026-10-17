@@ -101,6 +101,7 @@ export class BootScene extends Phaser.Scene {
         this.load.audio('JoJo_Awaken_part2', [`${sounds}/JoJo_Awaken_part2.m4a`]);
         this.load.audio('megalovania', [`${sounds}/megalovania.m4a`]);
         this.load.audio('tajiri_theme', [`${sounds}/tajiri_theme.m4a`]);
+        this.load.audio('finale', [`${sounds}/finale.m4a`]);
         this.load.audio('Jaemin_voice1', [`${sounds}/Jaemin_voice1.mp3`]);
         this.load.audio('Jaemin_voice2', [`${sounds}/Jaemin_voice2.mp3`]);
         this.load.audio('Jaemin_voice3', [`${sounds}/Jaemin_voice3.m4a`])
