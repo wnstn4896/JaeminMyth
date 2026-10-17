@@ -3,7 +3,7 @@ import { MessageModule } from './MessageModule.js';
 export class Stage5BattleScene extends Phaser.Scene {
     constructor() {
         super('Stage5BattleScene');
-        this.enemyHP = 6000;  // 적 체력
+        this.enemyHP = 2100;  // 적 체력
         this.shiftKey;
 
         this.maxHP = 7; // 최대 HP
@@ -297,7 +297,7 @@ export class Stage5BattleScene extends Phaser.Scene {
             phase1: 'JoJo_Awaken_part2',
             phase2: 'megalovania',
             phase3: 'tajiri_theme',
-            phase4: 'megalovania',
+            phase4: 'tetrisBGM',
             phase5: 'finale',
             phase6: 'JoJo_Fight_to_Antagonize'
         };
@@ -569,20 +569,21 @@ export class Stage5BattleScene extends Phaser.Scene {
     createTeleportEnemy(texture = 'junsusuki') {
         if (this.teleportEnemySprite?.active) {
             this.teleportEnemySprite.setTexture(texture);
-            this.teleportEnemySprite.setVisible(false);
-            return;
+        } else {
+            this.teleportEnemySprite = this.add.sprite(
+                400,
+                400,
+                texture
+            );
         }
 
-        this.teleportEnemySprite = this.add.sprite(
-            400,
-            400,
-            texture
-        );
-
-        if (this.junsusukiTurn)
+        // 페이즈별 스프라이트 크기 설정
+        if (this.junsusukiTurn && !this.jaeminsukiTurn) {
             this.teleportEnemySprite.setScale(0.27);
-        else (this.jaeminsukiTurn)
+        } else if (this.jaeminsukiTurn && !this.junsusukiTurn) {
             this.teleportEnemySprite.setScale(0.001);
+        }
+
         this.teleportEnemySprite.setDepth(10);
         this.teleportEnemySprite.setVisible(false);
     }
@@ -1330,7 +1331,7 @@ export class Stage5BattleScene extends Phaser.Scene {
 
             this.cameras.main.flash(2000, 0, 0, 0);
             this.appearSFX.play();
-            this.changeBGM('phase4', 0.4);
+            this.changeBGM('phase4', 0.25);
 
             // 적 텍스처 변경 (스테이지 3 강화)
             this.enemies.children.iterate((enemy) => {
@@ -1382,6 +1383,12 @@ export class Stage5BattleScene extends Phaser.Scene {
             this.pauseForDialogue([
                 { name: '그랜드 얼티밋 마제스티 재민스키', text: '이럴 수가...!' },
                 { name: '재민(가명)', text: '드디어 끝인가. 이제 반격이다!' }
+            ]);
+        }
+
+        if (this.enemyHP <= 0 && this.allDefeated){
+            this.pauseForDialogue([
+                { name: '재민(가명)', text: '...끝이다.' }
             ]);
         }
 
