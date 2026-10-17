@@ -3,7 +3,7 @@ import { MessageModule } from './MessageModule.js';
 export class Stage5BattleScene extends Phaser.Scene {
     constructor() {
         super('Stage5BattleScene');
-        this.enemyHP = 500;  // 적 체력
+        this.enemyHP = 5000;  // 적 체력
         this.shiftKey;
 
         this.maxHP = 7; // 최대 HP
@@ -28,6 +28,8 @@ export class Stage5BattleScene extends Phaser.Scene {
 
         this.patternRotation = 0;       // 현재 탄막 회전 각도
         this.patternRotationSpeed = 16;
+
+        this.blasterList = [];
     }
 
     create() {
@@ -244,6 +246,8 @@ export class Stage5BattleScene extends Phaser.Scene {
         // 화면에 있는 탄막 제거
         this.playerBullets.clear(true, true);
         this.enemyBullets.clear(true, true);
+        // 화면에 있는 블래스터 제거
+        this.clearBlasters();
 
         this.physics.pause();     // 물리 엔진 정지
         this.time.paused = true;  // 타이머 정지
@@ -397,6 +401,8 @@ export class Stage5BattleScene extends Phaser.Scene {
         const blaster = this.add.sprite(x, y, 'Jaemin_breath1');
         blaster.setScale(0.6);
 
+        this.blasterList.push(blaster);
+
         this.sound.play('sfx_breathCharge');
 
         // 플레이어 방향 계산
@@ -484,8 +490,18 @@ export class Stage5BattleScene extends Phaser.Scene {
         });
     }
 
+    clearBlasters() {
+        // 생성된 블래스터 전부 제거
+        this.blasterList.forEach((blaster) => {
+            if (blaster && blaster.active) {
+                blaster.destroy();
+            }
+        });
+
+        this.blasterList = [];
+    }
+
     shootPlayerBullet() {
-        return;
         if (this.spaceKeyDown && !this.gameOver) {
             const straightBullet = this.playerBullets.create(this.player.x, this.player.y + 20, 'bullet');
             straightBullet.setVelocityY(-1000);
@@ -566,6 +582,7 @@ export class Stage5BattleScene extends Phaser.Scene {
     handleBulletHit(bullet, enemy) {
         // 적 체력 감소
         this.enemyHP -= 1;
+        bullet.destroy();
 
         if (this.enemyHP <= 0) {
             if (this.playerHP === 10)
@@ -636,6 +653,9 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.lifeText.destroy();
         this.skillText.destroy();
 
+        // 화면에 있는 블래스터 제거
+        this.clearBlasters();
+        
         // 블래스터 타이머 제거
         if (this.blasterEvent) {
             this.blasterEvent.remove(false);
@@ -672,7 +692,7 @@ export class Stage5BattleScene extends Phaser.Scene {
     update() {
         if (this.isDialogueActive) return;
 
-        if (this.enemyHP <= 500 && !this.firstDialogueDone) {
+        if (this.enemyHP <= 5000 && !this.firstDialogueDone) {
             this.firstDialogueDone = true;
 
             this.voiceSFX3.play();
@@ -682,11 +702,11 @@ export class Stage5BattleScene extends Phaser.Scene {
             ]);
         }
 
-        if (this.enemyHP <= 250 && !this.secondDialogueDone) {
+        if (this.enemyHP <= 4000 && !this.secondDialogueDone) {
             this.secondDialogueDone = true;
 
             this.pauseForDialogue([
-                { name: '그랜드 얼티밋 마제스티 재민스키', text: '대사 테스트' }
+                { name: '재민(가명)', text: '젠장, 공격이 안 통하잖아!' }
             ]);
         }
 
