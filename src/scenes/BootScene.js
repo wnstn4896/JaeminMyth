@@ -105,7 +105,8 @@ export class BootScene extends Phaser.Scene {
         this.load.audio('tetrisBGM', [`${sounds}/tetrisBGM.m4a`]);
         this.load.audio('Jaemin_voice1', [`${sounds}/Jaemin_voice1.mp3`]);
         this.load.audio('Jaemin_voice2', [`${sounds}/Jaemin_voice2.mp3`]);
-        this.load.audio('Jaemin_voice3', [`${sounds}/Jaemin_voice3.m4a`])
+        this.load.audio('Jaemin_voice3', [`${sounds}/Jaemin_voice3.m4a`]);
+        this.load.audio('Jaemin_voice4', [`${sounds}/Jaemin_voice4.m4a`])
 
         this.load.video('Jaemin_buriburi', `${images}/Jaemin_buriburi.mp4`, 'loadeddata', false, true);
         this.load.video('Jaeminsuki_buriburi', `${images}/Jaeminsuki_buriburi.mp4`, 'loadeddata', false, true);

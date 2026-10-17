@@ -1,8 +1,10 @@
+
 export class LoadingScene extends Phaser.Scene {
     constructor() {
         super({ key: 'LoadingScene' });
-        this.player;
-        this.spaceKey;
+
+        this.player = null;
+        this.spaceKey = null;
 
         // 월드맵 간 이동 관련
         this.isAutoMove = false;
@@ -10,38 +12,61 @@ export class LoadingScene extends Phaser.Scene {
         this.targetY = null;
         this.autoSpeed = 360;
 
+        // 씬 전환 중복 실행 방지
         this.isTransitioning = false;
+
+        this.hiddenbgm = null;
     }
 
     init(data) {
-        this.goToStage = data.goToStage;
+        // 전달받은 목적지 저장
+        this.goToStage = data?.goToStage;
+
+        // 씬 재진입 시 상태 초기화
+        this.isTransitioning = false;
+        this.hiddenbgm = null;
     }
 
     create() {
-        this.background = this.add.tileSprite(640, 360, 1280, 720, 'loading');
-        this.physics.world.setBounds(-70, 0, 1430, 600); // 월드 경계 설정
+        // 배경 설정
+        this.background = this.add.tileSprite(
+            640, 360, 1280, 720, 'loading'
+        );
 
-        // 스프라이트 시트 없이 개별 이미지를 애니메이션으로 구성
+        // 물리 월드 설정
+        this.physics.world.setBounds(-70, 0, 1430, 600);
+
+        // 걷기 애니메이션 프레임 설정
         const walkFrames = [];
-        for (let i = 1; i <= 3; i++)
-            walkFrames.push({ key: 'Jaemin_Run' + i });
 
-        // 애니메이션 정의
-        this.anims.create({
-            key: 'walk',
-            frames: walkFrames,
-            frameRate: 10,
-            repeat: -1
-        });
+        for (let i = 1; i <= 3; i++) {
+            walkFrames.push({
+                key: 'Jaemin_Run' + i
+            });
+        }
 
-        // 기본 스프라이트 설정
-        this.player = this.physics.add.sprite(150, 250, 'Jaemin_Run1');
+        // 애니메이션이 이미 등록되어 있는지 확인
+        if (!this.anims.exists('walk')) {
+            this.anims.create({
+                key: 'walk',
+                frames: walkFrames,
+                frameRate: 10,
+                repeat: -1
+            });
+        }
+
+        // 플레이어 생성
+        this.player = this.physics.add.sprite(
+            150, 250, 'Jaemin_Run1'
+        );
+
         this.player.setCollideWorldBounds(true);
         this.player.setScale(0.4);
         this.player.setFlipX(true);
 
+        // 로딩 바 설정
         this.loadingBar = this.add.graphics();
-        this.loadingBar.setScrollFactor(0); // 화면 고정
+        this.loadingBar.setScrollFactor(0);
 
         this.startX = 150;
         this.endX = 999;
@@ -51,25 +76,62 @@ export class LoadingScene extends Phaser.Scene {
 
         this.barX = (this.scale.width - this.barWidth) / 2;
         this.barY = 150;
+
+        // 초기 로딩 바 표시
+        this.drawLoadingBar(0);
     }
 
     update(time, delta) {
-        this.player.anims.play("walk", true);
+        // 씬 전환 중에는 이동 로직을 실행하지 않음
+        if (this.isTransitioning) {
+            return;
+        }
+
+        // 플레이어가 목표 지점에 도달했는지 확인
+        if (this.player.x >= this.endX) {
+            this.player.setX(this.endX);
+            this.player.setVelocity(0, 0);
+            this.player.anims.stop();
+
+            // 로딩 바를 100%로 표시
+            this.drawLoadingBar(1);
+
+            // 씬 전환은 한 번만 실행
+            this.isTransitioning = true;
+
+            this.transitionToNextScene();
+            return;
+        }
+
+        // 플레이어 이동 및 애니메이션
+        this.player.anims.play('walk', true);
         this.player.setVelocityX(180);
 
-        let progress = Phaser.Math.Clamp(
-            (this.player.x - this.startX) / (this.endX - this.startX),
+        // 이동 거리를 기준으로 진행도 계산
+        const progress = Phaser.Math.Clamp(
+            (this.player.x - this.startX) /
+            (this.endX - this.startX),
             0,
             1
         );
 
+        this.drawLoadingBar(progress);
+    }
+
+    // 로딩 바 그리기
+    drawLoadingBar(progress) {
         this.loadingBar.clear();
 
         // 흰색 테두리
         this.loadingBar.lineStyle(3, 0xffffff);
-        this.loadingBar.strokeRect(this.barX, this.barY, this.barWidth, this.barHeight);
+        this.loadingBar.strokeRect(
+            this.barX,
+            this.barY,
+            this.barWidth,
+            this.barHeight
+        );
 
-        // 초록색 내부 바
+        // 초록색 진행 바
         this.loadingBar.fillStyle(0x00ff00);
         this.loadingBar.fillRect(
             this.barX,
@@ -77,58 +139,109 @@ export class LoadingScene extends Phaser.Scene {
             this.barWidth * progress,
             this.barHeight
         );
+    }
 
-        if (this.player.x >= 999) {
-            if (this.isTransitioning) return;
+    // 목적지에 따른 씬 전환
+    transitionToNextScene() {
+        // 숫자와 문자열로 전달되는 스테이지 번호 모두 처리
+        const stage = this.goToStage;
 
-            this.isTransitioning = true;
+        switch (stage) {
+            case 1:
+            case '1':
+                this.scene.start('Stage1BattleScene');
+                break;
 
-            switch (this.goToStage) {
-                case 1:
-                    this.scene.start('Stage1BattleScene');
-                    break;
-                case 2:
-                    this.scene.start('Stage2BattleScene');
-                    break;
-                case 3:
-                    this.scene.start('Stage3BattleScene');
-                    break;
-                case 4:
-                    this.scene.start('Stage4BattleScene');
-                    break;
-                case 'FakeBossScene':
-                    this.scene.start('FakeBossScene');
-                    break;
-                case 'CreditsScene':
-                    this.scene.start('CreditsScene');
-                    break;
-                case 'HiddenStageScene':
-                    this.scene.start('HiddenStageScene');
-                    break;
-                case 5:
-                    this.hiddenbgm = this.sound.add('JoJo_Awaken_part1');
-                    this.hiddenbgm.setVolume(0.4).play();
+            case 2:
+            case '2':
+                this.scene.start('Stage2BattleScene');
+                break;
 
-                    const overlay = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
-                        .setOrigin(0)
-                        .setDepth(999)
-                        .setAlpha(0);
+            case 3:
+            case '3':
+                this.scene.start('Stage3BattleScene');
+                break;
 
-                    this.tweens.add({
-                        targets: overlay,
-                        alpha: 1,
-                        duration: 300,
-                        ease: 'Power2'
-                    });
+            case 4:
+            case '4':
+                this.scene.start('Stage4BattleScene');
+                break;
 
-                    this.hiddenbgm.once('complete', () => {
-                        this.scene.start('Stage5BattleScene');
-                    });
-                    break;
-                default:
-                    alert('오류.');
-                    return;
-            }
+            case 'FakeBossScene':
+                this.scene.start('FakeBossScene');
+                break;
+
+            case 'CreditsScene':
+                this.scene.start('CreditsScene');
+                break;
+
+            case 'HiddenStageScene':
+                this.scene.start('HiddenStageScene');
+                break;
+
+            case 5:
+            case '5':
+                this.transitionToStage5();
+                break;
+
+            default:
+                console.error(
+                    '[LoadingScene] 알 수 없는 목적지:',
+                    stage,
+                    '| 타입:',
+                    typeof stage
+                );
+
+                // 잘못된 값으로 인해 로딩 화면에 영구적으로
+                // 머무르지 않도록 전환 상태를 초기화
+                this.isTransitioning = false;
+                this.player.setVelocity(0, 0);
+                this.player.anims.stop();
+                break;
         }
+    }
+
+    // 스테이지 5 전용 전환 처리
+    transitionToStage5() {
+        // 검은 화면 오버레이
+        const overlay = this.add.rectangle(
+            0,
+            0,
+            this.scale.width,
+            this.scale.height,
+            0x000000
+        )
+            .setOrigin(0)
+            .setDepth(999)
+            .setAlpha(0);
+
+        // 화면을 어둡게 전환한 후 스테이지 진입
+        this.tweens.add({
+            targets: overlay,
+            alpha: 1,
+            duration: 300,
+            ease: 'Power2',
+
+            onComplete: () => {
+                // 씬이 이미 종료되는 상황이면 추가 작업 방지
+                if (!this.scene.isActive()) {
+                    return;
+                }
+
+                // BGM은 씬 전환을 막지 않도록 별도로 재생
+                this.hiddenbgm = this.sound.add(
+                    'JoJo_Awaken_part1',
+                    {
+                        volume: 0.4,
+                        loop: false
+                    }
+                );
+
+                this.hiddenbgm.play();
+
+                // BGM 종료를 기다리지 않고 즉시 씬 전환
+                this.scene.start('Stage5BattleScene');
+            }
+        });
     }
 }
