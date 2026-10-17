@@ -57,6 +57,12 @@ export class VideoCutScene extends Phaser.Scene {
                         this.scene.start('Stage5BattleScene');
                     });
                     break;
+                case 'Jaeminsuki_thinkStop':
+                    this.scene.start('EpilogueScene', { HiddenSceneDone: true });
+                    break;
+                case 'Jaemin-junsusuki_gayjoygo':
+                    this.scene.start('LoadingScene', { goToStage: 'CreditsScene' });
+                    break;
                 case 'gameover':
                     window.location.reload();
                     break;

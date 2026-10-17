@@ -2,7 +2,6 @@ export class TitleScene extends Phaser.Scene {
     constructor() {
         super({ key: 'TitleScene' });
 
-        sessionStorage.setItem("stageClear", 4);
         this.stageClear = Number(sessionStorage.getItem("stageClear")) || 0;
     }
 

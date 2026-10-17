@@ -306,10 +306,10 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.currentBGM = null;
 
         // 최초 페이즈 BGM 재생
-        this.changeBGM('phase1', 0.4);
+        this.changeBGM('phase1', 0.2);
     }
 
-    changeBGM(phase, volume = 0.4) {
+    changeBGM(phase, volume = 0.1) {
         const bgmKey = this.bgmList[phase];
 
         if (!bgmKey){ return; }
@@ -386,8 +386,7 @@ export class Stage5BattleScene extends Phaser.Scene {
                 this.currentBGM = null;
             }
 
-            sessionStorage.setItem("stageClear", 5);
-            this.scene.start('LoadingScene', { goToStage: 'CreditsScene' });
+            this.scene.start('EpilogueScene');
         }
     }
 
@@ -1292,7 +1291,7 @@ export class Stage5BattleScene extends Phaser.Scene {
             this.hideMonitor();
             this.cameras.main.flash(2000, 0, 0, 0);
             this.appearSFX.play();
-            this.changeBGM('phase2', 0.4);
+            this.changeBGM('phase2', 0.2);
 
             // 적 텍스처 변경 (스테이지 1 강화)
             this.enemies.children.iterate((enemy) => {
@@ -1310,7 +1309,7 @@ export class Stage5BattleScene extends Phaser.Scene {
 
             this.cameras.main.flash(2000, 0, 0, 0);
             this.appearSFX.play();
-            this.changeBGM('phase3', 0.4);
+            this.changeBGM('phase3', 0.2);
 
             // 적 텍스처 변경 (스테이지 2 강화)
             this.enemies.children.iterate((enemy) => {
@@ -1331,7 +1330,7 @@ export class Stage5BattleScene extends Phaser.Scene {
 
             this.cameras.main.flash(2000, 0, 0, 0);
             this.appearSFX.play();
-            this.changeBGM('phase4', 0.25);
+            this.changeBGM('phase4', 0.1);
 
             // 적 텍스처 변경 (스테이지 3 강화)
             this.enemies.children.iterate((enemy) => {
@@ -1351,7 +1350,7 @@ export class Stage5BattleScene extends Phaser.Scene {
 
             this.cameras.main.flash(2000, 0, 0, 0);
             this.appearSFX.play();
-            this.changeBGM('phase5', 0.4);
+            this.changeBGM('phase5', 0.2);
 
             this.bulletEnemyEvent.delay = 900;
 
