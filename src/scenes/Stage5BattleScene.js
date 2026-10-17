@@ -3,7 +3,7 @@ import { MessageModule } from './MessageModule.js';
 export class Stage5BattleScene extends Phaser.Scene {
     constructor() {
         super('Stage5BattleScene');
-        this.enemyHP = 5000;  // 적 체력
+        this.enemyHP = 3100;  // 적 체력
         this.shiftKey;
 
         this.maxHP = 7; // 최대 HP
@@ -21,13 +21,27 @@ export class Stage5BattleScene extends Phaser.Scene {
 
         this.bombIcons = [];
 
-
         this.firstDialogueDone = false;
         this.secondDialogueDone = false;
+        this.thirdDialogueDone = false;
+
+        this.firstTurn = true;
+        this.stoneTurn = false;
+        this.jjokbarisukiTurn = false;
+        this.junsusukiTurn = false;
+        this.jaeminsukiTurn = false;
+
         this.isClear = false;
 
         this.patternRotation = 0;       // 현재 탄막 회전 각도
         this.patternRotationSpeed = 16;
+
+        this.stonePatternEvent = null; // 2페이즈 패턴 타이머
+        this.stonePatternInterval = 4000; // 패턴 반복 간격
+        this.stonePatternDelay = 3000; // 소환 후 폭발까지 대기 시간
+
+        this.stoneMinions = [];
+        this.stonePatternStarted = false; // 패턴 중복 시작 방지
 
         this.blasterList = [];
     }
@@ -80,6 +94,10 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.bombSFX = this.sound.add('sfx_Bomb', { volume: 0.4 });
 
         this.voiceSFX3 = this.sound.add('Jaemin_voice3');
+
+        this.appearSFX = this.sound.add('sfx_soulAppear', { volume: 0.7 });
+
+        this.droneSFX = this.sound.add('sfx_AIdroneBot', { volume: 0.4 });
 
         // 입력 키 설정
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -170,12 +188,12 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.monitor.play(true);
 
         // 클리핑 영역을 위한 그래픽스 객체 생성
-        const maskShape = this.make.graphics({}, false);
-        maskShape.fillStyle(0xffffff);
-        maskShape.fillRect(100, 0, 400, 720);
+        this.maskShape = this.make.graphics({}, false);
+        this.maskShape.fillStyle(0xffffff);
+        this.maskShape.fillRect(100, 0, 400, 720);
 
-        const mask = maskShape.createGeometryMask();
-        this.monitor.setMask(mask);
+        this.monitorMask = this.maskShape.createGeometryMask();
+        this.monitor.setMask(this.monitorMask);
 
         // 적 텔레포트 및 무작위 탄막 발사
         this.time.addEvent({
@@ -237,8 +255,40 @@ export class Stage5BattleScene extends Phaser.Scene {
         // 키 입력 처리
         this.shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 
-        this.bgm = this.sound.add('JoJo_Awaken_part2', { loop: true });
-        this.bgm.setVolume(0.4).play();
+        // BGM 목록
+        this.bgmList = {
+            phase1: 'JoJo_Awaken_part2',
+            phase2: 'megalovania',
+            phase3: 'tajiri_theme',
+            phase4: 'megalovania'
+        };
+
+        // 현재 재생 중인 BGM
+        this.currentBGM = null;
+
+        // 최초 페이즈 BGM 재생
+        this.changeBGM('phase1', 0.4);
+    }
+
+    changeBGM(phase, volume = 0.4) {
+        const bgmKey = this.bgmList[phase];
+
+        if (!bgmKey){ return; }
+
+        // 같은 BGM이 이미 재생 중이면 중복 실행 방지
+        if (this.currentBGM && this.currentBGM.key === bgmKey && this.currentBGM.isPlaying) { return; }
+
+        // 이전 BGM 정지
+        if (this.currentBGM)
+            this.currentBGM.stop();
+
+        // 새로운 BGM 재생
+        this.currentBGM = this.sound.add(bgmKey, {
+            loop: true,
+            volume: volume
+        });
+
+        this.currentBGM.play();
     }
 
     // 대사 출력을 위한 게임 정지
@@ -248,6 +298,8 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.enemyBullets.clear(true, true);
         // 화면에 있는 블래스터 제거
         this.clearBlasters();
+        // 드론 제거
+        this.clearStoneMinions();
 
         this.physics.pause();     // 물리 엔진 정지
         this.time.paused = true;  // 타이머 정지
@@ -283,9 +335,18 @@ export class Stage5BattleScene extends Phaser.Scene {
         this.time.paused = false;
         this.isDialogueActive = false;
 
+        // 2페이즈 대사가 끝나면 특수 패턴 시작
+        if (this.stoneTurn && !this.stonePatternStarted) {
+            this.startStonePhasePattern();
+        }
+
         // 클리어 시 다음 씬 이동
         if (this.isClear) {
-            this.bgm.stop();
+            if (this.currentBGM) {
+                this.currentBGM.stop();
+                this.currentBGM = null;
+            }
+
             sessionStorage.setItem("stageClear", 2);
             this.scene.start('LoadingScene', { goToStage: 3 });
         }
@@ -353,6 +414,24 @@ export class Stage5BattleScene extends Phaser.Scene {
         }
     }
 
+    hideMonitor() {
+        if (this.monitor) {
+            this.monitor.stop();
+            this.monitor.setVisible(false);
+            this.monitor.clearMask();
+        }
+
+        if (this.monitorMask) {
+            this.monitorMask.destroy();
+            this.monitorMask = null;
+        }
+
+        if (this.maskShape) {
+            this.maskShape.destroy();
+            this.maskShape = null;
+        }
+    }
+
     teleportEnemy() {
         this.enemies.children.iterate((enemy) => {
             if (!enemy.active) return;
@@ -368,45 +447,117 @@ export class Stage5BattleScene extends Phaser.Scene {
 
             // 원형 탄막
             for (let angle = 0; angle < 360; angle += 45) {
-                const bulletTypes = ['red_bullet', 'blue_bullet'];
-                const randomBullet = Phaser.Utils.Array.GetRandom(bulletTypes);
+                if (this.firstTurn){
+                    const bulletTypes = ['red_bullet', 'blue_bullet'];
+                    const randomBullet = Phaser.Utils.Array.GetRandom(bulletTypes);
 
-                const bullet = this.enemyBullets.create(enemy.x, enemy.y + 20, randomBullet);
+                    const bullet = this.enemyBullets.create(enemy.x, enemy.y + 20, randomBullet);
 
-                const finalAngle = angle + this.patternRotation;
-                const rad = Phaser.Math.DegToRad(finalAngle);
+                    const finalAngle = angle + this.patternRotation;
+                    const rad = Phaser.Math.DegToRad(finalAngle);
 
-                bullet.setVelocity(
-                    Math.sin(rad) * baseSpeed,
-                    Math.cos(rad) * baseSpeed
-                );
+                    bullet.setVelocity(
+                        Math.sin(rad) * baseSpeed,
+                        Math.cos(rad) * baseSpeed
+                    );
 
-                bullet.setScale(0.15);
-                bullet.setCollideWorldBounds(true);
-                bullet.body.onWorldBounds = true;
+                    bullet.setScale(0.15);
+                    bullet.setCollideWorldBounds(true);
+                    bullet.body.onWorldBounds = true;
+                }
+                else if (this.stoneTurn) {
+                    const bulletCount = 2;
+                    const spreadAngle = 90;
+
+                    // 아래쪽을 기준으로 좌우로 퍼지게 설정
+                    const centerAngle = 0;
+                    const startAngle = centerAngle - spreadAngle / 2;
+                    const angleStep = spreadAngle / (bulletCount - 1);
+
+                    for (let i = 0; i < bulletCount; i++) {
+                        const angle = startAngle + angleStep * i;
+                        const rad = Phaser.Math.DegToRad(angle);
+
+                        const bullet = this.enemyBullets.create(
+                            enemy.x,
+                            enemy.y + 20,
+                            'stone_bullet'
+                        );
+
+                        bullet.setVelocity(
+                            Math.sin(rad) * baseSpeed,
+                            Math.cos(rad) * baseSpeed
+                        );
+
+                        bullet.setScale(0.15);
+                        bullet.setCollideWorldBounds(true);
+                        bullet.body.onWorldBounds = true;
+                    }
+                }
+                else if (this.jjokbarisukiTurn){
+                    const bulletCount = 4;
+                    const spreadAngle = 90;
+
+                    // 아래쪽을 기준으로 좌우로 퍼지게 설정
+                    const centerAngle = 0;
+                    const startAngle = centerAngle - spreadAngle / 2;
+                    const angleStep = spreadAngle / (bulletCount - 1);
+
+                    for (let i = 0; i < bulletCount; i++) {
+                        const angle = startAngle + angleStep * i;
+                        const rad = Phaser.Math.DegToRad(angle);
+
+                        const bullet = this.enemyBullets.create(
+                            enemy.x,
+                            enemy.y + 20,
+                            'jjokbarisuki_bullet'
+                        );
+
+                        bullet.setVelocity(
+                            Math.sin(rad) * baseSpeed,
+                            Math.cos(rad) * baseSpeed
+                        );
+
+                        bullet.setScale(0.25);
+                        bullet.setCollideWorldBounds(true);
+                        bullet.body.onWorldBounds = true;
+                    }
+                }
             }
         });
     }
 
     spawnBlaster() {
         if (this.physics.world.isPaused) return;
-        if (this.gameOver) {
-            blaster.destroy();
-            return;
-        }
+        if (this.gameOver || this.isClear) return;
+
+        // 1페이즈 또는 3페이즈에서만 블래스터 사용
+        if (!this.firstTurn && !this.jjokbarisukiTurn) return;
 
         const x = Phaser.Math.Between(50, 740);
         const y = Phaser.Math.Between(300, 500);
 
-        const blaster = this.add.sprite(x, y, 'Jaemin_breath1');
+        // 현재 페이즈에 따라 스프라이트 선택
+        const blasterTexture = this.jjokbarisukiTurn
+            ? 'Jaemin_breath_green1'
+            : 'Jaemin_breath1';
+
+        const blaster = this.add.sprite(x, y, blasterTexture);
         blaster.setScale(0.6);
 
         this.blasterList.push(blaster);
 
+        blaster.fireTexture = this.jjokbarisukiTurn
+        ? 'Jaemin_breath_green2'
+        : 'Jaemin_breath2';
+
         this.sound.play('sfx_breathCharge');
 
         // 플레이어 방향 계산
-        const rawAngle = Phaser.Math.Angle.Between(x, y, this.player.x, this.player.y);
+        const rawAngle = Phaser.Math.Angle.Between(
+            x, y,
+            this.player.x, this.player.y
+        );
 
         // 4방향 대각선으로 스냅
         const directions = [
@@ -416,27 +567,27 @@ export class Stage5BattleScene extends Phaser.Scene {
             Phaser.Math.DegToRad(-135),
         ];
 
-        // 가장 가까운 각도 선택
         let angle = directions[0];
-        let minDiff = Math.abs(Phaser.Math.Angle.Wrap(rawAngle - angle));
+        let minDiff = Math.abs(
+            Phaser.Math.Angle.Wrap(rawAngle - angle)
+        );
 
-        for (let dir of directions) {
-            const diff = Math.abs(Phaser.Math.Angle.Wrap(rawAngle - dir));
+        for (const dir of directions) {
+            const diff = Math.abs(
+                Phaser.Math.Angle.Wrap(rawAngle - dir)
+            );
+
             if (diff < minDiff) {
                 minDiff = diff;
                 angle = dir;
             }
         }
 
-        // flip 처리
-        if (Math.cos(angle) < 0) {
-            blaster.setFlipY(true);  // 필요하면 flipX로 바꿔 테스트
-        } else {
-            blaster.setFlipY(false);
-        }
-
+        // 좌우 반전 처리
+        blaster.setFlipY(Math.cos(angle) < 0);
         blaster.rotation = angle;
 
+        // 1초 후 발사
         this.time.delayedCall(1000, () => {
             this.fireBlaster(blaster, angle);
         });
@@ -444,24 +595,36 @@ export class Stage5BattleScene extends Phaser.Scene {
 
     fireBlaster(blaster, angle) {
         if (!blaster || !blaster.active) return;
-        if (this.gameOver) blaster.destroy();
 
-        blaster.setTexture('Jaemin_breath2');
+        // 1페이즈와 3페이즈에서만 발사
+        if (
+            this.gameOver ||
+            this.isClear ||
+            (!this.firstTurn && !this.jjokbarisukiTurn)
+        ) {
+            blaster.destroy();
+            return;
+        }
+
+        // 생성 시 저장한 페이즈별 발사 스프라이트 사용
+        blaster.setTexture(blaster.fireTexture);
+
         this.sound.play('sfx_breathFire');
 
         const bulletSpeed = 1000;
-        const fireRate = 50; // 발사 간격
-        const duration = 1000; // 전체 발사 시간
+        const fireRate = 50;
+        const duration = 1000;
 
-        // 기관총처럼 반복 발사
         const shootEvent = this.time.addEvent({
             delay: fireRate,
             repeat: duration / fireRate,
             callback: () => {
-                if (!blaster.active) return;
+                if (!blaster.active || this.gameOver) return;
 
-                // 살짝 퍼지게 하고 싶으면 랜덤 추가
-                const spread = Phaser.Math.DegToRad(Phaser.Math.Between(-10, 10));
+                const spread = Phaser.Math.DegToRad(
+                    Phaser.Math.Between(-10, 10)
+                );
+
                 const finalAngle = angle + spread;
 
                 const bullet = this.enemyBullets.create(
@@ -469,6 +632,8 @@ export class Stage5BattleScene extends Phaser.Scene {
                     blaster.y + 40,
                     'green_bullet'
                 );
+
+                if (!bullet) return;
 
                 bullet.setScale(0.2);
                 bullet.setVelocity(
@@ -483,10 +648,12 @@ export class Stage5BattleScene extends Phaser.Scene {
 
         this.cameras.main.shake(800, 0.01);
 
-        // 발사 끝나면 정리
         this.time.delayedCall(duration, () => {
             shootEvent.remove();
-            blaster.destroy();
+
+            if (blaster.active) {
+                blaster.destroy();
+            }
         });
     }
 
@@ -499,6 +666,140 @@ export class Stage5BattleScene extends Phaser.Scene {
         });
 
         this.blasterList = [];
+    }
+
+    clearStoneMinions() {
+        // 드론 제거
+        this.stoneMinions.forEach((minion) => {
+            if (minion && minion.active) {
+                this.tweens.killTweensOf(minion);
+                minion.destroy();
+            }
+        });
+
+        this.stoneMinions = [];
+    }
+
+    startStonePhasePattern() {
+        if (this.stonePatternStarted || this.gameOver || this.isClear) {
+            return;
+        }
+
+        this.stonePatternStarted = true;
+
+        // 첫 패턴을 바로 시작
+        this.spawnStoneMinions();
+
+        // 이후 일정 간격으로 반복
+        this.stonePatternEvent = this.time.addEvent({
+            delay: 5000,
+            callback: this.spawnStoneMinions,
+            callbackScope: this,
+            loop: true,
+        });
+    }
+
+    spawnStoneMinions() {
+        if (this.gameOver || this.isClear || !this.stoneTurn) {
+            return;
+        }
+
+        // 기존 기체가 남아 있다면 중복 소환 방지
+        if (this.stoneMinions.some(minion => minion.active)) {
+            return;
+        }
+
+        const positions = [
+            { x: 80, y: 550 },
+            { x: 710, y: 550 },
+        ];
+
+        positions.forEach((pos) => {
+            this.droneSFX.play();
+            this.cameras.main.flash(1000, 255, 255, 255);
+
+            // AI 드론봇 소환
+            const minion = this.add.sprite(
+                pos.x,
+                pos.y,
+                'drone'
+            );
+
+            minion.setScale(0.3);
+            minion.setDepth(5);
+
+            this.stoneMinions.push(minion);
+
+            // 3초 후 폭발
+            this.time.delayedCall(this.stonePatternDelay, () => {
+                if (!minion.active || this.gameOver || this.isClear) {
+                    return;
+                }
+
+                this.explodeStoneMinion(minion);
+            });
+        });
+    }
+
+    explodeStoneMinion(minion) {
+        if (!minion || !minion.active) return;
+
+        const x = minion.x;
+        const y = minion.y;
+
+        // 폭발 시 기체 제거
+        minion.destroy();
+
+        // 폭발 효과
+        const explosion = this.add.circle(
+            x,
+            y,
+            10,
+            0xffaa33,
+            0.9
+        );
+
+        explosion.setDepth(6);
+
+        this.tweens.add({
+            targets: explosion,
+            scale: 5,
+            alpha: 0,
+            duration: 300,
+            onComplete: () => {
+                explosion.destroy();
+            },
+        });
+
+        // 화면 흔들림
+        this.cameras.main.shake(150, 0.003);
+
+        // 원형 탄막 발사
+        const bulletCount = 24;
+        const bulletSpeed = 250;
+
+        for (let i = 0; i < bulletCount; i++) {
+            const angle = (360 / bulletCount) * i;
+            const rad = Phaser.Math.DegToRad(angle);
+
+            const bullet = this.enemyBullets.create(
+                x,
+                y,
+                'stone_bullet'
+            );
+
+            if (!bullet) continue;
+
+            bullet.setScale(0.15);
+
+            bullet.setVelocity(
+                Math.cos(rad) * bulletSpeed,
+                Math.sin(rad) * bulletSpeed
+            );
+
+            bullet.setCollideWorldBounds(true);
+            bullet.body.onWorldBounds = true;
+        }
     }
 
     shootPlayerBullet() {
@@ -662,6 +963,20 @@ export class Stage5BattleScene extends Phaser.Scene {
             this.blasterEvent = null;
         }
 
+        // AI 드론봇 타이머 제거
+        if (this.stonePatternEvent) {
+            this.stonePatternEvent.remove(false);
+            this.stonePatternEvent = null;
+        }
+
+        this.stoneMinions.forEach((minion) => {
+            if (minion && minion.active) {
+                minion.destroy();
+            }
+        });
+
+        this.stoneMinions = [];
+
         if (this.joystickBase) {
             this.joystickBase.setVisible(false);
             this.joystickHandle.setVisible(false);
@@ -682,7 +997,11 @@ export class Stage5BattleScene extends Phaser.Scene {
 
         // 배경 변경: 게임 오버 화면으로 설정
         this.backgroundUI.setTexture('background_black');
-        this.bgm.stop();
+
+        if (this.currentBGM) {
+            this.currentBGM.stop();
+            this.currentBGM = null;
+        }
 
         setTimeout(() => {
             this.scene.start('VideoCutScene', { videoSrc: 'gameover' });
@@ -692,7 +1011,7 @@ export class Stage5BattleScene extends Phaser.Scene {
     update() {
         if (this.isDialogueActive) return;
 
-        if (this.enemyHP <= 5000 && !this.firstDialogueDone) {
+        if (this.enemyHP <= 6000 && !this.firstDialogueDone) {
             this.firstDialogueDone = true;
 
             this.voiceSFX3.play();
@@ -702,11 +1021,75 @@ export class Stage5BattleScene extends Phaser.Scene {
             ]);
         }
 
-        if (this.enemyHP <= 4000 && !this.secondDialogueDone) {
+        if (this.enemyHP <= 5500 && !this.secondDialogueDone) {
             this.secondDialogueDone = true;
 
             this.pauseForDialogue([
-                { name: '재민(가명)', text: '젠장, 공격이 안 통하잖아!' }
+                { name: '재민(가명)', text: '젠장, 공격이 통하는 건지 안 통하는 건지 모르겠네.' },
+                { name: '재민(가명)', text: '일단 무작정 공격을 퍼부어 보자.' }
+            ]);
+        }
+
+        if (this.enemyHP <= 5050 && !this.thirdDialogueDone) {
+            this.thirdDialogueDone = true;
+
+            this.pauseForDialogue([
+                { name: '그랜드 얼티밋 마제스티 재민스키', text: '지금까지 네놈한테 당한 영혼들을 다 끌어모았다. 잘 봐라!' }
+            ]);
+        }
+
+        if (this.enemyHP <= 5000 && !this.stoneTurn && !this.jjokbarisukiTurn && !this.junsusukiTurn) {
+            this.firstTurn = false;
+            this.stoneTurn = true;
+
+            this.hideMonitor();
+            this.cameras.main.flash(2000, 0, 0, 0);
+            this.appearSFX.play();
+            this.changeBGM('phase2', 0.4);
+
+            // 적 텍스처 변경 (스테이지 1 강화)
+            this.enemies.children.iterate((enemy) => {
+                enemy.setTexture('Omega_jaeminsuki_stone');
+            });
+
+            this.pauseForDialogue([
+                { name: '돌멩이', text: '대사 테스트' },
+            ]);
+        }
+
+        if (this.enemyHP <= 4000 && !this.jjokbarisukiTurn && this.stoneTurn && !this.junsusukiTurn) {
+            this.stoneTurn = false;
+            this.jjokbarisukiTurn = true;
+
+            this.cameras.main.flash(2000, 0, 0, 0);
+            this.appearSFX.play();
+            this.changeBGM('phase3', 0.4);
+
+            // 적 텍스처 변경 (스테이지 2 강화)
+            this.enemies.children.iterate((enemy) => {
+                enemy.setTexture('Omega_jaeminsuki_jjokbarisuki');
+            });
+
+            this.pauseForDialogue([
+                { name: '쪽바리스키', text: '대사 테스트' },
+            ]);
+        }
+
+        if (this.enemyHP <= 3000 && !this.junsusukiTurn && this.jjokbarisukiTurn && !this.stoneTurn) {
+            this.jjokbarisukiTurn = false;
+            this.junsusukiTurn = true;
+
+            this.cameras.main.flash(2000, 0, 0, 0);
+            this.appearSFX.play();
+            this.changeBGM('phase4', 0.4);
+
+            // 적 텍스처 변경 (스테이지 3 강화)
+            this.enemies.children.iterate((enemy) => {
+                enemy.setTexture('Omega_jaeminsuki_junsusuki');
+            });
+
+            this.pauseForDialogue([
+                { name: '블라디미르 준수스키', text: '대사 테스트' },
             ]);
         }
 

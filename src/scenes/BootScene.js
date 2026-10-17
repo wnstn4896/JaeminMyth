@@ -61,6 +61,7 @@ export class BootScene extends Phaser.Scene {
         this.load.image('jaeminsuki_head', `${images}/jaeminsuki_head.png`);
         this.load.image('jaeminsuki_head_black', `${images}/jaeminsuki_head_black.png`);
         this.load.image('select_btn', `${images}/select_btn.png`);
+        this.load.image('drone', `${images}/drone.png`);
 
         for (let i = 1; i <= 7; i++)
             this.load.image('Jaemin_MTE' + i, `${images}/Jaemin_MTE` + i + '.png');
@@ -69,6 +70,8 @@ export class BootScene extends Phaser.Scene {
 
         this.load.image('Jaemin_breath1', `${images}/Jaemin_breath1.png`);
         this.load.image('Jaemin_breath2', `${images}/Jaemin_breath2.png`);
+        this.load.image('Jaemin_breath_green1', `${images}/Jaemin_breath_green1.png`);
+        this.load.image('Jaemin_breath_green2', `${images}/Jaemin_breath_green2.png`);
 
         this.load.audio('Jaemin_laugh', [`${sounds}/Jaemin_laugh.m4a`]);
         this.load.audio('sponsor', [`${sounds}/sponsor.m4a`]);
@@ -83,6 +86,8 @@ export class BootScene extends Phaser.Scene {
         this.load.audio('sfx_OmegaFlowey', [`${sounds}/sfx_OmegaFlowey.mp3`]);
         this.load.audio('sfx_breathCharge', [`${sounds}/sfx_breathCharge.m4a`]);
         this.load.audio('sfx_breathFire', [`${sounds}/sfx_breathFire.m4a`]);
+        this.load.audio('sfx_soulAppear', [`${sounds}/sfx_soulAppear.mp3`]);
+        this.load.audio('sfx_AIdroneBot', [`${sounds}/sfx_AIdroneBot.m4a`]);
         this.load.audio('PrologueBGM', [`${sounds}/PrologueBGM.mp3`]);
         this.load.audio('ROKA', [`${sounds}/ROKA.mp3`]);
         this.load.audio('esaka', [`${sounds}/esaka.mp3`]);
@@ -94,6 +99,8 @@ export class BootScene extends Phaser.Scene {
         this.load.audio('JoJo_Fight_to_Antagonize', [`${sounds}/JoJo_Fight_to_Antagonize.m4a`]);
         this.load.audio('JoJo_Awaken_part1', [`${sounds}/JoJo_Awaken_part1.m4a`]);
         this.load.audio('JoJo_Awaken_part2', [`${sounds}/JoJo_Awaken_part2.m4a`]);
+        this.load.audio('megalovania', [`${sounds}/megalovania.m4a`]);
+        this.load.audio('tajiri_theme', [`${sounds}/tajiri_theme.m4a`]);
         this.load.audio('Jaemin_voice1', [`${sounds}/Jaemin_voice1.mp3`]);
         this.load.audio('Jaemin_voice2', [`${sounds}/Jaemin_voice2.mp3`]);
         this.load.audio('Jaemin_voice3', [`${sounds}/Jaemin_voice3.m4a`])
@@ -119,7 +126,7 @@ export class BootScene extends Phaser.Scene {
     }
 
     create() {
-        this.scene.start('TitleScene');
+        this.scene.start('Stage5BattleScene');
     }
 }
 
