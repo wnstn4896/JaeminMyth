@@ -15,6 +15,8 @@ export class LoadingScene extends Phaser.Scene {
         // 씬 전환 중복 실행 방지
         this.isTransitioning = false;
 
+        this.HiddenSceneDone = sessionStorage.getItem("HiddenSceneDone");
+
         this.hiddenbgm = null;
     }
 
@@ -203,7 +205,12 @@ export class LoadingScene extends Phaser.Scene {
 
     // 스테이지 5 전용 전환 처리
     transitionToStage5() {
-        // 검은 화면 오버레이
+        // 중복 실행 방지
+        if (this.isTransitioning === false) {
+            this.isTransitioning = true;
+        }
+
+        // 검은 화면 오버레이 생성
         const overlay = this.add.rectangle(
             0,
             0,
@@ -212,36 +219,34 @@ export class LoadingScene extends Phaser.Scene {
             0x000000
         )
             .setOrigin(0)
+            .setScrollFactor(0)
             .setDepth(999)
             .setAlpha(0);
 
-        // 화면을 어둡게 전환한 후 스테이지 진입
+        // BGM 생성
+        this.hiddenbgm = this.sound.add('JoJo_Awaken_part1', {
+            volume: 0.4,
+            loop: false
+        });
+
+        // BGM 재생이 끝나면 스테이지 전환
+        this.hiddenbgm.once('complete', () => {
+            if (!this.scene.isActive()) {
+                return;
+            }
+
+            this.scene.start('Stage5BattleScene');
+        });
+
+        // BGM 재생 시작
+        this.hiddenbgm.play();
+
+        // BGM 재생과 동시에 화면 암전
         this.tweens.add({
             targets: overlay,
             alpha: 1,
-            duration: 300,
-            ease: 'Power2',
-
-            onComplete: () => {
-                // 씬이 이미 종료되는 상황이면 추가 작업 방지
-                if (!this.scene.isActive()) {
-                    return;
-                }
-
-                // BGM은 씬 전환을 막지 않도록 별도로 재생
-                this.hiddenbgm = this.sound.add(
-                    'JoJo_Awaken_part1',
-                    {
-                        volume: 0.4,
-                        loop: false
-                    }
-                );
-
-                this.hiddenbgm.play();
-
-                // BGM 종료를 기다리지 않고 즉시 씬 전환
-                this.scene.start('Stage5BattleScene');
-            }
+            duration: 1500,
+            ease: 'Power2'
         });
     }
 }
