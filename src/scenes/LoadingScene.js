@@ -182,9 +182,20 @@ export class LoadingScene extends Phaser.Scene {
                 break;
 
             case 5:
-            case '5':
-                this.transitionToStage5();
+            case '5': {
+                const isHiddenSceneDone =
+                    this.HiddenSceneDone === 'true' ||
+                    this.HiddenSceneDone === '1';
+
+                if (isHiddenSceneDone) {
+                    // 숨겨진 씬 완료: BGM + 암전 후 전환
+                    this.transitionToStage5();
+                } else {
+                    // 미완료: 바로 스테이지 5로 전환
+                    this.scene.start('Stage5BattleScene');
+                }
                 break;
+            }
 
             default:
                 console.error(
